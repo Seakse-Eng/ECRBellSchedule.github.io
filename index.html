@@ -12,11 +12,11 @@
                 extend: {
                     colors: {
                         brand: {
-                            50: '#f0fdfa',
-                            100: '#ccfbf1',
-                            500: '#14b8a6',
-                            600: '#0d9488',
-                            900: '#134e4a',
+                            50: 'var(--brand-50)',
+                            100: 'var(--brand-100)',
+                            400: 'var(--brand-400)',
+                            500: 'var(--brand-500)',
+                            600: 'var(--brand-600)',
                         }
                     }
                 }
@@ -24,12 +24,53 @@
         }
     </script>
     <style>
-        /* Custom scrollbar for a cleaner look */
+        /* Base Themes */
+        :root {
+            /* Default Teal */
+            --brand-50: #f0fdfa;
+            --brand-100: #ccfbf1;
+            --brand-400: #2dd4bf;
+            --brand-500: #14b8a6;
+            --brand-600: #0d9488;
+        }
+        :root[data-color="blue"] {
+            --brand-50: #eff6ff;
+            --brand-100: #dbeafe;
+            --brand-400: #60a5fa;
+            --brand-500: #3b82f6;
+            --brand-600: #2563eb;
+        }
+        :root[data-color="rose"] {
+            --brand-50: #fff1f2;
+            --brand-100: #ffe4e6;
+            --brand-400: #fb7185;
+            --brand-500: #f43f5e;
+            --brand-600: #e11d48;
+        }
+        :root[data-color="violet"] {
+            --brand-50: #f5f3ff;
+            --brand-100: #ede9fe;
+            --brand-400: #a78bfa;
+            --brand-500: #8b5cf6;
+            --brand-600: #7c3aed;
+        }
+
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
         .dark ::-webkit-scrollbar-thumb { background-color: #475569; }
-        [x-cloak] { display: none !important; }
+        
+        /* Circular Progress Animation */
+        .circle-bg { fill: none; stroke: currentColor; stroke-width: 8; }
+        .circle-progress { 
+            fill: none; 
+            stroke: var(--brand-500); 
+            stroke-width: 8; 
+            stroke-linecap: round; 
+            transition: stroke-dashoffset 1s linear; 
+            transform: rotate(-90deg); 
+            transform-origin: 50% 50%;
+        }
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300 font-sans min-h-screen">
@@ -37,16 +78,16 @@
     <div class="max-w-3xl mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
         
         <!-- Header -->
-        <header class="flex items-center justify-between bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+        <header class="flex items-center justify-between bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
             <div>
-                <h1 class="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-blue-600 dark:from-brand-400 dark:to-blue-400">
+                <h1 class="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-brand-400">
                     Bell Schedule
                 </h1>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-1" id="current-date-display"></p>
             </div>
             <div class="flex items-center gap-3">
                 <button onclick="toggleSettings()" class="p-2.5 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors" title="Settings">
-                    <svg class="w-5 h-5 text-gray-700 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <svg class="w-5 h-5 text-gray-700 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 </button>
                 <button onclick="toggleTheme()" class="p-2.5 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors" title="Toggle Theme">
                     <svg id="theme-icon-light" class="w-5 h-5 hidden text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
@@ -57,55 +98,104 @@
 
         <!-- Settings Panel -->
         <div id="settings-panel" class="hidden bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-all">
-            <h3 class="text-lg font-semibold mb-4">Dashboard Settings</h3>
-            <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                <div>
-                    <p class="font-medium">Hide Period 0</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Remove Period 0 from tracker and schedule.</p>
+            <h3 class="text-lg font-semibold mb-4 border-b border-gray-100 dark:border-gray-700 pb-2">Settings</h3>
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <div>
+                        <p class="font-medium">Hide Period 0</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Remove from tracker.</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="toggle-p0" class="sr-only peer" onchange="togglePeriodZero()">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-brand-500"></div>
+                    </label>
                 </div>
-                <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" id="toggle-p0" class="sr-only peer" onchange="togglePeriodZero()">
-                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-brand-500"></div>
-                </label>
-            </div>
-        </div>
-
-        <!-- Live Tracker Card -->
-        <div class="bg-white dark:bg-gray-800 p-6 sm:p-10 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 flex flex-col items-center text-center relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-500 to-blue-500"></div>
-            
-            <p id="tracker-status" class="text-sm uppercase tracking-widest font-semibold text-brand-600 dark:text-brand-400 mb-2">Loading...</p>
-            <h2 id="tracker-period-name" class="text-3xl sm:text-5xl font-extrabold text-gray-900 dark:text-white mb-4">--</h2>
-            
-            <div class="bg-gray-50 dark:bg-gray-900 px-6 py-4 rounded-xl border border-gray-100 dark:border-gray-700 mb-6 w-full max-w-sm shadow-inner">
-                <p id="tracker-countdown" class="text-5xl sm:text-6xl font-black font-mono text-gray-800 dark:text-gray-100 tabular-nums">00:00</p>
-                <p class="text-xs font-medium text-gray-500 uppercase mt-2">Time Remaining</p>
-            </div>
-
-            <!-- Progress Bar -->
-            <div class="w-full max-w-md">
-                <div class="flex justify-between text-xs font-medium text-gray-500 mb-1">
-                    <span id="tracker-start">--:--</span>
-                    <span id="tracker-end">--:--</span>
+                
+                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <div>
+                        <p class="font-medium">Progress Bar Type</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Horizontal or Circular</p>
+                    </div>
+                    <select id="select-shape" onchange="updateSettings()" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 text-sm rounded-lg focus:ring-brand-500 focus:border-brand-500 block p-2">
+                        <option value="horizontal">Horizontal</option>
+                        <option value="circular">Circular</option>
+                    </select>
                 </div>
-                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 sm:h-4 overflow-hidden shadow-inner">
-                    <div id="tracker-progress" class="bg-gradient-to-r from-brand-500 to-blue-500 h-full rounded-full transition-all duration-1000 ease-linear" style="width: 0%"></div>
+
+                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <div>
+                        <p class="font-medium">Color Scheme</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Pick your favorite color</p>
+                    </div>
+                    <select id="select-color" onchange="updateSettings()" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 text-sm rounded-lg focus:ring-brand-500 focus:border-brand-500 block p-2">
+                        <option value="teal">Teal (Default)</option>
+                        <option value="blue">Blue</option>
+                        <option value="rose">Rose</option>
+                        <option value="violet">Violet</option>
+                    </select>
                 </div>
             </div>
         </div>
 
         <!-- Schedule Selector -->
         <div class="flex p-1 bg-gray-200 dark:bg-gray-800 rounded-xl shadow-inner w-full sm:w-max self-center">
-            <button id="btn-regular" onclick="setManualSchedule('regular')" class="flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+            <button id="btn-auto" onclick="setManualSchedule('auto')" class="flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-semibold transition-all">
+                Auto
+            </button>
+            <button id="btn-regular" onclick="setManualSchedule('regular')" class="flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-semibold transition-all">
                 Regular
             </button>
-            <button id="btn-common" onclick="setManualSchedule('common')" class="flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-semibold transition-all text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
+            <button id="btn-common" onclick="setManualSchedule('common')" class="flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-semibold transition-all">
                 Common Planning
             </button>
         </div>
 
+        <!-- Live Tracker Card -->
+        <div class="bg-white dark:bg-gray-800 p-6 sm:p-10 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 flex flex-col items-center text-center relative overflow-hidden transition-colors">
+            <div class="absolute top-0 left-0 w-full h-1 bg-brand-500"></div>
+            
+            <p id="tracker-status" class="text-sm uppercase tracking-widest font-semibold text-brand-600 dark:text-brand-400 mb-2">Loading...</p>
+            <h2 id="tracker-period-name" class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-6">--</h2>
+            
+            <!-- Horizontal Progress View -->
+            <div id="view-horizontal" class="w-full flex flex-col items-center">
+                <div class="bg-gray-50 dark:bg-gray-900 px-6 py-4 rounded-xl border border-gray-100 dark:border-gray-700 mb-6 w-full max-w-sm shadow-inner text-center">
+                    <p id="tracker-countdown-hz" class="text-5xl sm:text-6xl font-black font-mono text-gray-800 dark:text-gray-100 tabular-nums tracking-tighter">00:00</p>
+                    <p class="text-xs font-medium text-gray-500 uppercase mt-2">Time Remaining</p>
+                </div>
+                <div class="w-full max-w-md">
+                    <div class="flex justify-between text-xs font-medium text-gray-500 mb-1">
+                        <span id="tracker-start-hz">--:--</span>
+                        <span id="tracker-end-hz">--:--</span>
+                    </div>
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 sm:h-4 overflow-hidden shadow-inner">
+                        <div id="tracker-progress-hz" class="bg-brand-500 h-full rounded-full transition-all duration-1000 ease-linear" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Circular Progress View -->
+            <div id="view-circular" class="hidden w-full flex flex-col items-center relative">
+                <div class="relative w-64 h-64 flex items-center justify-center">
+                    <svg class="absolute top-0 left-0 w-full h-full" viewBox="0 0 100 100">
+                        <circle class="circle-bg text-gray-200 dark:text-gray-700" cx="50" cy="50" r="45"></circle>
+                        <circle id="tracker-progress-circ" class="circle-progress" cx="50" cy="50" r="45" stroke-dasharray="283" stroke-dashoffset="283"></circle>
+                    </svg>
+                    <div class="z-10 flex flex-col items-center">
+                        <p id="tracker-countdown-circ" class="text-4xl sm:text-5xl font-black font-mono text-gray-800 dark:text-gray-100 tabular-nums tracking-tighter">00:00</p>
+                        <p class="text-[10px] font-medium text-gray-500 uppercase mt-1">Remaining</p>
+                    </div>
+                </div>
+                <div class="flex justify-between text-xs font-medium text-gray-500 mt-4 w-64 px-2">
+                    <span id="tracker-start-circ">--:--</span>
+                    <span id="tracker-end-circ">--:--</span>
+                </div>
+            </div>
+            
+        </div>
+
         <!-- Schedule Table -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors">
             <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 flex justify-between items-center">
                 <h3 class="font-semibold text-gray-800 dark:text-gray-200" id="schedule-title">Today's Schedule</h3>
             </div>
@@ -153,7 +243,9 @@
             hidePeriod0: false,
             customNames: {},
             theme: 'light',
-            manualSchedule: null
+            scheduleMode: 'auto', // 'auto', 'regular', 'common'
+            colorScheme: 'teal',
+            progressShape: 'horizontal'
         };
         let activeTimeline = [];
         let clockInterval;
@@ -162,23 +254,22 @@
         function init() {
             loadState();
             applyTheme();
+            applySettingsDOM();
             updateDateDisplay();
-            document.getElementById('toggle-p0').checked = state.hidePeriod0;
             
             buildTimeline();
             renderTable();
-            updateClock(); // Initial paint
+            updateClock();
             
             if(clockInterval) clearInterval(clockInterval);
             clockInterval = setInterval(updateClock, 1000);
         }
 
         function loadState() {
-            const saved = localStorage.getItem('bellScheduleState');
+            const saved = localStorage.getItem('bellScheduleData2');
             if(saved) {
                 state = { ...state, ...JSON.parse(saved) };
             } else {
-                // Check system preference
                 if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
                     state.theme = 'dark';
                 }
@@ -186,10 +277,32 @@
         }
 
         function saveState() {
-            localStorage.setItem('bellScheduleState', JSON.stringify(state));
+            localStorage.setItem('bellScheduleData2', JSON.stringify(state));
             buildTimeline();
             renderTable();
             updateClock();
+        }
+
+        function applySettingsDOM() {
+            document.documentElement.setAttribute('data-color', state.colorScheme);
+            document.getElementById('toggle-p0').checked = state.hidePeriod0;
+            document.getElementById('select-shape').value = state.progressShape;
+            document.getElementById('select-color').value = state.colorScheme;
+            
+            if (state.progressShape === 'circular') {
+                document.getElementById('view-horizontal').classList.add('hidden');
+                document.getElementById('view-circular').classList.remove('hidden');
+            } else {
+                document.getElementById('view-circular').classList.add('hidden');
+                document.getElementById('view-horizontal').classList.remove('hidden');
+            }
+        }
+
+        function updateSettings() {
+            state.progressShape = document.getElementById('select-shape').value;
+            state.colorScheme = document.getElementById('select-color').value;
+            applySettingsDOM();
+            saveState();
         }
 
         // --- Utility Methods ---
@@ -205,7 +318,9 @@
         }
 
         function getActiveScheduleKey() {
-            if (state.manualSchedule) return state.manualSchedule;
+            if (state.scheduleMode === 'regular') return 'regular';
+            if (state.scheduleMode === 'common') return 'common';
+            // Auto Mode: Wed = common, else regular
             const isWednesday = new Date().getDay() === 3;
             return isWednesday ? 'common' : 'regular';
         }
@@ -232,14 +347,16 @@
             let baseSchedule = rawSchedules[schedKey];
             
             // Apply visual active state to toggle buttons
-            document.getElementById('btn-regular').className = schedKey === 'regular' 
-                ? 'flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white' 
-                : 'flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-semibold transition-all text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200';
-            document.getElementById('btn-common').className = schedKey === 'common' 
-                ? 'flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white' 
-                : 'flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-semibold transition-all text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200';
+            const activeClass = 'flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm bg-white dark:bg-gray-700 text-brand-600 dark:text-brand-400 border border-gray-200 dark:border-gray-600';
+            const inactiveClass = 'flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-semibold transition-all text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200';
             
-            document.getElementById('schedule-title').innerText = (schedKey === 'common' ? 'Common Planning (Wed)' : 'Regular Schedule');
+            document.getElementById('btn-auto').className = state.scheduleMode === 'auto' ? activeClass : inactiveClass;
+            document.getElementById('btn-regular').className = state.scheduleMode === 'regular' ? activeClass : inactiveClass;
+            document.getElementById('btn-common').className = state.scheduleMode === 'common' ? activeClass : inactiveClass;
+            
+            let titleText = schedKey === 'common' ? 'Common Planning Schedule' : 'Regular Schedule';
+            if (state.scheduleMode === 'auto') titleText += ' (Auto)';
+            document.getElementById('schedule-title').innerText = titleText;
 
             // Filter out Period 0 if needed
             if (state.hidePeriod0) {
@@ -294,35 +411,33 @@
             // DOM Elements
             const statusEl = document.getElementById('tracker-status');
             const nameEl = document.getElementById('tracker-period-name');
-            const cdEl = document.getElementById('tracker-countdown');
-            const progEl = document.getElementById('tracker-progress');
-            const startEl = document.getElementById('tracker-start');
-            const endEl = document.getElementById('tracker-end');
-
+            
             // Reset highlights in table
             document.querySelectorAll('.sched-row').forEach(row => {
-                row.classList.remove('bg-blue-50', 'dark:bg-blue-900/20', 'border-l-4', 'border-brand-500');
+                row.classList.remove('bg-brand-50', 'dark:bg-brand-900/20', 'border-l-4', 'border-brand-500');
                 row.classList.add('border-l-4', 'border-transparent');
             });
 
+            let cdText = "00:00";
+            let progPercent = 0;
+            let startText = "--:--";
+            let endText = "--:--";
+
             if (now < firstStart) {
-                // Before school
                 statusEl.innerText = "School starts in";
                 nameEl.innerText = "Waiting to Start";
-                cdEl.innerText = formatDuration(firstStart - now);
-                progEl.style.width = "0%";
-                startEl.innerText = "--:--";
-                endEl.innerText = activeTimeline[0].start;
+                cdText = formatDuration(firstStart - now);
+                progPercent = 0;
+                startText = "--:--";
+                endText = activeTimeline[0].start;
             } else if (now >= lastEnd) {
-                // After school
                 statusEl.innerText = "Enjoy your day";
                 nameEl.innerText = "Out of Session";
-                cdEl.innerText = "00:00";
-                progEl.style.width = "100%";
-                startEl.innerText = "--:--";
-                endEl.innerText = "--:--";
+                cdText = "00:00";
+                progPercent = 100;
+                startText = "--:--";
+                endText = "--:--";
             } else {
-                // During school
                 for (let block of activeTimeline) {
                     if (now >= block.startObj && now < block.endObj) {
                         currentBlock = block;
@@ -338,22 +453,35 @@
                     const elapsed = now - currentBlock.startObj;
                     const remaining = currentBlock.endObj - now;
                     
-                    cdEl.innerText = formatDuration(remaining);
-                    const progressPercent = Math.min(100, Math.max(0, (elapsed / duration) * 100));
-                    progEl.style.width = `${progressPercent}%`;
-                    
-                    startEl.innerText = currentBlock.start || currentBlock.startStr;
-                    endEl.innerText = currentBlock.end || currentBlock.endStr;
+                    cdText = formatDuration(remaining);
+                    progPercent = Math.min(100, Math.max(0, (elapsed / duration) * 100));
+                    startText = currentBlock.start || currentBlock.startStr;
+                    endText = currentBlock.end || currentBlock.endStr;
 
                     // Highlight Table Row
                     if (!currentBlock.isPassing) {
                         const row = document.getElementById(`row-${currentBlock.id}`);
                         if (row) {
                             row.classList.remove('border-transparent');
-                            row.classList.add('bg-blue-50', 'dark:bg-blue-900/20', 'border-brand-500');
+                            row.classList.add('bg-brand-50', 'dark:bg-brand-900/20', 'border-brand-500');
                         }
                     }
                 }
+            }
+
+            // Sync visual updates to whichever progress shape is active
+            if (state.progressShape === 'horizontal') {
+                document.getElementById('tracker-countdown-hz').innerText = cdText;
+                document.getElementById('tracker-progress-hz').style.width = `${progPercent}%`;
+                document.getElementById('tracker-start-hz').innerText = startText;
+                document.getElementById('tracker-end-hz').innerText = endText;
+            } else {
+                document.getElementById('tracker-countdown-circ').innerText = cdText;
+                document.getElementById('tracker-start-circ').innerText = startText;
+                document.getElementById('tracker-end-circ').innerText = endText;
+                // Circle math: 283 is circumference of r=45 (2 * PI * 45)
+                const offset = 283 - (283 * (progPercent / 100));
+                document.getElementById('tracker-progress-circ').style.strokeDashoffset = offset;
             }
         }
 
@@ -390,8 +518,8 @@
         }
 
         // --- Interaction ---
-        function setManualSchedule(type) {
-            state.manualSchedule = type;
+        function setManualSchedule(mode) {
+            state.scheduleMode = mode;
             saveState();
         }
 
@@ -428,7 +556,6 @@
         }
 
         function editPeriod(id) {
-            // Find default name to show in prompt
             let defaultName = '';
             for(let key in rawSchedules) {
                 const found = rawSchedules[key].find(p => p.id === id);
@@ -441,7 +568,7 @@
             if (newName !== null) {
                 const trimmed = newName.trim();
                 if (trimmed === '' || trimmed === defaultName) {
-                    delete state.customNames[id]; // Revert to default
+                    delete state.customNames[id];
                 } else {
                     state.customNames[id] = trimmed;
                 }
@@ -454,7 +581,6 @@
             document.getElementById('current-date-display').innerText = new Date().toLocaleDateString(undefined, opts);
         }
 
-        // Run on load
         window.onload = init;
     </script>
 </body>
