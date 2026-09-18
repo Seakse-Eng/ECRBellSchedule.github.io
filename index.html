@@ -40,9 +40,6 @@
         :root[data-theme="frappe"] { --ctp-base: 48 52 70; --ctp-mantle: 41 44 60; --ctp-surface0: 65 69 89; --ctp-surface1: 81 87 109; --ctp-surface2: 98 104 128; --ctp-text: 198 208 245; --ctp-subtext: 181 191 226; --ctp-accent: 202 158 230; color-scheme: dark; }
         :root[data-theme="macchiato"] { --ctp-base: 36 39 58; --ctp-mantle: 30 32 48; --ctp-surface0: 54 58 79; --ctp-surface1: 73 77 100; --ctp-surface2: 91 96 120; --ctp-text: 202 211 245; --ctp-subtext: 184 192 224; --ctp-accent: 198 160 246; color-scheme: dark; }
         :root[data-theme="mocha"] { --ctp-base: 30 30 46; --ctp-mantle: 24 24 37; --ctp-surface0: 49 50 68; --ctp-surface1: 69 71 90; --ctp-surface2: 88 91 112; --ctp-text: 205 214 244; --ctp-subtext: 186 194 222; --ctp-accent: 203 166 247; color-scheme: dark; }
-        /* Dracula, rebuilt on the real palette: bg #282a36, darker chrome #21222c,
-           current-line #44475a for surfaces, comment #6272a4 as the top surface,
-           foreground #f8f8f2 for text, purple #bd93f9 as the accent. */
         :root[data-theme="dracula"] { --ctp-base: 40 42 54; --ctp-mantle: 33 34 44; --ctp-surface0: 55 58 74; --ctp-surface1: 68 71 90; --ctp-surface2: 98 114 164; --ctp-text: 248 248 242; --ctp-subtext: 191 198 224; --ctp-accent: 189 147 249; color-scheme: dark; }
         :root[data-theme="atom-dark"] { --ctp-base: 29 31 33; --ctp-mantle: 40 42 46; --ctp-surface0: 55 59 65; --ctp-surface1: 76 81 88; --ctp-surface2: 97 104 112; --ctp-text: 197 200 198; --ctp-subtext: 180 183 180; --ctp-accent: 129 162 190; color-scheme: dark; }
         :root[data-theme="nord"] { --ctp-base: 46 52 64; --ctp-mantle: 59 66 82; --ctp-surface0: 67 76 94; --ctp-surface1: 76 86 106; --ctp-surface2: 97 104 112; --ctp-text: 216 222 233; --ctp-subtext: 229 233 240; --ctp-accent: 136 192 208; color-scheme: dark; }
@@ -52,11 +49,10 @@
 
         body { background-color: rgb(var(--ctp-base)); color: rgb(var(--ctp-text)); }
 
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background-color: rgb(var(--ctp-surface2)); border-radius: 10px; }
 
-        /* Keyboard focus stays visible everywhere */
         :focus-visible { outline: 2px solid rgb(var(--ctp-accent)); outline-offset: 2px; border-radius: 6px; }
 
         .circle-bg { fill: none; stroke: currentColor; stroke-width: 8; }
@@ -83,7 +79,7 @@
         body.compact-mode .min-h-\[350px\], body.compact-mode .min-h-\[300px\] { min-height: auto; }
         body.compact-mode .text-3xl { font-size: 1.25rem; }
 
-        /* Background Layers System */
+        /* Background Layers */
         .bg-layer {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -1; opacity: 0; visibility: hidden; pointer-events: none;
@@ -91,7 +87,6 @@
         }
         .bg-layer.active { opacity: 1; visibility: visible; }
 
-        /* Interactive Mesh Gradient Background */
         .mesh-gradient {
             background-color: rgb(var(--ctp-base));
             background-image:
@@ -109,7 +104,6 @@
             100% { transform: scale(1.1) translate(-5%, -5%); }
         }
 
-        /* Rising Bubbles */
         .bubble-container.active { pointer-events: auto; }
         .bubble {
             position: absolute; bottom: -80px;
@@ -132,7 +126,6 @@
             to { transform: translate(var(--sway, 0px), -120vh) rotate(360deg); }
         }
 
-        /* Burst particles when a bubble pops */
         .burst-particle {
             position: fixed; border-radius: 50%;
             background: rgb(var(--ctp-accent));
@@ -144,9 +137,7 @@
         .sched-row.is-now { background-color: rgb(var(--ctp-surface0) / 0.5); box-shadow: inset 3px 0 0 rgb(var(--ctp-accent)); }
         .pass-row td { background-color: rgb(var(--ctp-surface0) / 0.15); }
 
-        /* ---------------------------------------------------------------
-           Custom pointer
-           --------------------------------------------------------------- */
+        /* Custom Pointer */
         body.cursor-on, body.cursor-on * { cursor: none !important; }
 
         .cursor-el {
@@ -170,16 +161,13 @@
                         border-radius .14s ease, opacity .2s ease;
         }
 
-        /* shape: square */
         body[data-cursor="square"] #cursor-ring { border-radius: 5px; }
         body[data-cursor="square"] #cursor-dot { border-radius: 1px; }
         body[data-cursor="square"] .cursor-ripple { border-radius: 10px; }
 
-        /* shape: dot — one solid dot, no ring */
         body[data-cursor="dot"] #cursor-ring { opacity: 0; }
         body[data-cursor="dot"] #cursor-dot { width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px; }
 
-        /* shape: crosshair */
         body[data-cursor="crosshair"] #cursor-ring { width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; border-color: rgb(var(--ctp-accent) / 0.5); }
         body[data-cursor="crosshair"] #cursor-dot { width: 0; height: 0; margin: 0; background: none; }
         body[data-cursor="crosshair"] #cursor-dot::before,
@@ -189,14 +177,12 @@
         body[data-cursor="crosshair"] #cursor-dot::before { width: 1.5px; height: 26px; left: -0.75px; top: -13px; }
         body[data-cursor="crosshair"] #cursor-dot::after { height: 1.5px; width: 26px; top: -0.75px; left: -13px; }
 
-        /* shape: glow — soft blurred halo trailing a small dot */
         body[data-cursor="glow"] #cursor-ring {
             width: 46px; height: 46px; margin: -23px 0 0 -23px;
             border: none; background: rgb(var(--ctp-accent) / 0.35); filter: blur(9px);
         }
         body[data-cursor="glow"] #cursor-dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; }
 
-        /* hover + press states */
         body.cursor-hover #cursor-ring { width: 48px; height: 48px; margin: -24px 0 0 -24px; background-color: rgb(var(--ctp-accent) / 0.14); }
         body.cursor-hover[data-cursor="glow"] #cursor-ring { width: 62px; height: 62px; margin: -31px 0 0 -31px; background-color: rgb(var(--ctp-accent) / 0.45); }
         body.cursor-hover[data-cursor="crosshair"] #cursor-ring { width: 20px; height: 20px; margin: -10px 0 0 -10px; }
@@ -215,9 +201,7 @@
             pointer-events: none; z-index: 9998;
         }
 
-        /* ---------------------------------------------------------------
-           Toasts
-           --------------------------------------------------------------- */
+        /* Toasts */
         #toast-container {
             position: fixed; right: 1rem; bottom: 1rem; z-index: 80;
             display: flex; flex-direction: column-reverse; gap: 0.6rem;
@@ -234,7 +218,6 @@
         }
         .toast-timer { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--toast-tone, rgb(var(--ctp-accent))); opacity: 0.55; transform-origin: left center; }
 
-        /* Class links */
         .class-link { color: rgb(var(--ctp-accent)); text-decoration: underline; text-decoration-color: rgb(var(--ctp-accent) / 0.4); text-underline-offset: 3px; }
         .class-link:hover { text-decoration-color: rgb(var(--ctp-accent)); }
 
@@ -248,7 +231,6 @@
         .field-input:focus { border-color: rgb(var(--ctp-accent)); }
         .field-input::placeholder { color: rgb(var(--ctp-subtext) / 0.6); }
 
-        /* Bubble pop VFX */
         .pop-ring {
             position: fixed; border: 2px solid rgb(var(--ctp-surface2));
             border-radius: 50%; pointer-events: none; z-index: 5;
@@ -257,6 +239,11 @@
             position: fixed; border-radius: 50%; pointer-events: none; z-index: 5;
             background: rgb(var(--ctp-text) / 0.45);
             box-shadow: 0 0 6px rgb(var(--ctp-surface2) / 0.6);
+        }
+
+        /* Task Widget Transitions */
+        #tasks-widget {
+            will-change: height;
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -531,11 +518,11 @@
 
                 <p id="tracker-next" class="mt-6 text-xs text-ctp-subtext"></p>
 
-                <!-- Whole-day progress -->
-                <div id="day-progress-wrap" class="hidden w-full max-w-md mt-5">
+                <!-- Whole-day progress wrapper (Always shown, updated based on day state) -->
+                <div id="day-progress-wrap" class="w-full max-w-md mt-5">
                     <div class="flex justify-between items-baseline text-[11px] text-ctp-subtext mb-1">
                         <span id="day-progress-label">Day progress</span>
-                        <span id="day-progress-pct" class="tabular-nums font-mono"></span>
+                        <span id="day-progress-pct" class="tabular-nums font-mono">0%</span>
                     </div>
                     <div class="w-full bg-ctp-surface0 rounded-full h-1.5 overflow-hidden">
                         <div id="day-progress-bar" class="bg-ctp-accent/60 h-full rounded-full transition-all duration-1000 ease-linear" style="width: 0%"></div>
@@ -559,22 +546,24 @@
             </div>
 
             <!-- Tasks Widget -->
-            <div class="flex-1 bg-ctp-mantle/90 backdrop-blur-md rounded-2xl shadow-sm border border-ctp-surface0 overflow-hidden transition-colors flex flex-col min-h-[300px]">
-                <div class="px-6 py-4 border-b border-ctp-surface0 bg-ctp-surface0/20 flex justify-between items-center gap-3">
-                    <h3 class="font-semibold text-ctp-text">Tasks &amp; Goals</h3>
+            <div id="tasks-widget" class="flex-1 bg-ctp-mantle/90 backdrop-blur-md rounded-2xl shadow-sm border border-ctp-surface0 overflow-hidden transition-colors flex flex-col min-h-[300px]">
+                <div class="px-6 py-4 border-b border-ctp-surface0 bg-ctp-surface0/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <h3 class="font-semibold text-ctp-text">Tasks &amp; Planner</h3>
+                        <!-- Segmented Control for Daily / Weekly / Monthly -->
+                        <div role="tablist" aria-label="Task view" class="flex bg-ctp-surface0/60 p-1 rounded-lg border border-ctp-surface1 text-xs font-semibold">
+                            <button id="tv-btn-daily" onclick="setTaskView('daily')" class="px-2.5 py-1 rounded-md transition-colors">Daily</button>
+                            <button id="tv-btn-weekly" onclick="setTaskView('weekly')" class="px-2.5 py-1 rounded-md transition-colors">Weekly</button>
+                            <button id="tv-btn-monthly" onclick="setTaskView('monthly')" class="px-2.5 py-1 rounded-md transition-colors">Monthly</button>
+                        </div>
+                    </div>
                     <div class="flex items-center gap-3">
                         <span id="task-count" class="text-xs text-ctp-subtext tabular-nums"></span>
                         <button id="clear-done" onclick="clearCompleted()" class="hidden text-xs font-semibold text-ctp-subtext hover:text-ctp-accent transition-colors">Clear done</button>
                     </div>
                 </div>
-                <div class="p-4 flex flex-col gap-3 flex-1 overflow-hidden">
-                    <div class="flex gap-2">
-                        <input type="text" id="new-task-input" maxlength="120" aria-label="New task" class="flex-1 bg-ctp-surface0/50 border border-ctp-surface1 rounded-lg px-3 py-2 text-sm text-ctp-text focus:outline-none focus:border-ctp-accent transition-colors" placeholder="e.g. Study for period 3…" onkeydown="if(event.key === 'Enter') addTask()">
-                        <button onclick="addTask()" class="bg-ctp-surface1 hover:bg-ctp-surface2 text-ctp-text px-4 py-2 rounded-lg transition-colors text-sm font-semibold">Add</button>
-                    </div>
-                    <ul id="task-list" class="flex flex-col gap-2 mt-2 overflow-y-auto pr-1 pb-2 flex-1">
-                        <!-- Tasks injected here -->
-                    </ul>
+                <div id="task-widget-body" class="p-4 flex flex-col gap-3 flex-1">
+                    <!-- Tasks rendered dynamically -->
                 </div>
             </div>
 
@@ -635,7 +624,12 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-            <ul id="shortcut-list" class="text-sm divide-y divide-ctp-surface0/60"></ul>
+            <ul id="shortcut-list" class="text-sm divide-y divide-ctp-surface0/60">
+                <li class="py-2 flex justify-between"><span>Toggle Settings</span><kbd class="px-2 py-0.5 bg-ctp-surface0 rounded text-xs">S</kbd></li>
+                <li class="py-2 flex justify-between"><span>Toggle Fullscreen</span><kbd class="px-2 py-0.5 bg-ctp-surface0 rounded text-xs">F</kbd></li>
+                <li class="py-2 flex justify-between"><span>Toggle Sound</span><kbd class="px-2 py-0.5 bg-ctp-surface0 rounded text-xs">M</kbd></li>
+                <li class="py-2 flex justify-between"><span>Shortcuts Help</span><kbd class="px-2 py-0.5 bg-ctp-surface0 rounded text-xs">?</kbd></li>
+            </ul>
         </div>
     </div>
 
@@ -682,9 +676,13 @@
             sound: true,
             favClock: true,
             wakeLock: false,
-            // periodInfo[id] = { name, teacher, room, url }
             periodInfo: {},
-            tasks: []
+            taskView: 'daily',
+            tasks: [],
+            tasksByDate: {},
+            selectedMonthDate: null,
+            currentWeekOffset: 0,
+            currentMonthOffset: 0
         };
 
         let state = { ...defaultState };
@@ -695,8 +693,8 @@
 
         let currentActiveId = null;
         let compiledSchedules = {};
+        let editingPeriodId = null;
 
-        // Background runtime handles
         let globalAnimId = null;
         let bubbleIntervalId = null;
         let bgAbort = null;
@@ -708,17 +706,29 @@
             }
         }
 
-        // Shared by localStorage load and file import, so both get the same repair pass.
         function applyLoadedState(parsed) {
             if (!parsed || typeof parsed !== 'object') return false;
             state = { ...defaultState, ...state, ...parsed };
             if (!Array.isArray(state.tasks)) state.tasks = [];
             state.tasks = state.tasks
                 .filter(t => t && typeof t.text === 'string')
-                .map(t => ({ id: Number(t.id) || Date.now() + Math.random(), text: t.text.slice(0, 200), done: !!t.done }));
+                .map(t => ({ id: Number(t.id) || Date.now() + Math.random(), text: String(t.text).slice(0, 200), done: !!t.done }));
+            
+            if (!state.tasksByDate || typeof state.tasksByDate !== 'object') {
+                state.tasksByDate = {};
+            }
+            for (const dStr in state.tasksByDate) {
+                if (Array.isArray(state.tasksByDate[dStr])) {
+                    state.tasksByDate[dStr] = state.tasksByDate[dStr]
+                        .filter(t => t && typeof t.text === 'string')
+                        .map(t => ({ id: Number(t.id) || Date.now() + Math.random(), text: String(t.text).slice(0, 200), done: !!t.done }));
+                } else {
+                    delete state.tasksByDate[dStr];
+                }
+            }
+
             if (!state.periodInfo || typeof state.periodInfo !== 'object') state.periodInfo = {};
 
-            // v1 stored only renamed periods under customNames — carry those over.
             if (parsed.customNames && typeof parsed.customNames === 'object') {
                 for (const id in parsed.customNames) {
                     const existing = state.periodInfo[id] || {};
@@ -739,7 +749,6 @@
             };
         }
 
-        // Only http(s) links get through — no javascript:, no data:.
         function safeUrl(raw) {
             const v = (raw || '').trim();
             if (!v) return '';
@@ -748,13 +757,22 @@
                 return (u.protocol === 'http:' || u.protocol === 'https:') ? u.href : '';
             } catch (e) { return ''; }
         }
+
         function saveState() {
             try { localStorage.setItem('ecr_state', JSON.stringify(state)); } catch (e) {}
         }
 
-        // ---------------------------------------------------------------
-        // Time helpers
-        // ---------------------------------------------------------------
+        function escapeHTML(str) {
+            return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function getISODateString(d = new Date()) {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+
         function timeToDate(timeStr, baseDate = new Date()) {
             const d = new Date(baseDate);
             const [time, modifier] = timeStr.split(' ');
@@ -785,8 +803,6 @@
             return 'regular';
         }
 
-        function determineScheduleType(date) { return typeForDate(date); }
-
         function compileSchedules() {
             for (const key in rawSchedules) {
                 compiledSchedules[key] = rawSchedules[key]
@@ -798,9 +814,6 @@
             }
         }
 
-        // ---------------------------------------------------------------
-        // Settings / layout
-        // ---------------------------------------------------------------
         function updateUIState() {
             document.documentElement.setAttribute('data-theme', state.colorTheme);
             document.getElementById('toggle-p0').checked = state.hideP0;
@@ -814,6 +827,7 @@
             document.getElementById('select-bg').value = state.bg;
             document.getElementById('select-cursor').value = state.cursor;
             document.getElementById('select-alerts').value = state.alerts;
+
             document.getElementById('bg-hint').textContent =
                 state.bg === 'topology' ? 'Bulges toward your cursor.'
                 : state.bg === 'bubbles' ? 'Click or drag to pop them.'
@@ -839,6 +853,14 @@
             currentActiveId = null;
             buildScheduleTable();
             tick();
+        }
+
+        function updateThemeColorMeta() {
+            const meta = document.getElementById('meta-theme-color');
+            if (meta) {
+                const mantle = cssVar('--ctp-mantle');
+                meta.setAttribute('content', mantle ? `rgb(${mantle})` : '#1e1e2e');
+            }
         }
 
         function settingsOpen() {
@@ -884,8 +906,8 @@
         }
 
         function resetSettings() {
-            const { tasks, periodInfo } = state;
-            state = { ...defaultState, tasks, periodInfo };
+            const { tasks, tasksByDate, periodInfo } = state;
+            state = { ...defaultState, tasks, tasksByDate, periodInfo };
             saveState(); updateUIState();
             toast({ title: 'Settings reset', msg: 'Back to defaults. Your classes and tasks were kept.', tone: 'success' });
         }
@@ -904,10 +926,12 @@
 
             types.forEach(t => {
                 const btn = document.getElementById(`btn-${t}`);
-                const on = t === state.manualType;
-                btn.setAttribute('aria-selected', String(on));
-                btn.classList.toggle('text-ctp-base', on);
-                btn.classList.toggle('text-ctp-subtext', !on);
+                if (btn) {
+                    const on = t === state.manualType;
+                    btn.setAttribute('aria-selected', String(on));
+                    btn.classList.toggle('text-ctp-base', on);
+                    btn.classList.toggle('text-ctp-subtext', !on);
+                }
             });
         }
 
@@ -941,7 +965,7 @@
         }
 
         // ---------------------------------------------------------------
-        // Custom cursor
+        // Custom Cursor Logic
         // ---------------------------------------------------------------
         const cursorDot = document.getElementById('cursor-dot');
         const cursorRing = document.getElementById('cursor-ring');
@@ -949,7 +973,7 @@
         let ptX = -200, ptY = -200, ringX = -200, ringY = -200, dotX = -200, dotY = -200;
         let cursorBound = false;
 
-        const INTERACTIVE = 'button, a, select, input, label, textarea, [role="tab"], .bubble';
+        const INTERACTIVE = 'button, a, select, input, label, textarea, [role="tab"], .bubble, .day-cell';
 
         function cursorActive() { return finePointer && state.cursor !== 'none'; }
 
@@ -987,7 +1011,6 @@
 
         function cursorLoop() {
             cursorRaf = requestAnimationFrame(cursorLoop);
-            // The dot tracks the pointer almost exactly; the ring lags behind it.
             dotX += (ptX - dotX) * 0.55;
             dotY += (ptY - dotY) * 0.55;
             ringX += (ptX - ringX) * 0.16;
@@ -1008,7 +1031,6 @@
             ], { duration: 520, easing: 'cubic-bezier(.22,1,.36,1)' });
             a.onfinish = () => r.remove();
 
-            // four little sparks flicking outward
             for (let i = 0; i < 4; i++) {
                 const p = document.createElement('div');
                 p.className = 'cursor-spark';
@@ -1095,7 +1117,7 @@
         }
 
         // ---------------------------------------------------------------
-        // Alert sound (synthesized, no assets)
+        // Audio synthesis
         // ---------------------------------------------------------------
         let audioCtx = null;
 
@@ -1168,7 +1190,7 @@
         }
 
         // ---------------------------------------------------------------
-        // Period alerts
+        // Period Alerts Logic
         // ---------------------------------------------------------------
         const ALERT_SETS = { off: [], minimal: [5, 1], standard: [10, 5, 2, 1], frequent: [15, 10, 5, 2, 1] };
         let lastActiveKey = null;
@@ -1177,7 +1199,6 @@
 
         function handleAlerts(active, pEnd, upcoming, now, dayOver) {
             if (!active) {
-                // Only celebrate once the last bell has rung — not between periods.
                 if (lastActiveKey && dayOver && alertsPrimed && state.alerts !== 'off') {
                     toast({ title: 'That was the last bell', msg: 'Nothing else on the schedule today.', tone: 'success', duration: 7000 });
                     playChime('done');
@@ -1221,7 +1242,7 @@
         }
 
         // ---------------------------------------------------------------
-        // Ticking clock favicon
+        // Favicon Clock
         // ---------------------------------------------------------------
         const favCanvas = document.createElement('canvas');
         favCanvas.width = 64; favCanvas.height = 64;
@@ -1254,7 +1275,6 @@
             ctx.strokeStyle = `rgb(${rim})`;
             ctx.beginPath(); ctx.arc(32, 32, 28, 0, Math.PI * 2); ctx.stroke();
 
-            // period progress rides the rim
             if (pct > 0) {
                 ctx.lineCap = 'round';
                 ctx.strokeStyle = `rgb(${accent})`;
@@ -1289,7 +1309,7 @@
         }
 
         // ---------------------------------------------------------------
-        // Backgrounds
+        // Background Effects
         // ---------------------------------------------------------------
         function clearBackgrounds() {
             if (globalAnimId) cancelAnimationFrame(globalAnimId);
@@ -1320,8 +1340,6 @@
             return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
         }
 
-        /* --- Contour map: value-noise terrain drawn with marching squares.
-               Slowly drifts, and magnifies (bulges) around the pointer. --- */
         function mulberry32(a) {
             return function () {
                 a |= 0; a = a + 0x6D2B79F5 | 0;
@@ -1361,14 +1379,13 @@
             const fbm = makeNoise(20260917);
             const signal = bgAbort.signal;
 
-            const CELL = 15;              // grid spacing in CSS px
-            const SCALE = 1 / 330;        // noise units per px
+            const CELL = 15;
+            const SCALE = 1 / 330;
             const L_START = 0.10, L_STEP = 0.042, N_LEVELS = 20;
-            const RADIUS = 240;           // bulge radius in px
-            const STRENGTH = 0.55;        // 0 = flat, higher = more bulge
+            const RADIUS = 240;
+            const STRENGTH = 0.55;
 
             let w = 0, h = 0, cols = 0, rows = 0, field = null, dpr = 1;
-            // Pointer starts parked off-screen so nothing bulges until you move.
             let tx = -9999, ty = -9999, mx = -9999, my = -9999;
 
             function resize() {
@@ -1391,17 +1408,15 @@
 
             function frame(now) {
                 globalAnimId = requestAnimationFrame(frame);
-                if (now - last < 26) return;   // ~38fps ceiling
+                if (now - last < 26) return;
                 last = now;
 
-                // ease the bulge toward the pointer so it feels physical
                 if (mx < -5000) { mx = tx; my = ty; }
                 else { mx += (tx - mx) * 0.12; my += (ty - my) * 0.12; }
 
                 const t = reduceMotion ? 0 : (now - start) / 1000;
                 const driftX = t * 0.010, driftY = t * 0.0055;
 
-                // 1. sample the terrain, warping sample coords near the cursor
                 for (let j = 0; j < rows; j++) {
                     const y = j * CELL;
                     for (let i = 0; i < cols; i++) {
@@ -1420,7 +1435,6 @@
                     }
                 }
 
-                // 2. trace iso-lines
                 const far = new Path2D();
                 const near = new Path2D();
                 const R2 = (RADIUS + CELL) * (RADIUS + CELL);
@@ -1462,7 +1476,6 @@
                     }
                 }
 
-                // 3. paint
                 const text = cssVar('--ctp-text');
                 const accent = cssVar('--ctp-accent');
                 ctx.clearRect(0, 0, w, h);
@@ -1491,8 +1504,6 @@
             rs();
             window.addEventListener('resize', rs, { signal });
 
-            // One glyph step every STEP_MS instead of every frame — the original
-            // ran at 60 steps a second, which was hard to look at.
             const STEP_MS = 110;
             let lastStep = 0;
 
@@ -1506,8 +1517,6 @@
                 ctx.fillStyle = `rgb(${cssVar('--ctp-accent')} / 0.75)`;
                 ctx.font = '15pt monospace';
                 yPos.forEach((y, ind) => {
-                    // Only about a third of the columns advance on any given step,
-                    // so the rain drifts instead of marching in lockstep.
                     if (Math.random() > 0.38) return;
                     const text = String.fromCharCode(0x30A0 + Math.random() * 96);
                     ctx.fillText(text, ind * 20, y);
@@ -1523,7 +1532,6 @@
             ensureAudio();
             if (!audioCtx) return;
             const t = audioCtx.currentTime + 0.01;
-            // Big bubbles pop low, small ones pop high.
             const f0 = 1150 - Math.min(1, (size - 20) / 40) * 620;
 
             const o = audioCtx.createOscillator();
@@ -1537,7 +1545,6 @@
             o.connect(g); g.connect(audioCtx.destination);
             o.start(t); o.stop(t + 0.16);
 
-            // a tick of noise for the wet part of the pop
             const len = Math.floor(audioCtx.sampleRate * 0.05);
             const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
             const data = buf.getChannelData(0);
@@ -1561,7 +1568,6 @@
             window.addEventListener('pointercancel', () => { dragging = false; }, { signal });
 
             function createBurst(x, y, size = 36) {
-                // expanding film ring
                 const ring = document.createElement('div');
                 ring.className = 'pop-ring';
                 ring.style.width = `${size}px`;
@@ -1575,7 +1581,6 @@
                 ], { duration: 420, easing: 'cubic-bezier(.16,.8,.3,1)' });
                 ra.onfinish = () => ring.remove();
 
-                // droplets of film flicking outward, with a few accent sparks
                 const count = Math.round(size / 4) + 6;
                 for (let i = 0; i < count; i++) {
                     const p = document.createElement('div');
@@ -1603,13 +1608,12 @@
                 b.dataset.popped = '1';
                 const r = b.getBoundingClientRect();
 
-                // the skin stretches for a beat before it goes
                 const burst = b.animate(
                     [{ scale: 1, opacity: 0.95 }, { scale: 1.45, opacity: 0 }],
                     { duration: reduceMotion ? 1 : 150, easing: 'ease-out' }
                 );
                 burst.onfinish = () => b.remove();
-                setTimeout(() => b.remove(), 400);   // belt and braces
+                setTimeout(() => b.remove(), 400);
 
                 createBurst(r.left + r.width / 2, r.top + r.height / 2, r.width);
                 popSound(r.width);
@@ -1630,7 +1634,6 @@
                 b.style.animationDuration = `${Math.random() * 6 + 7}s`;
 
                 b.addEventListener('pointerdown', e => { e.preventDefault(); popBubble(b); });
-                // drag across a cluster to pop the whole lot
                 b.addEventListener('pointerenter', () => { if (dragging) popBubble(b); });
                 b.addEventListener('animationend', () => b.remove());
                 container.appendChild(b);
@@ -1659,6 +1662,7 @@
             window.addEventListener('resize', rs, { signal });
 
             function draw() {
+                globalAnimId = requestAnimationFrame(draw);
                 ctx.clearRect(0, 0, w, h);
                 const rawText = cssVar('--ctp-text');
                 const textColor = `rgb(${rawText})`;
@@ -1685,701 +1689,716 @@
                             ctx.beginPath();
                             ctx.moveTo(s.x, s.y);
                             ctx.lineTo(s2.x, s2.y);
-                            ctx.strokeStyle = `rgb(${rawText} / ${(1 - dist / cfg.dist) * 0.4})`;
-                            ctx.lineWidth = 0.5;
+                            ctx.strokeStyle = `rgb(${rawText} / ${1 - dist / cfg.dist})`;
+                            ctx.lineWidth = 0.6;
                             ctx.stroke();
                         }
                     }
                 }
-                globalAnimId = requestAnimationFrame(draw);
             }
-            draw();
+            globalAnimId = requestAnimationFrame(draw);
         }
 
         // ---------------------------------------------------------------
-        // Tasks
+        // Schedule Table Construction
         // ---------------------------------------------------------------
-        function renderTasks() {
-            const list = document.getElementById('task-list');
-            const done = state.tasks.filter(t => t.done).length;
-            document.getElementById('task-count').textContent = state.tasks.length ? `${done}/${state.tasks.length} done` : '';
-            document.getElementById('clear-done').classList.toggle('hidden', done === 0);
-
-            list.innerHTML = '';
-            if (state.tasks.length === 0) {
-                list.innerHTML = `<li class="text-xs text-ctp-subtext text-center py-4">Nothing tracked yet. Add what you want to finish today.</li>`;
-                return;
-            }
-            state.tasks.forEach(task => {
-                const li = document.createElement('li');
-                li.className = "flex items-center justify-between bg-ctp-surface0/30 p-2.5 rounded-lg border border-ctp-surface0/50 hover:border-ctp-surface1 transition-colors";
-                li.innerHTML = `
-                    <label class="flex items-center gap-3 overflow-hidden cursor-pointer">
-                        <input type="checkbox" ${task.done ? 'checked' : ''} onchange="toggleTask(${task.id})" class="w-4 h-4 accent-ctp-accent cursor-pointer rounded border-ctp-surface2 bg-ctp-surface0 flex-shrink-0">
-                        <span class="text-sm truncate ${task.done ? 'line-through text-ctp-subtext' : 'text-ctp-text'}">${escapeHTML(task.text)}</span>
-                    </label>
-                    <button onclick="deleteTask(${task.id})" title="Delete task" class="text-ctp-subtext hover:text-red-400 transition-colors p-1 flex-shrink-0">
-                        <span class="sr-only">Delete task</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    </button>
-                `;
-                list.appendChild(li);
-            });
-        }
-        function addTask() {
-            const input = document.getElementById('new-task-input');
-            const text = input.value.trim();
-            if (text) {
-                state.tasks.push({ id: Date.now(), text, done: false });
-                input.value = '';
-                saveState(); renderTasks();
-            }
-            input.focus();
-        }
-        function toggleTask(id) {
-            const task = state.tasks.find(t => t.id === id);
-            if (task) { task.done = !task.done; saveState(); renderTasks(); }
-        }
-        function deleteTask(id) {
-            const idx = state.tasks.findIndex(t => t.id === id);
-            if (idx === -1) return;
-            const [removed] = state.tasks.splice(idx, 1);
-            saveState(); renderTasks();
-            toast({
-                title: 'Task deleted', msg: removed.text, tone: 'info', duration: 6000,
-                action: { label: 'Undo', fn: () => { state.tasks.splice(idx, 0, removed); saveState(); renderTasks(); } }
-            });
-        }
-        function clearCompleted() {
-            const removed = state.tasks.filter(t => t.done);
-            if (!removed.length) return;
-            const snapshot = [...state.tasks];
-            state.tasks = state.tasks.filter(t => !t.done);
-            saveState(); renderTasks();
-            toast({
-                title: `Cleared ${removed.length} finished task${removed.length === 1 ? '' : 's'}`,
-                tone: 'success', duration: 6000,
-                action: { label: 'Undo', fn: () => { state.tasks = snapshot; saveState(); renderTasks(); } }
-            });
-        }
-        function escapeHTML(str) {
-            return String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
-        }
-
-        // ---------------------------------------------------------------
-        // Schedule table
-        // ---------------------------------------------------------------
-        function minutesBetween(a, b) { return Math.round((b - a) / 60000); }
-
         function buildScheduleTable() {
-            const tbody = document.getElementById('schedule-body');
-            tbody.innerHTML = '';
-
+            const body = document.getElementById('schedule-body');
+            body.innerHTML = '';
             const now = new Date();
-            const type = determineScheduleType(now);
-            const periods = compiledSchedules[type] || [];
-            const label = type === 'common' ? 'Common planning day' : type === 'regular' ? 'Regular day' : '';
+            const schedType = typeForDate(now);
+            const periods = compiledSchedules[schedType] || [];
 
-            document.getElementById('schedule-title').innerText = type === 'none' ? 'No school today' : 'Today’s schedule';
-            document.getElementById('schedule-meta').innerText = label;
+            document.getElementById('schedule-title').textContent =
+                schedType === 'regular' ? "Today's Schedule (Regular)" :
+                schedType === 'common' ? "Today's Schedule (Common Planning)" :
+                "Today's Schedule (No Classes)";
+            
+            document.getElementById('schedule-meta').textContent = `${periods.length} period${periods.length === 1 ? '' : 's'}`;
 
             if (periods.length === 0) {
-                tbody.innerHTML = `<tr><td class="p-4 text-center text-ctp-subtext text-sm">Nothing scheduled. Pick Regular or Common above to preview a school day.</td></tr>`;
+                body.innerHTML = `<tr><td colspan="3" class="px-6 py-8 text-center text-sm text-ctp-subtext">No classes scheduled for today.</td></tr>`;
                 return;
             }
 
-            periods.forEach((p, i) => {
-                const mins = minutesBetween(timeToDate(p.start, now), timeToDate(p.end, now));
+            periods.forEach(p => {
                 const tr = document.createElement('tr');
                 tr.id = `row-${p.id}`;
-                tr.className = "sched-row transition-colors duration-300";
-                const safeName = escapeHTML(p.name);
-                const nameEl = p.url
-                    ? `<a href="${escapeHTML(p.url)}" target="_blank" rel="noopener noreferrer" class="class-link font-medium truncate max-w-[130px] sm:max-w-xs" title="${escapeHTML(p.url)}">${safeName}</a>`
-                    : `<span class="font-medium truncate max-w-[130px] sm:max-w-xs">${safeName}</span>`;
-
-                const subBits = [p.room, p.teacher].filter(Boolean).map(escapeHTML);
-                const subLine = subBits.length
-                    ? `<p class="text-[11px] text-ctp-subtext mt-0.5 truncate max-w-[160px] sm:max-w-xs">${subBits.join(' · ')}</p>` : '';
-
-                let nameCell = `<span class="font-medium">${safeName}</span>${subLine}`;
-                if (p.editable) {
-                    nameCell = `
-                        <div class="group">
-                            <div class="flex items-center gap-2">
-                                ${nameEl}
-                                <button onclick="openPeriodEditor('${p.id}')" title="Edit ${safeName}" class="text-ctp-subtext opacity-50 group-hover:opacity-100 focus-visible:opacity-100 hover:text-ctp-accent transition-all flex-shrink-0"><span class="sr-only">Edit class details</span><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
-                            </div>
-                            ${subLine}
-                        </div>
-                    `;
+                tr.className = 'sched-row transition-colors';
+                
+                let titleHtml = escapeHTML(p.name);
+                if (p.url) {
+                    titleHtml = `<a href="${escapeHTML(p.url)}" target="_blank" rel="noopener noreferrer" class="class-link font-medium" onclick="event.stopPropagation()">${escapeHTML(p.name)}</a>`;
                 }
+
+                let subHtml = [];
+                if (p.teacher) subHtml.push(`<span>${escapeHTML(p.teacher)}</span>`);
+                if (p.room) subHtml.push(`<span>Room ${escapeHTML(p.room)}</span>`);
 
                 tr.innerHTML = `
-                    <td class="p-3 sm:p-4 text-sm w-1/2">${nameCell}</td>
-                    <td class="p-3 sm:p-4 text-sm text-right text-ctp-subtext tabular-nums font-medium">
+                    <td class="py-3 px-6 text-sm">
+                        <div class="font-semibold text-ctp-text flex items-center gap-2">
+                            ${titleHtml}
+                            ${p.editable ? `<button onclick="openPeriodEditor('${p.id}')" class="text-xs text-ctp-subtext hover:text-ctp-accent transition-colors p-1" title="Edit class info">✎</button>` : ''}
+                        </div>
+                        ${subHtml.length > 0 ? `<div class="text-xs text-ctp-subtext flex items-center gap-2 mt-0.5">${subHtml.join(' • ')}</div>` : ''}
+                    </td>
+                    <td class="py-3 px-6 text-right text-xs font-mono text-ctp-subtext tabular-nums whitespace-nowrap">
                         ${p.start} – ${p.end}
-                        <span class="block text-[11px] opacity-70">${mins} min</span>
                     </td>
                 `;
-                tbody.appendChild(tr);
-
-                // Passing time between bells, so the gaps aren't invisible
-                const nextP = periods[i + 1];
-                if (nextP) {
-                    const gap = minutesBetween(timeToDate(p.end, now), timeToDate(nextP.start, now));
-                    if (gap > 0) {
-                        const gapRow = document.createElement('tr');
-                        gapRow.className = 'pass-row';
-                        gapRow.innerHTML = `<td colspan="2" class="px-3 sm:px-4 py-1 text-[10px] tracking-wider text-ctp-subtext/70">${gap} min passing</td>`;
-                        tbody.appendChild(gapRow);
-                    }
-                }
+                body.appendChild(tr);
             });
-
-            if (!Object.keys(state.periodInfo).length) {
-                const hint = document.createElement('tr');
-                hint.innerHTML = `<td colspan="2" class="px-4 py-3 text-xs text-ctp-subtext text-center">Use the pencil on a period to set your class name, teacher, room and a link.</td>`;
-                tbody.appendChild(hint);
-            }
-        }
-
-        function refreshRowStates(activeId) {
-            const now = new Date();
-            const periods = compiledSchedules[determineScheduleType(now)] || [];
-            periods.forEach(p => {
-                const row = document.getElementById(`row-${p.id}`);
-                if (!row) return;
-                const isNow = p.id === activeId;
-                row.classList.toggle('is-now', isNow);
-                row.classList.toggle('is-past', !isNow && now >= timeToDate(p.end, now));
-            });
-            const row = activeId ? document.getElementById(`row-${activeId}`) : null;
-            const scroller = document.getElementById('schedule-scroll');
-            if (row && scroller && scroller.scrollHeight > scroller.clientHeight) {
-                scroller.scrollTop = row.offsetTop - scroller.clientHeight / 2 + row.clientHeight / 2;
-            }
         }
 
         // ---------------------------------------------------------------
-        // Class details editor
+        // Period Editor Modal
         // ---------------------------------------------------------------
-        let editingPeriodId = null;
-
-        function rawPeriod(id) {
-            return rawSchedules.regular.find(p => p.id === id) || rawSchedules.common.find(p => p.id === id) || null;
-        }
-
-        function periodModalOpen() { return !document.getElementById('period-modal').classList.contains('hidden'); }
-
         function openPeriodEditor(id) {
-            const raw = rawPeriod(id);
-            if (!raw) return;
             editingPeriodId = id;
             const d = periodDetails(id);
-
+            document.getElementById('period-modal-title').textContent = `Edit ${id.toUpperCase()}`;
+            document.getElementById('period-modal-slot').textContent = `Set custom class name, teacher, room, and link.`;
             document.getElementById('pm-name').value = d.name;
             document.getElementById('pm-teacher').value = d.teacher;
             document.getElementById('pm-room').value = d.room;
-            document.getElementById('pm-url').value = (state.periodInfo[id] || {}).url || '';
+            document.getElementById('pm-url').value = d.url;
             document.getElementById('pm-url-error').classList.add('hidden');
-            document.getElementById('period-modal-title').innerText = d.name || raw.defaultName;
-            document.getElementById('period-modal-slot').innerText = `${raw.defaultName} · ${raw.start} – ${raw.end}`;
-
-            const m = document.getElementById('period-modal');
-            m.classList.remove('hidden');
-            m.classList.add('flex');
-            setTimeout(() => document.getElementById('pm-name').focus(), 30);
+            
+            const modal = document.getElementById('period-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
         }
 
         function closePeriodEditor() {
-            const m = document.getElementById('period-modal');
-            m.classList.add('hidden');
-            m.classList.remove('flex');
             editingPeriodId = null;
+            const modal = document.getElementById('period-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
         }
 
         function savePeriodDetails() {
             if (!editingPeriodId) return;
-            const id = editingPeriodId;
-            const raw = rawPeriod(id);
-            const name = document.getElementById('pm-name').value.trim().slice(0, 40);
-            const teacher = document.getElementById('pm-teacher').value.trim().slice(0, 40);
-            const room = document.getElementById('pm-room').value.trim().slice(0, 12);
-            const urlRaw = document.getElementById('pm-url').value.trim();
+            const name = document.getElementById('pm-name').value.trim();
+            const teacher = document.getElementById('pm-teacher').value.trim();
+            const room = document.getElementById('pm-room').value.trim();
+            const rawUrl = document.getElementById('pm-url').value.trim();
 
-            let url = safeUrl(urlRaw);
-            if (urlRaw && !url) {
-                // Let people type "classroom.google.com/x" without the scheme.
-                url = safeUrl('https://' + urlRaw.replace(/^\/+/, ''));
-            }
-            const err = document.getElementById('pm-url-error');
-            if (urlRaw && !url) {
-                err.classList.remove('hidden');
-                document.getElementById('pm-url').focus();
+            if (rawUrl && !safeUrl(rawUrl)) {
+                document.getElementById('pm-url-error').classList.remove('hidden');
                 return;
             }
-            err.classList.add('hidden');
 
-            const info = {};
-            if (name && name !== raw.defaultName) info.name = name;
-            if (teacher) info.teacher = teacher;
-            if (room) info.room = room;
-            if (url) info.url = url;
-
-            if (Object.keys(info).length) state.periodInfo[id] = info;
-            else delete state.periodInfo[id];
-
+            state.periodInfo[editingPeriodId] = { name, teacher, room, url: rawUrl };
             saveState();
+            compileSchedules();
+            buildScheduleTable();
+            tick();
             closePeriodEditor();
-            updateUIState();
-            toast({ title: `${name || raw.defaultName} saved`, tone: 'success', duration: 3000 });
+            toast({ title: 'Class updated', tone: 'success', duration: 2500 });
         }
 
         function clearPeriodDetails() {
             if (!editingPeriodId) return;
-            const raw = rawPeriod(editingPeriodId);
             delete state.periodInfo[editingPeriodId];
             saveState();
+            compileSchedules();
+            buildScheduleTable();
+            tick();
             closePeriodEditor();
-            updateUIState();
-            toast({ title: `${raw.defaultName} reset`, tone: 'info', duration: 3000 });
+            toast({ title: 'Reset to default', tone: 'info', duration: 2500 });
         }
 
         // ---------------------------------------------------------------
-        // Live tracker
+        // Tasks & Planner Engine
         // ---------------------------------------------------------------
-        let lastLiveAnnounce = '';
+        function setTaskView(view) {
+            if (state.taskView === view) return;
 
-        function updateDayProgress(now, periods) {
-            const wrap = document.getElementById('day-progress-wrap');
-            if (!periods.length) { wrap.classList.add('hidden'); return; }
-            wrap.classList.remove('hidden');
+            const widget = document.getElementById('tasks-widget');
+            const oldHeight = widget.offsetHeight;
 
-            const dayStart = timeToDate(periods[0].start, now);
-            const dayEnd = timeToDate(periods[periods.length - 1].end, now);
-            const pct = Math.min(100, Math.max(0, ((now - dayStart) / (dayEnd - dayStart)) * 100));
+            state.taskView = view;
+            saveState();
 
-            document.getElementById('day-progress-bar').style.width = `${pct}%`;
-            document.getElementById('day-progress-pct').innerText = `${Math.round(pct)}%`;
-            document.getElementById('day-progress-label').innerText =
-                now < dayStart ? `First bell at ${periods[0].start}`
-                : now >= dayEnd ? 'School day finished'
-                : `Out at ${periods[periods.length - 1].end}`;
+            renderTasks();
+
+            const newHeight = widget.offsetHeight;
+
+            if (!reduceMotion && oldHeight !== newHeight) {
+                widget.style.height = `${oldHeight}px`;
+                widget.style.transition = 'height 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                widget.offsetHeight; // force reflow
+                widget.style.height = `${newHeight}px`;
+
+                setTimeout(() => {
+                    widget.style.height = '';
+                    widget.style.transition = '';
+                }, 300);
+            }
         }
 
-        let lastMetaKey = '';
-        function renderTrackerMeta(p) {
-            const key = `${p.id}|${p.room}|${p.teacher}|${p.url}`;
-            if (key === lastMetaKey) return;      // only touch the DOM when it actually changes
-            lastMetaKey = key;
-
-            const el = document.getElementById('tracker-period-meta');
-            const bits = [];
-            if (p.room) bits.push(`<span class="inline-flex items-center gap-1"><svg class="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 20V6l8-3 8 3v14M9 20v-5h6v5"></path></svg>${escapeHTML(p.room)}</span>`);
-            if (p.teacher) bits.push(`<span>${escapeHTML(p.teacher)}</span>`);
-            if (p.url) bits.push(`<a href="${escapeHTML(p.url)}" target="_blank" rel="noopener noreferrer" class="class-link inline-flex items-center gap-1">Open class<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5M19 5l-7 7M18 14v5H5V6h5"></path></svg></a>`);
-            el.innerHTML = bits.join('<span class="opacity-40">·</span>');
+        function updateTaskViewButtons() {
+            ['daily', 'weekly', 'monthly'].forEach(v => {
+                const btn = document.getElementById(`tv-btn-${v}`);
+                if (btn) {
+                    const active = state.taskView === v;
+                    btn.classList.toggle('bg-ctp-accent', active);
+                    btn.classList.toggle('text-ctp-base', active);
+                    btn.classList.toggle('text-ctp-subtext', !active);
+                    btn.classList.toggle('hover:text-ctp-text', !active);
+                }
+            });
         }
 
+        function renderTasks() {
+            updateTaskViewButtons();
+            const body = document.getElementById('task-widget-body');
+            const clearBtn = document.getElementById('clear-done');
+            const countSpan = document.getElementById('task-count');
+
+            if (state.taskView === 'daily') {
+                renderDailyTasks(body, clearBtn, countSpan);
+            } else if (state.taskView === 'weekly') {
+                renderWeeklyTasks(body, clearBtn, countSpan);
+            } else if (state.taskView === 'monthly') {
+                renderMonthlyTasks(body, clearBtn, countSpan);
+            }
+        }
+
+        // --- Daily View ---
+        function renderDailyTasks(container, clearBtn, countSpan) {
+            const tasks = state.tasks || [];
+            const doneCount = tasks.filter(t => t.done).length;
+
+            countSpan.textContent = `${doneCount}/${tasks.length} done`;
+            clearBtn.classList.toggle('hidden', doneCount === 0);
+
+            container.innerHTML = `
+                <div class="flex gap-2">
+                    <input type="text" id="new-task-input" maxlength="120" class="flex-1 bg-ctp-surface0/50 border border-ctp-surface1 rounded-lg px-3 py-2 text-sm text-ctp-text focus:outline-none focus:border-ctp-accent transition-colors" placeholder="e.g. Study for period 3…" onkeydown="if(event.key==='Enter') addTask()">
+                    <button onclick="addTask()" class="bg-ctp-surface1 hover:bg-ctp-surface2 text-ctp-text px-4 py-2 rounded-lg transition-colors text-sm font-semibold">Add</button>
+                </div>
+                <ul id="task-list" class="flex flex-col gap-2 mt-2 overflow-y-auto max-h-[320px] pr-1">
+                    ${tasks.length === 0 ? `<li class="text-xs text-ctp-subtext text-center py-6">No tasks added for today.</li>` : ''}
+                    ${tasks.map(t => `
+                        <li class="flex items-center justify-between p-2.5 bg-ctp-surface0/30 rounded-lg border border-ctp-surface0 hover:border-ctp-surface1 transition-colors group">
+                            <label class="flex items-center gap-2.5 flex-1 min-w-0 cursor-pointer">
+                                <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask(${t.id})" class="rounded border-ctp-surface1 text-ctp-accent focus:ring-ctp-accent">
+                                <span class="text-sm text-ctp-text truncate ${t.done ? 'line-through text-ctp-subtext' : ''}">${escapeHTML(t.text)}</span>
+                            </label>
+                            <button onclick="deleteTask(${t.id})" class="opacity-0 group-hover:opacity-100 p-1 text-ctp-subtext hover:text-ctp-accent transition-all" title="Delete task">✕</button>
+                        </li>
+                    `).join('')}
+                </ul>
+            `;
+        }
+
+        function addTask() {
+            const input = document.getElementById('new-task-input');
+            if (!input) return;
+            const text = input.value.trim();
+            if (!text) return;
+            state.tasks.push({ id: Date.now(), text, done: false });
+            saveState();
+            renderTasks();
+        }
+
+        function toggleTask(id) {
+            const t = state.tasks.find(x => x.id === id);
+            if (t) { t.done = !t.done; saveState(); renderTasks(); }
+        }
+
+        function deleteTask(id) {
+            state.tasks = state.tasks.filter(x => x.id !== id);
+            saveState();
+            renderTasks();
+        }
+
+        function clearCompleted() {
+            if (state.taskView === 'daily') {
+                state.tasks = state.tasks.filter(x => !x.done);
+            } else {
+                for (const d in state.tasksByDate) {
+                    state.tasksByDate[d] = state.tasksByDate[d].filter(x => !x.done);
+                }
+            }
+            saveState();
+            renderTasks();
+            toast({ title: 'Completed tasks cleared', tone: 'info', duration: 2000 });
+        }
+
+        // --- Weekly View ---
+        function renderWeeklyTasks(container, clearBtn, countSpan) {
+            const offset = state.currentWeekOffset || 0;
+            const todayISO = getISODateString();
+
+            const now = new Date();
+            const currentDay = now.getDay();
+            const diffToMon = (currentDay === 0 ? -6 : 1 - currentDay) + (offset * 7);
+            const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMon);
+
+            const weekDays = [];
+            let totalTasks = 0;
+            let totalDone = 0;
+
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + i);
+                const iso = getISODateString(d);
+                const dayTasks = state.tasksByDate[iso] || [];
+                totalTasks += dayTasks.length;
+                totalDone += dayTasks.filter(t => t.done).length;
+
+                weekDays.push({
+                    date: d,
+                    iso: iso,
+                    dayName: d.toLocaleDateString(undefined, { weekday: 'short' }),
+                    dateNum: d.toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' }),
+                    isToday: iso === todayISO,
+                    tasks: dayTasks
+                });
+            }
+
+            countSpan.textContent = `${totalDone}/${totalTasks} done`;
+            clearBtn.classList.toggle('hidden', totalDone === 0);
+
+            const weekStartStr = weekDays[0].date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+            const weekEndStr = weekDays[6].date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+
+            container.innerHTML = `
+                <div class="flex items-center justify-between bg-ctp-surface0/40 p-2 rounded-lg text-xs font-semibold">
+                    <button onclick="navigateWeek(-1)" class="px-2 py-1 rounded bg-ctp-surface1 hover:bg-ctp-surface2 transition-colors">◄ Prev</button>
+                    <span class="text-ctp-text">${weekStartStr} – ${weekEndStr}</span>
+                    <div class="flex gap-1">
+                        ${offset !== 0 ? `<button onclick="navigateWeek(0, true)" class="px-2 py-1 rounded bg-ctp-accent/20 text-ctp-accent hover:bg-ctp-accent/30 transition-colors">Today</button>` : ''}
+                        <button onclick="navigateWeek(1)" class="px-2 py-1 rounded bg-ctp-surface1 hover:bg-ctp-surface2 transition-colors">Next ►</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 overflow-x-auto pb-1">
+                    ${weekDays.map(wd => `
+                        <div class="flex flex-col bg-ctp-surface0/20 border ${wd.isToday ? 'border-ctp-accent shadow-sm' : 'border-ctp-surface1'} rounded-xl p-2.5 min-w-[130px]">
+                            <div class="flex items-center justify-between mb-2 border-b border-ctp-surface0 pb-1.5">
+                                <span class="text-xs font-bold ${wd.isToday ? 'text-ctp-accent' : 'text-ctp-text'}">${wd.dayName} ${wd.dateNum}</span>
+                                <span class="text-[10px] text-ctp-subtext">${wd.tasks.length}</span>
+                            </div>
+                            <div class="flex gap-1 mb-2">
+                                <input type="text" id="week-input-${wd.iso}" maxlength="100" class="w-full bg-ctp-surface0/70 border border-ctp-surface1 rounded px-2 py-1 text-xs text-ctp-text focus:outline-none focus:border-ctp-accent" placeholder="+ Task" onkeydown="if(event.key==='Enter') addDateTask('${wd.iso}', 'week-input-${wd.iso}')">
+                            </div>
+                            <ul class="flex flex-col gap-1.5 flex-1 overflow-y-auto max-h-[180px]">
+                                ${wd.tasks.map(t => `
+                                    <li class="flex items-start justify-between p-1.5 bg-ctp-surface0/40 rounded border border-ctp-surface0 group">
+                                        <label class="flex items-start gap-1.5 flex-1 min-w-0 cursor-pointer">
+                                            <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleDateTask('${wd.iso}', ${t.id})" class="mt-0.5 rounded border-ctp-surface1 text-ctp-accent">
+                                            <span class="text-xs text-ctp-text break-all ${t.done ? 'line-through text-ctp-subtext' : ''}">${escapeHTML(t.text)}</span>
+                                        </label>
+                                        <button onclick="deleteDateTask('${wd.iso}', ${t.id})" class="opacity-0 group-hover:opacity-100 text-[10px] text-ctp-subtext hover:text-ctp-accent px-1">✕</button>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function navigateWeek(delta, reset = false) {
+            state.currentWeekOffset = reset ? 0 : (state.currentWeekOffset || 0) + delta;
+            saveState();
+            renderTasks();
+        }
+
+        // --- Monthly View ---
+        function renderMonthlyTasks(container, clearBtn, countSpan) {
+            const offset = state.currentMonthOffset || 0;
+            const todayISO = getISODateString();
+
+            const baseDate = new Date();
+            baseDate.setMonth(baseDate.getMonth() + offset);
+            const year = baseDate.getFullYear();
+            const month = baseDate.getMonth();
+
+            const monthName = baseDate.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const totalDays = new Date(year, month + 1, 0).getDate();
+
+            if (!state.selectedMonthDate) {
+                state.selectedMonthDate = todayISO;
+            }
+
+            let totalTasks = 0;
+            let totalDone = 0;
+            for (const dStr in state.tasksByDate) {
+                const arr = state.tasksByDate[dStr] || [];
+                totalTasks += arr.length;
+                totalDone += arr.filter(t => t.done).length;
+            }
+
+            countSpan.textContent = `${totalDone}/${totalTasks} done`;
+            clearBtn.classList.toggle('hidden', totalDone === 0);
+
+            let calendarCellsHtml = '';
+            for (let i = 0; i < firstDayIndex; i++) {
+                calendarCellsHtml += `<div class="p-2 opacity-20"></div>`;
+            }
+
+            for (let day = 1; day <= totalDays; day++) {
+                const dateObj = new Date(year, month, day);
+                const iso = getISODateString(dateObj);
+                const isToday = iso === todayISO;
+                const isSelected = iso === state.selectedMonthDate;
+                const tasks = state.tasksByDate[iso] || [];
+
+                calendarCellsHtml += `
+                    <button onclick="selectMonthDate('${iso}')" class="day-cell flex flex-col items-center justify-between p-2 rounded-lg border text-xs transition-all ${
+                        isSelected ? 'bg-ctp-accent/20 border-ctp-accent text-ctp-text font-bold ring-1 ring-ctp-accent' :
+                        isToday ? 'bg-ctp-surface0/60 border-ctp-accent text-ctp-accent' :
+                        'bg-ctp-surface0/30 border-ctp-surface0 text-ctp-subtext hover:bg-ctp-surface0/60'
+                    }">
+                        <span>${day}</span>
+                        ${tasks.length > 0 ? `
+                            <div class="flex items-center gap-0.5 mt-1">
+                                <span class="w-1.5 h-1.5 rounded-full ${tasks.every(t => t.done) ? 'bg-ctp-subtext' : 'bg-ctp-accent'}"></span>
+                                <span class="text-[9px] font-mono leading-none">${tasks.length}</span>
+                            </div>
+                        ` : '<span class="h-2"></span>'}
+                    </button>
+                `;
+            }
+
+            const selectedTasks = state.tasksByDate[state.selectedMonthDate] || [];
+            const selDateObj = new Date(state.selectedMonthDate + 'T00:00:00');
+            const selFormattedStr = selDateObj.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+
+            container.innerHTML = `
+                <div class="flex items-center justify-between bg-ctp-surface0/40 p-2 rounded-lg text-xs font-semibold">
+                    <button onclick="navigateMonth(-1)" class="px-2 py-1 rounded bg-ctp-surface1 hover:bg-ctp-surface2 transition-colors">◄ Prev</button>
+                    <span class="text-ctp-text font-bold text-sm">${monthName}</span>
+                    <div class="flex gap-1">
+                        ${offset !== 0 ? `<button onclick="navigateMonth(0, true)" class="px-2 py-1 rounded bg-ctp-accent/20 text-ctp-accent hover:bg-ctp-accent/30 transition-colors">Today</button>` : ''}
+                        <button onclick="navigateMonth(1)" class="px-2 py-1 rounded bg-ctp-surface1 hover:bg-ctp-surface2 transition-colors">Next ►</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-7 gap-1 text-center text-[11px] font-semibold text-ctp-subtext py-1">
+                    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                </div>
+
+                <div class="grid grid-cols-7 gap-1">
+                    ${calendarCellsHtml}
+                </div>
+
+                <!-- Expandable Selected Day Panel -->
+                <div class="mt-3 p-3 bg-ctp-surface0/30 rounded-xl border border-ctp-surface1 flex flex-col gap-2">
+                    <div class="flex items-center justify-between border-b border-ctp-surface0 pb-2">
+                        <span class="text-xs font-bold text-ctp-text">Tasks for ${selFormattedStr}</span>
+                        <span class="text-xs text-ctp-subtext">${selectedTasks.filter(t=>t.done).length}/${selectedTasks.length} done</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="month-day-input" maxlength="120" class="flex-1 bg-ctp-surface0/70 border border-ctp-surface1 rounded-lg px-3 py-1.5 text-xs text-ctp-text focus:outline-none focus:border-ctp-accent" placeholder="Add task for ${selFormattedStr}…" onkeydown="if(event.key==='Enter') addDateTask('${state.selectedMonthDate}', 'month-day-input')">
+                        <button onclick="addDateTask('${state.selectedMonthDate}', 'month-day-input')" class="bg-ctp-surface1 hover:bg-ctp-surface2 text-ctp-text px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors">Add</button>
+                    </div>
+                    <ul class="flex flex-col gap-1.5 max-h-[160px] overflow-y-auto mt-1">
+                        ${selectedTasks.length === 0 ? `<li class="text-xs text-ctp-subtext text-center py-3">No tasks scheduled for this day.</li>` : ''}
+                        ${selectedTasks.map(t => `
+                            <li class="flex items-center justify-between p-2 bg-ctp-surface0/40 rounded-lg border border-ctp-surface0 group">
+                                <label class="flex items-center gap-2 flex-1 min-w-0 cursor-pointer">
+                                    <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleDateTask('${state.selectedMonthDate}', ${t.id})" class="rounded border-ctp-surface1 text-ctp-accent">
+                                    <span class="text-xs text-ctp-text truncate ${t.done ? 'line-through text-ctp-subtext' : ''}">${escapeHTML(t.text)}</span>
+                                </label>
+                                <button onclick="deleteDateTask('${state.selectedMonthDate}', ${t.id})" class="opacity-0 group-hover:opacity-100 p-1 text-xs text-ctp-subtext hover:text-ctp-accent transition-all">✕</button>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        function selectMonthDate(iso) {
+            state.selectedMonthDate = iso;
+            saveState();
+            renderTasks();
+        }
+
+        function navigateMonth(delta, reset = false) {
+            state.currentMonthOffset = reset ? 0 : (state.currentMonthOffset || 0) + delta;
+            saveState();
+            renderTasks();
+        }
+
+        function addDateTask(dateStr, inputId) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const text = input.value.trim();
+            if (!text) return;
+
+            if (!state.tasksByDate[dateStr]) state.tasksByDate[dateStr] = [];
+            state.tasksByDate[dateStr].push({ id: Date.now(), text, done: false });
+            saveState();
+            renderTasks();
+        }
+
+        function toggleDateTask(dateStr, id) {
+            const list = state.tasksByDate[dateStr];
+            if (list) {
+                const t = list.find(x => x.id === id);
+                if (t) { t.done = !t.done; saveState(); renderTasks(); }
+            }
+        }
+
+        function deleteDateTask(dateStr, id) {
+            if (state.tasksByDate[dateStr]) {
+                state.tasksByDate[dateStr] = state.tasksByDate[dateStr].filter(x => x.id !== id);
+                saveState();
+                renderTasks();
+            }
+        }
+
+        // ---------------------------------------------------------------
+        // Main Loop (tick)
+        // ---------------------------------------------------------------
         function tick() {
             const now = new Date();
-            document.getElementById('current-date-display').innerText =
-                now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
-            document.getElementById('current-time-display').innerText =
-                now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
 
-            const type = determineScheduleType(now);
-            const periods = compiledSchedules[type] || [];
+            document.getElementById('current-date-display').textContent = now.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+            document.getElementById('current-time-display').textContent = now.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', second: '2-digit' });
 
-            let status = 'Outside school hours';
-            let active = null, next = null, upcoming = null;
-            let pStart, pEnd;
+            const schedType = typeForDate(now);
+            const periods = compiledSchedules[schedType] || [];
 
-            for (let i = 0; i < periods.length; i++) {
-                const p = periods[i];
-                const start = timeToDate(p.start, now);
-                const end = timeToDate(p.end, now);
+            let activePeriod = null;
+            let upcomingPeriod = null;
+            let activeIndex = -1;
 
-                if (now >= start && now < end) {
-                    active = p; pStart = start; pEnd = end;
-                    status = 'In progress';
-                    upcoming = periods[i + 1] || null;
+            const periodsWithDates = periods.map(p => ({
+                ...p,
+                startD: timeToDate(p.start, now),
+                endD: timeToDate(p.end, now)
+            }));
+
+            for (let i = 0; i < periodsWithDates.length; i++) {
+                const p = periodsWithDates[i];
+                if (now >= p.startD && now <= p.endD) {
+                    activePeriod = p;
+                    activeIndex = i;
+                    upcomingPeriod = periodsWithDates[i + 1] || null;
                     break;
                 }
-                if (now < start && !next) {
-                    next = p;
-                    // A passing period runs from the previous bell to this one.
-                    const prevEnd = i > 0 ? timeToDate(periods[i - 1].end, now) : null;
-                    pStart = (prevEnd && prevEnd <= now) ? prevEnd : now;
-                    pEnd = start;
-                    status = i === 0 ? 'Starting in' : 'Passing period';
-                    upcoming = periods[i + 1] || null;
+                if (now < p.startD && (!upcomingPeriod || p.startD < upcomingPeriod.startD)) {
+                    upcomingPeriod = p;
                 }
             }
 
-            // Look ahead up to a week when today is done
-            let lookahead = false;
-            if (!active && !next) {
-                for (let offset = (periods.length === 0 ? 0 : 1); offset <= 7; offset++) {
-                    const checkDate = new Date(now);
-                    checkDate.setDate(now.getDate() + offset);
-                    const dayType = typeForDate(checkDate);
-                    if (dayType === 'none') continue;
+            // Highlighting active schedule table row
+            document.querySelectorAll('.sched-row').forEach(tr => tr.classList.remove('is-now', 'is-past'));
+            periodsWithDates.forEach(p => {
+                const tr = document.getElementById(`row-${p.id}`);
+                if (!tr) return;
+                if (now > p.endD) tr.classList.add('is-past');
+                else if (now >= p.startD && now <= p.endD) tr.classList.add('is-now');
+            });
 
-                    const dayPeriods = compiledSchedules[dayType] || [];
-                    if (dayPeriods.length) {
-                        const firstStart = timeToDate(dayPeriods[0].start, checkDate);
-                        if (firstStart > now) {
-                            next = dayPeriods[0];
-                            pStart = now; pEnd = firstStart;
-                            status = 'School starts in';
-                            upcoming = dayPeriods[1] || null;
-                            lookahead = true;
-                            break;
-                        }
-                    }
-                }
-            }
+            // Status Card Update
+            const statusEl = document.getElementById('tracker-status');
+            const nameEl = document.getElementById('tracker-period-name');
+            const metaEl = document.getElementById('tracker-period-meta');
+            const hzCd = document.getElementById('tracker-countdown-hz');
+            const circCd = document.getElementById('tracker-countdown-circ');
+            const hzStart = document.getElementById('tracker-start-hz');
+            const hzEnd = document.getElementById('tracker-end-hz');
+            const circStart = document.getElementById('tracker-start-circ');
+            const circEnd = document.getElementById('tracker-end-circ');
+            const hzBar = document.getElementById('tracker-progress-hz');
+            const circBar = document.getElementById('tracker-progress-circ');
+            const nextEl = document.getElementById('tracker-next');
 
-            if (type === 'none' && !active && !next) status = 'Weekend / holiday';
+            let currentPct = 0;
 
-            const nextLine = document.getElementById('tracker-next');
-            updateDayProgress(now, periods);
+            if (periods.length === 0) {
+                // Weekend / Holiday / No Classes state
+                statusEl.textContent = 'No Classes Today';
+                nameEl.textContent = 'Weekend / Holiday';
+                metaEl.innerHTML = '';
+                hzCd.textContent = '--:--';
+                circCd.textContent = '--:--';
+                hzStart.textContent = '--:--';
+                hzEnd.textContent = '--:--';
+                circStart.textContent = '--:--';
+                circEnd.textContent = '--:--';
+                hzBar.style.width = '0%';
+                circBar.style.strokeDashoffset = '283';
+                nextEl.textContent = 'Enjoy your day off!';
+            } else if (activePeriod) {
+                const totalMs = activePeriod.endD - activePeriod.startD;
+                const elapsedMs = now - activePeriod.startD;
+                const remMs = activePeriod.endD - now;
+                currentPct = Math.min(100, Math.max(0, (elapsedMs / totalMs) * 100));
 
-            if (active || next) {
-                const target = active || next;
-                document.getElementById('tracker-period-name').innerText = target.name;
-                document.getElementById('tracker-status').innerText = status;
-                renderTrackerMeta(target);
+                statusEl.textContent = 'Current Period';
+                nameEl.textContent = activePeriod.name;
 
-                const totalDur = pEnd - pStart;
-                const rem = pEnd - now;
-                const pct = totalDur <= 0 ? 0 : Math.min(100, Math.max(0, ((now - pStart) / totalDur) * 100));
-                const countdown = formatTimeRemaining(rem);
+                let metaParts = [];
+                if (activePeriod.teacher) metaParts.push(`<span>${escapeHTML(activePeriod.teacher)}</span>`);
+                if (activePeriod.room) metaParts.push(`<span>Room ${escapeHTML(activePeriod.room)}</span>`);
+                metaEl.innerHTML = metaParts.join(' • ');
 
-                document.getElementById('tracker-countdown-hz').innerText = countdown;
-                document.getElementById('tracker-countdown-circ').innerText = countdown;
+                const remStr = formatTimeRemaining(remMs);
+                hzCd.textContent = remStr;
+                circCd.textContent = remStr;
 
-                if (state.shape === 'horizontal') {
-                    document.getElementById('tracker-start-hz').innerText = active ? target.start : 'now';
-                    document.getElementById('tracker-end-hz').innerText = active ? target.end : target.start;
-                    document.getElementById('tracker-progress-hz').style.width = `${pct}%`;
-                } else {
-                    document.getElementById('tracker-start-circ').innerText = active ? target.start : 'now';
-                    document.getElementById('tracker-end-circ').innerText = active ? target.end : target.start;
-                    document.getElementById('tracker-progress-circ').style.strokeDashoffset = 283 - (283 * pct / 100);
-                }
+                hzStart.textContent = activePeriod.start;
+                hzEnd.textContent = activePeriod.end;
+                circStart.textContent = activePeriod.start;
+                circEnd.textContent = activePeriod.end;
 
-                // When a period is active, show the following period as "Up next" (upcoming).
-                // When there is no active period but a next period is scheduled, show that next period.
-                if (active) {
-                    nextLine.innerText = upcoming ? `Up next: ${upcoming.name} at ${upcoming.start}` : 'Last period of the day.';
-                } else {
-                    nextLine.innerText = next ? `Up next: ${next.name} at ${next.start}` : '';
-                }
-                document.title = `${countdown} · ${target.name}`;
+                hzBar.style.width = `${currentPct}%`;
+                circBar.style.strokeDashoffset = `${283 - (283 * currentPct) / 100}`;
 
-                const announce = `${status}: ${target.name}`;
-                if (announce !== lastLiveAnnounce) {
-                    lastLiveAnnounce = announce;
-                    document.getElementById('tracker-live').innerText = announce;
-                }
+                nextEl.textContent = upcomingPeriod ? `Up Next: ${upcomingPeriod.name} at ${upcomingPeriod.start}` : 'Last period of the day';
+            } else if (upcomingPeriod && now < upcomingPeriod.startD) {
+                const remMs = upcomingPeriod.startD - now;
+                statusEl.textContent = 'Upcoming';
+                nameEl.textContent = upcomingPeriod.name;
+                metaEl.innerHTML = `<span>Starts at ${upcomingPeriod.start}</span>`;
 
-                drawFavicon(active ? pct : 0);
+                const remStr = formatTimeRemaining(remMs);
+                hzCd.textContent = remStr;
+                circCd.textContent = remStr;
 
-                const rowId = (pEnd.getDate() === now.getDate() && active) ? target.id : null;
-                if (currentActiveId !== rowId) {
-                    currentActiveId = rowId;
-                    refreshRowStates(rowId);
-                }
+                hzStart.textContent = '--:--';
+                hzEnd.textContent = upcomingPeriod.start;
+                circStart.textContent = '--:--';
+                circEnd.textContent = upcomingPeriod.start;
+
+                hzBar.style.width = '0%';
+                circBar.style.strokeDashoffset = '283';
+
+                nextEl.textContent = `Get ready for ${upcomingPeriod.name}`;
             } else {
-                document.getElementById('tracker-period-name').innerText = '--';
-                document.getElementById('tracker-status').innerText = status;
-                document.getElementById('tracker-period-meta').innerHTML = '';
-                lastMetaKey = '';
-                document.getElementById('tracker-countdown-hz').innerText = '00:00';
-                document.getElementById('tracker-countdown-circ').innerText = '00:00';
-                document.getElementById('tracker-progress-hz').style.width = '0%';
-                document.getElementById('tracker-progress-circ').style.strokeDashoffset = 283;
-                nextLine.innerText = '';
-                document.title = BASE_TITLE;
-                drawFavicon(0);
-                if (currentActiveId !== null) { currentActiveId = null; refreshRowStates(null); }
+                statusEl.textContent = 'School Day Ended';
+                nameEl.textContent = 'All Classes Done';
+                metaEl.innerHTML = '';
+                hzCd.textContent = '00:00';
+                circCd.textContent = '00:00';
+                hzStart.textContent = '--:--';
+                hzEnd.textContent = '--:--';
+                circStart.textContent = '--:--';
+                circEnd.textContent = '--:--';
+                hzBar.style.width = '100%';
+                circBar.style.strokeDashoffset = '0';
+                nextEl.textContent = 'See you tomorrow!';
             }
 
-            handleAlerts(active, pEnd, upcoming, now, !active && (lookahead || !next));
-        }
+            // --- Day Progress Bar State Fix ---
+            const dayWrap = document.getElementById('day-progress-wrap');
+            const dayLabel = document.getElementById('day-progress-label');
+            const dayPctSpan = document.getElementById('day-progress-pct');
+            const dayBar = document.getElementById('day-progress-bar');
 
-        // ---------------------------------------------------------------
-        // Screen wake lock (handy when this is left up on a display)
-        // ---------------------------------------------------------------
-        let wakeLockObj = null;
-        async function applyWakeLock() {
-            try {
-                if (state.wakeLock && 'wakeLock' in navigator && document.visibilityState === 'visible') {
-                    if (!wakeLockObj) {
-                        wakeLockObj = await navigator.wakeLock.request('screen');
-                        wakeLockObj.addEventListener('release', () => { wakeLockObj = null; });
-                    }
-                } else if (wakeLockObj) {
-                    await wakeLockObj.release();
-                    wakeLockObj = null;
+            if (periodsWithDates.length === 0) {
+                dayLabel.textContent = 'No school today';
+                dayPctSpan.textContent = '0%';
+                dayBar.style.width = '0%';
+            } else {
+                const dayStart = periodsWithDates[0].startD;
+                const dayEnd = periodsWithDates[periodsWithDates.length - 1].endD;
+
+                if (now < dayStart) {
+                    dayLabel.textContent = 'Day progress';
+                    dayPctSpan.textContent = '0%';
+                    dayBar.style.width = '0%';
+                } else if (now > dayEnd) {
+                    dayLabel.textContent = 'Day progress';
+                    dayPctSpan.textContent = '100%';
+                    dayBar.style.width = '100%';
+                } else {
+                    const totalDayMs = dayEnd - dayStart;
+                    const elapsedDayMs = now - dayStart;
+                    const dayPct = Math.min(100, Math.max(0, (elapsedDayMs / totalDayMs) * 100));
+
+                    dayLabel.textContent = 'Day progress';
+                    dayPctSpan.textContent = `${Math.floor(dayPct)}%`;
+                    dayBar.style.width = `${dayPct}%`;
                 }
-            } catch (e) { /* denied or unsupported — nothing to do */ }
+            }
+
+            // Favicon clock & Alerts
+            drawFavicon(currentPct);
+            handleAlerts(activePeriod, activePeriod ? activePeriod.endD : null, upcomingPeriod, now, now > (periodsWithDates[periodsWithDates.length - 1]?.endD || 0));
+            alertsPrimed = true;
         }
-        document.addEventListener('visibilitychange', () => { if (state.wakeLock) applyWakeLock(); });
 
         // ---------------------------------------------------------------
-        // Export / import
+        // System Utilities & Controls
         // ---------------------------------------------------------------
-        const BACKUP_VERSION = 2;
+        function toggleHelp(force) {
+            const modal = document.getElementById('help-modal');
+            const show = typeof force === 'boolean' ? force : modal.classList.contains('hidden');
+            modal.classList.toggle('hidden', !show);
+            modal.classList.toggle('flex', show);
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        }
+
+        function applyWakeLock() {
+            if ('wakeLock' in navigator && state.wakeLock) {
+                navigator.wakeLock.request('screen').catch(() => {});
+            }
+        }
 
         function exportSettings() {
-            const payload = { app: 'ecr-bell-schedule', version: BACKUP_VERSION, exportedAt: new Date().toISOString(), state };
-            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
             const a = document.createElement('a');
-            const d = new Date();
-            const stamp = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-            a.href = url;
-            a.download = `bell-schedule-settings-${stamp}.json`;
+            a.href = dataStr;
+            a.download = `ecr-schedule-backup-${getISODateString()}.json`;
             document.body.appendChild(a);
             a.click();
             a.remove();
-            setTimeout(() => URL.revokeObjectURL(url), 2000);
-            toast({ title: 'Settings exported', msg: a.download, tone: 'success', duration: 4000 });
+            toast({ title: 'Backup exported', tone: 'success', duration: 2500 });
         }
 
-        function importSettings(event) {
-            const input = event.target;
-            const file = input.files && input.files[0];
+        function importSettings(e) {
+            const file = e.target.files[0];
             if (!file) return;
-            const snapshot = JSON.parse(JSON.stringify(state));
-
             const reader = new FileReader();
-            reader.onload = () => {
-                let incoming;
+            reader.onload = function(evt) {
                 try {
-                    const parsed = JSON.parse(reader.result);
-                    incoming = parsed && parsed.state ? parsed.state : parsed;
-                } catch (e) {
-                    toast({ title: "That file isn't valid JSON", msg: 'Pick a file exported from this app.', tone: 'alert', duration: 6000 });
-                    input.value = '';
-                    return;
-                }
-                if (!incoming || typeof incoming !== 'object' || Array.isArray(incoming)) {
-                    toast({ title: "That file doesn't look like a settings backup", msg: 'Pick a file exported from this app.', tone: 'alert', duration: 6000 });
-                    input.value = '';
-                    return;
-                }
-
-                applyLoadedState(incoming);
-                saveState();
-                updateUIState();
-                input.value = '';
-                toast({
-                    title: 'Settings imported', msg: file.name, tone: 'success', duration: 8000,
-                    action: {
-                        label: 'Undo', fn: () => {
-                            state = snapshot;
-                            saveState(); updateUIState();
-                            toast({ title: 'Import undone', tone: 'info', duration: 3000 });
-                        }
+                    const parsed = JSON.parse(evt.target.result);
+                    if (applyLoadedState(parsed)) {
+                        saveState();
+                        updateUIState();
+                        toast({ title: 'Settings imported', tone: 'success', duration: 3000 });
                     }
-                });
-            };
-            reader.onerror = () => {
-                toast({ title: "Couldn't read that file", tone: 'alert', duration: 5000 });
-                input.value = '';
+                } catch (err) {
+                    toast({ title: 'Failed to import', msg: 'Invalid JSON file.', tone: 'alert', duration: 4000 });
+                }
             };
             reader.readAsText(file);
         }
 
-        // ---------------------------------------------------------------
-        // PWA: install prompt, service worker, theme color
-        // ---------------------------------------------------------------
-        let deferredInstall = null;
-
-        function updateThemeColorMeta() {
-            const meta = document.getElementById('meta-theme-color');
-            if (!meta) return;
-            const base = cssVar('--ctp-base').split(/\s+/).map(Number);
-            if (base.length === 3 && base.every(n => !isNaN(n))) {
-                meta.setAttribute('content', '#' + base.map(n => n.toString(16).padStart(2, '0')).join(''));
-            }
-        }
-
-        window.addEventListener('beforeinstallprompt', e => {
-            e.preventDefault();
-            deferredInstall = e;
-            const btn = document.getElementById('install-btn');
-            btn.classList.remove('hidden');
-            btn.classList.add('inline-flex');
-        });
-
-        window.addEventListener('appinstalled', () => {
-            deferredInstall = null;
-            const btn = document.getElementById('install-btn');
-            btn.classList.add('hidden');
-            btn.classList.remove('inline-flex');
-            toast({ title: 'Installed', msg: 'It opens like any other app now, online or off.', tone: 'success', duration: 5000 });
-        });
-
-        async function installApp() {
-            if (!deferredInstall) {
-                toast({
-                    title: 'Install from your browser menu',
-                    msg: 'iPhone: Share → Add to Home Screen. Desktop Chrome: the install icon in the address bar.',
-                    tone: 'info', duration: 8000
-                });
-                return;
-            }
-            deferredInstall.prompt();
-            try { await deferredInstall.userChoice; } catch (e) {}
-            deferredInstall = null;
-        }
-
-        function registerServiceWorker() {
-            if (!('serviceWorker' in navigator)) return;
-            if (!location.protocol.startsWith('http')) return;   // opened straight off disk — nothing to cache
-            navigator.serviceWorker.register('sw.js').then(reg => {
-                reg.addEventListener('updatefound', () => {
-                    const sw = reg.installing;
-                    if (!sw) return;
-                    sw.addEventListener('statechange', () => {
-                        if (sw.state === 'installed' && navigator.serviceWorker.controller) {
-                            toast({
-                                title: 'Update ready', msg: 'Reload to pick up the new version.',
-                                tone: 'info', duration: 15000,
-                                action: { label: 'Reload', fn: () => { sw.postMessage('skipWaiting'); location.reload(); } }
-                            });
-                        }
-                    });
-                });
-            }).catch(() => { /* no sw.js alongside the page — the app still works */ });
-        }
-
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
-            else document.exitFullscreen().catch(() => {});
-        }
-
-        // ---------------------------------------------------------------
-        // Keyboard shortcuts
-        // ---------------------------------------------------------------
-        const SHORTCUTS = [
-            ['S', 'Open or close settings'],
-            ['C', 'Compact mode'],
-            ['F', 'Fullscreen'],
-            ['V', 'Switch bar / ring countdown'],
-            ['L', 'Switch vertical / horizontal layout'],
-            ['M', 'Mute or unmute alerts'],
-            ['1 2 3', 'Auto, Regular, Common schedule'],
-            ['/', 'Jump to the task box'],
-            ['?', 'This list'],
-            ['Esc', 'Close whatever is open']
-        ];
-
-        function buildShortcutList() {
-            document.getElementById('shortcut-list').innerHTML = SHORTCUTS.map(([k, d]) => `
-                <li class="flex items-center justify-between gap-4 py-2">
-                    <span class="text-ctp-subtext">${d}</span>
-                    <kbd class="font-mono text-xs bg-ctp-surface0 border border-ctp-surface1 rounded px-2 py-1 whitespace-nowrap">${k}</kbd>
-                </li>`).join('');
-        }
-
-        function helpOpen() { return !document.getElementById('help-modal').classList.contains('hidden'); }
-        function toggleHelp(force) {
-            const m = document.getElementById('help-modal');
-            const open = typeof force === 'boolean' ? force : !helpOpen();
-            m.classList.toggle('hidden', !open);
-            m.classList.toggle('flex', open);
-        }
-
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') {
-                if (periodModalOpen()) { closePeriodEditor(); return; }
-                if (helpOpen()) { toggleHelp(false); return; }
-                if (settingsOpen()) { toggleSettings(false); return; }
-            }
-            if (periodModalOpen()) {
-                if (e.key === 'Enter') { e.preventDefault(); savePeriodDetails(); }
-                return;
-            }
-            const tag = (e.target.tagName || '').toLowerCase();
-            if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.metaKey || e.ctrlKey || e.altKey) return;
-
-            switch (e.key) {
-                case 's': case 'S': toggleSettings(); break;
-                case 'c': case 'C':
-                    state.compactMode = !state.compactMode; saveState(); updateUIState(); break;
-                case 'f': case 'F': toggleFullscreen(); break;
-                case 'v': case 'V':
-                    state.shape = state.shape === 'horizontal' ? 'circular' : 'horizontal'; saveState(); updateUIState(); break;
-                case 'l': case 'L':
-                    state.layout = state.layout === 'vertical' ? 'horizontal' : 'vertical'; saveState(); updateUIState(); break;
-                case 'm': case 'M': toggleSound(); break;
-                case '1': setManualSchedule('auto'); break;
-                case '2': setManualSchedule('regular'); break;
-                case '3': setManualSchedule('common'); break;
-                case '?': toggleHelp(true); break;
-                case '/':
-                    e.preventDefault();
-                    document.getElementById('new-task-input').focus();
-                    break;
-            }
+        window.addEventListener('keydown', e => {
+            if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+            const k = e.key.toLowerCase();
+            if (k === 's') { e.preventDefault(); toggleSettings(); }
+            else if (k === 'f') { e.preventDefault(); toggleFullscreen(); }
+            else if (k === 'm') { e.preventDefault(); toggleSound(); }
+            else if (e.key === '?') { e.preventDefault(); toggleHelp(); }
         });
 
         // ---------------------------------------------------------------
-        // Init
+        // Initialization
         // ---------------------------------------------------------------
         loadState();
-        buildShortcutList();
+        compileSchedules();
         updateUIState();
-        registerServiceWorker();
         setInterval(tick, 1000);
-        setTimeout(() => { alertsPrimed = true; }, 1500);
-
-        // Rebuild the table when the calendar day rolls over
-        let lastDay = new Date().getDate();
-        setInterval(() => {
-            const d = new Date().getDate();
-            if (d !== lastDay) { lastDay = d; currentActiveId = null; buildScheduleTable(); tick(); }
-        }, 30000);
-
-        // Battery indicator
-        if ('getBattery' in navigator) {
-            navigator.getBattery().then(bat => {
-                const bCont = document.getElementById('battery-container');
-                const bLev = document.getElementById('battery-level');
-                const bIcon = document.getElementById('battery-icon');
-                bCont.classList.remove('hidden');
-                bCont.classList.add('flex');
-
-                const shell = `<rect x="2" y="8" width="16" height="9" rx="2" stroke-width="1.8"></rect><path d="M20.5 11.5v2" stroke-width="2.5" stroke-linecap="round"></path>`;
-                let lowWarned = false;
-                function upBat() {
-                    const pct = Math.round(bat.level * 100);
-                    bLev.innerText = pct;
-                    const fillW = Math.max(1, (pct / 100) * 12);
-                    bIcon.classList.toggle('text-green-500', bat.charging);
-                    bIcon.classList.toggle('text-red-500', !bat.charging && pct <= 20);
-                    bIcon.innerHTML = shell + `<rect x="4" y="10" width="${fillW}" height="5" rx="1" fill="currentColor" stroke="none"></rect>` +
-                        (bat.charging ? `<path d="M12 7.5l-2.2 4h2.4l-.6 3.2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>` : '');
-                    bCont.title = bat.charging ? `Charging · ${pct}%` : `Battery ${pct}%`;
-
-                    if (!bat.charging && pct <= 15 && !lowWarned && alertsPrimed) {
-                        lowWarned = true;
-                        toast({ title: 'Battery at ' + pct + '%', msg: 'Plug in if you want this running all day.', tone: 'warn', duration: 7000 });
-                    }
-                    if (bat.charging) lowWarned = false;
-                }
-                upBat();
-                bat.addEventListener('levelchange', upBat);
-                bat.addEventListener('chargingchange', upBat);
-            }).catch(() => {});
-        }
     </script>
 </body>
 </html>
