@@ -31,8 +31,6 @@
         :root[data-theme="frappe"] { --ctp-base: 48 52 70; --ctp-mantle: 41 44 60; --ctp-surface0: 65 69 89; --ctp-surface1: 81 87 109; --ctp-surface2: 98 104 128; --ctp-text: 198 208 245; --ctp-subtext: 181 191 226; --ctp-accent: 202 158 230; color-scheme: dark; }
         :root[data-theme="macchiato"] { --ctp-base: 36 39 58; --ctp-mantle: 30 32 48; --ctp-surface0: 54 58 79; --ctp-surface1: 73 77 100; --ctp-surface2: 91 96 120; --ctp-text: 202 211 245; --ctp-subtext: 184 192 224; --ctp-accent: 198 160 246; color-scheme: dark; }
         :root[data-theme="mocha"] { --ctp-base: 30 30 46; --ctp-mantle: 24 24 37; --ctp-surface0: 49 50 68; --ctp-surface1: 69 71 90; --ctp-surface2: 88 91 112; --ctp-text: 205 214 244; --ctp-subtext: 186 194 222; --ctp-accent: 203 166 247; color-scheme: dark; }
-        
-        /* New Themes */
         :root[data-theme="dracula"] { --ctp-base: 40 42 54; --ctp-mantle: 68 71 90; --ctp-surface0: 98 114 164; --ctp-surface1: 139 233 253; --ctp-surface2: 80 250 123; --ctp-text: 248 248 242; --ctp-subtext: 189 147 249; --ctp-accent: 255 121 198; color-scheme: dark; }
         :root[data-theme="atom-dark"] { --ctp-base: 29 31 33; --ctp-mantle: 40 42 46; --ctp-surface0: 55 59 65; --ctp-surface1: 76 81 88; --ctp-surface2: 97 104 112; --ctp-text: 197 200 198; --ctp-subtext: 180 183 180; --ctp-accent: 129 162 190; color-scheme: dark; }
         :root[data-theme="nord"] { --ctp-base: 46 52 64; --ctp-mantle: 59 66 82; --ctp-surface0: 67 76 94; --ctp-surface1: 76 86 106; --ctp-surface2: 97 104 112; --ctp-text: 216 222 233; --ctp-subtext: 229 233 240; --ctp-accent: 136 192 208; color-scheme: dark; }
@@ -55,12 +53,7 @@
             will-change: transform, width;
         }
 
-        .bg-topology {
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z' fill='currentColor' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
-            background-repeat: repeat;
-        }
-
-        /* Compact Mode Overrides (Updated for strictly minimal screen usage) */
+        /* Compact Mode */
         body.compact-mode #master-container { padding: 0.5rem; }
         body.compact-mode header { padding: 0.5rem 1rem; flex-direction: row; align-items: center; }
         body.compact-mode header h1 { font-size: 1.125rem; }
@@ -72,15 +65,73 @@
         body.compact-mode .sched-row td { padding: 0.25rem 0.75rem; }
         body.compact-mode .min-h-[350px], body.compact-mode .min-h-[300px] { min-height: auto; }
         body.compact-mode .text-3xl { font-size: 1.25rem; }
+
+        /* Background Layers System */
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1; opacity: 0; visibility: hidden; pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        .bg-layer.active { opacity: 1; visibility: visible; }
+        
+        /* 1. Topology Background (Inherits theme colors via mask) */
+        .bg-topology {
+            background-color: rgb(var(--ctp-text));
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z' fill='%23fff' fill-opacity='1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            -webkit-mask-repeat: repeat;
+            opacity: 0.05;
+        }
+
+        /* 2. Interactive Mesh Gradient Background */
+        .mesh-gradient {
+            background-color: rgb(var(--ctp-base));
+            background-image: 
+                radial-gradient(at 40% 20%, rgb(var(--ctp-accent) / 0.3) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, rgb(var(--ctp-surface2) / 0.3) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, rgb(var(--ctp-surface0) / 0.3) 0px, transparent 50%),
+                radial-gradient(at 80% 50%, rgb(var(--ctp-text) / 0.15) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgb(var(--ctp-accent) / 0.2) 0px, transparent 50%);
+            filter: blur(60px);
+            animation: meshShift 15s ease-in-out infinite alternate;
+        }
+        @keyframes meshShift {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2) translate(5%, 5%); }
+            100% { transform: scale(1.1) translate(-5%, -5%); }
+        }
+
+        /* 3. Rising Bubbles */
+        .bubble-container.active { pointer-events: auto; }
+        .bubble {
+            position: absolute; bottom: -50px;
+            background: rgba(var(--ctp-surface2), 0.2);
+            border: 1px solid rgba(var(--ctp-surface2), 0.5);
+            border-radius: 50%; backdrop-filter: blur(2px);
+            cursor: pointer; animation: rise linear forwards;
+            transition: transform 0.1s;
+        }
+        .bubble:active { transform: scale(1.1); }
+        @keyframes rise { to { transform: translateY(-120vh) rotate(360deg); } }
+
+        /* Burst Particles for Popping Bubbles */
+        .burst-particle {
+            position: absolute; border-radius: 50%;
+            background: rgb(var(--ctp-accent));
+            box-shadow: 0 0 8px rgb(var(--ctp-accent));
+            pointer-events: none; z-index: 50;
+        }
     </style>
 </head>
 <body class="transition-colors duration-300 font-sans min-h-screen relative overflow-x-hidden">
 
-    <!-- Background Layers -->
-    <canvas id="bg-canvas" class="fixed inset-0 z-[-1] pointer-events-none hidden opacity-50"></canvas>
-    <div id="bg-css" class="fixed inset-0 z-[-1] pointer-events-none hidden text-ctp-text"></div>
+    <!-- Background Layer Containers -->
+    <canvas id="bg-matrix" class="bg-layer"></canvas>
+    <div id="bg-topology" class="bg-layer bg-topology"></div>
+    <div id="bg-mesh" class="bg-layer mesh-gradient"></div>
+    <div id="bg-bubbles" class="bg-layer bubble-container"></div>
+    <canvas id="bg-constellations" class="bg-layer"></canvas>
 
-    <div id="master-container" class="mx-auto p-4 sm:p-6 lg:p-8 flex flex-col relative z-10 transition-all duration-500">
+    <div id="master-container" class="mx-auto p-4 sm:p-6 lg:p-8 flex flex-col relative z-10 transition-all duration-500 max-w-3xl">
         
         <!-- Header -->
         <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-ctp-mantle/80 backdrop-blur-md p-4 sm:p-6 rounded-xl shadow-sm border border-ctp-surface0 transition-colors w-full">
@@ -160,9 +211,11 @@
                             <div><p class="font-medium">Background</p></div>
                             <select id="select-bg" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg focus:ring-ctp-accent focus:border-ctp-accent block p-2 outline-none min-w-[150px]">
                                 <option value="none">None (Default)</option>
+                                <option value="mesh">Mesh Gradient</option>
+                                <option value="topology">Topology Grid</option>
+                                <option value="bubbles">Rising Bubbles</option>
+                                <option value="constellations">Constellations</option>
                                 <option value="matrix">Matrix Rain</option>
-                                <option value="stars">Starfield</option>
-                                <option value="topology">Interactive Topology</option>
                             </select>
                         </div>
                     </div>
@@ -179,7 +232,7 @@
         </div>
 
         <!-- Main Content Layout container -->
-        <div id="main-content" class="w-full">
+        <div id="main-content" class="w-full flex flex-col gap-6">
             
             <!-- Live Tracker Card -->
             <div class="flex-1 bg-ctp-mantle/90 backdrop-blur-md p-6 sm:p-10 rounded-2xl shadow-lg border border-ctp-surface0 flex flex-col items-center justify-center text-center relative overflow-hidden transition-colors min-h-[350px]">
@@ -300,6 +353,10 @@
         let currentActiveId = null;
         let activeInterval = null;
         let compiledSchedules = {};
+        
+        // Globals for Backgrounds
+        let globalAnimId = null;
+        let bubbleIntervalId = null;
 
         function loadState() {
             const s = localStorage.getItem('ecr_state');
@@ -333,7 +390,7 @@
             const m = Math.floor((totalS % 3600) / 60);
             const s = totalS % 60;
             
-            if (d > 0) return `${d}d ${h}h ${m}m`; // Hide seconds if countdown spans days to avoid text cutoff
+            if (d > 0) return `${d}d ${h}h ${m}m`; // Hide seconds if counting days
             if (h > 0) return `${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
             return `${m}:${s.toString().padStart(2,'0')}`;
         }
@@ -450,7 +507,7 @@
                 container.classList.add(state.compactMode ? 'max-w-5xl' : 'max-w-6xl');
             } else {
                 mc.className = `flex flex-col w-full ${state.compactMode ? 'gap-4' : 'gap-6'}`;
-                // Drops max width down to extra-small if compact mode is enabled on vertical layout!
+                // Drop max width down to extra-small if compact mode is enabled on vertical layout
                 container.classList.add(state.compactMode ? 'max-w-xl' : 'max-w-3xl');
             }
         }
@@ -467,25 +524,169 @@
             }
         }
 
-        function updateBackground() {
-            const canvas = document.getElementById('bg-canvas');
-            const cssBg = document.getElementById('bg-css');
-            canvas.classList.add('hidden');
-            cssBg.classList.add('hidden');
-            cssBg.className = 'fixed inset-0 z-[-1] pointer-events-none hidden text-ctp-text';
-            
-            if (window.bgAnimId) cancelAnimationFrame(window.bgAnimId);
+        // BACKGROUND MANAGEMENT
+        function clearBackgrounds() {
+            if (globalAnimId) cancelAnimationFrame(globalAnimId);
+            if (bubbleIntervalId) clearInterval(bubbleIntervalId);
+            document.querySelectorAll('.bg-layer').forEach(el => el.classList.remove('active'));
+            document.getElementById('bg-bubbles').innerHTML = ''; // Clear leftover bubbles
+        }
 
-            if (state.bg === 'matrix') {
-                canvas.classList.remove('hidden');
-                startMatrix(canvas);
-            } else if (state.bg === 'stars') {
-                canvas.classList.remove('hidden');
-                startStars(canvas);
-            } else if (state.bg === 'topology') {
-                cssBg.classList.remove('hidden');
-                cssBg.classList.add('bg-topology');
+        function updateBackground() {
+            clearBackgrounds();
+            const bgType = state.bg;
+
+            if (bgType === 'none') return;
+            
+            const targetEl = document.getElementById(`bg-${bgType}`);
+            if (targetEl) targetEl.classList.add('active');
+
+            if (bgType === 'matrix') {
+                startMatrix(targetEl);
+            } else if (bgType === 'bubbles') {
+                startBubbles(targetEl);
+            } else if (bgType === 'constellations') {
+                startConstellations(targetEl);
             }
+        }
+
+        function startMatrix(canvas) {
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            function rs() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            rs(); window.addEventListener('resize', rs);
+            
+            const cols = Math.floor(w / 20) + 1;
+            const yPos = Array(cols).fill(0);
+            
+            function draw() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                ctx.fillRect(0, 0, w, h);
+                
+                // Read CSS custom property and format properly
+                const rawColor = getComputedStyle(document.documentElement).getPropertyValue('--ctp-accent').trim();
+                ctx.fillStyle = `rgb(${rawColor})`;
+                ctx.font = '15pt monospace';
+                
+                yPos.forEach((y, ind) => {
+                    const text = String.fromCharCode(Math.random() * 128);
+                    const x = ind * 20;
+                    ctx.fillText(text, x, y);
+                    if (y > 100 + Math.random() * 10000) yPos[ind] = 0;
+                    else yPos[ind] = y + 20;
+                });
+                globalAnimId = requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        function startBubbles(container) {
+            function createBurst(x, y) {
+                const particleCount = 12;
+                for (let i = 0; i < particleCount; i++) {
+                    const p = document.createElement('div');
+                    p.classList.add('burst-particle');
+                    const size = Math.random() * 6 + 4;
+                    p.style.width = `${size}px`;
+                    p.style.height = `${size}px`;
+                    p.style.left = `${x - size / 2}px`;
+                    p.style.top = `${y - size / 2}px`;
+                    document.body.appendChild(p);
+
+                    const angle = Math.random() * Math.PI * 2;
+                    const dist = Math.random() * 60 + 40;
+                    const tx = Math.cos(angle) * dist;
+                    const ty = Math.sin(angle) * dist;
+
+                    const anim = p.animate([
+                        { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                        { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
+                    ], {
+                        duration: Math.random() * 300 + 400,
+                        easing: 'cubic-bezier(0.25, 1, 0.5, 1)'
+                    });
+                    anim.onfinish = () => p.remove();
+                }
+            }
+
+            function spawnBubble() {
+                if (!container.classList.contains('active')) return;
+                const b = document.createElement('div');
+                b.classList.add('bubble');
+                const size = Math.random() * 40 + 20;
+                b.style.width = `${size}px`;
+                b.style.height = `${size}px`;
+                b.style.left = `${Math.random() * 100}vw`;
+                b.style.animationDuration = `${Math.random() * 5 + 5}s`;
+
+                b.addEventListener('click', (e) => {
+                    createBurst(e.clientX, e.clientY);
+                    b.remove();
+                });
+                b.addEventListener('animationend', () => b.remove());
+                container.appendChild(b);
+            }
+            
+            bubbleIntervalId = setInterval(spawnBubble, 500);
+        }
+
+        function startConstellations(canvas) {
+            const ctx = canvas.getContext('2d');
+            let w, h, stars = [];
+            const cfg = { count: 120, dist: 130, glow: 10 };
+
+            function rs() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+                stars = Array(cfg.count).fill().map(() => ({
+                    x: Math.random() * w, y: Math.random() * h,
+                    vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
+                    r: Math.random() * 1.5 + 0.5
+                }));
+            }
+            rs(); window.addEventListener('resize', rs);
+
+            function draw() {
+                ctx.clearRect(0, 0, w, h);
+                const rawText = getComputedStyle(document.documentElement).getPropertyValue('--ctp-text').trim();
+                const textColor = `rgb(${rawText})`;
+
+                for (let i = 0; i < stars.length; i++) {
+                    const s = stars[i];
+                    s.x += s.vx; s.y += s.vy;
+                    if (s.x < 0 || s.x > w) s.vx *= -1;
+                    if (s.y < 0 || s.y > h) s.vy *= -1;
+
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                    ctx.fillStyle = textColor;
+                    ctx.shadowBlur = cfg.glow;
+                    ctx.shadowColor = textColor;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+
+                    for (let j = i + 1; j < stars.length; j++) {
+                        const s2 = stars[j];
+                        const dx = s.x - s2.x, dy = s.y - s2.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < cfg.dist) {
+                            ctx.beginPath();
+                            ctx.moveTo(s.x, s.y);
+                            ctx.lineTo(s2.x, s2.y);
+                            const op = 1 - (dist / cfg.dist);
+                            ctx.strokeStyle = `rgba(${rawText}, ${op * 0.4})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.stroke();
+                        }
+                    }
+                }
+                globalAnimId = requestAnimationFrame(draw);
+            }
+            draw();
         }
 
         // TASK WIDGET LOGIC
@@ -609,7 +810,7 @@
             let nextPeriod = null;
             let pStart, pEnd;
 
-            // Step 1: Check Current Day's remaining periods
+            // Step 1: Check Current Day
             if (periods.length > 0) {
                 for (let i = 0; i < periods.length; i++) {
                     const p = periods[i];
@@ -624,7 +825,7 @@
                     } else if (now < start) {
                         if (!nextPeriod) {
                             nextPeriod = p;
-                            pStart = now; // Setup for countdown-only (0% progress)
+                            pStart = now; // Setup for countdown-only
                             pEnd = start;
                             status = 'Starting In';
                         }
@@ -632,7 +833,7 @@
                 }
             }
 
-            // Step 2: If we are entirely done for today, look ahead into future days to find the exact next period
+            // Step 2: 7-Day Lookahead if school is done for today
             if (!activePeriod && !nextPeriod) {
                 for (let offset = (periods.length === 0 ? 0 : 1); offset <= 7; offset++) {
                     let checkDate = new Date(now);
@@ -648,7 +849,7 @@
                         const firstStart = timeToDate(dayPeriods[0].start, checkDate);
                         if (firstStart > now) {
                             nextPeriod = dayPeriods[0];
-                            pStart = now; // Setup for countdown-only (0% progress)
+                            pStart = now;
                             pEnd = firstStart;
                             status = 'School Starts In';
                             break;
@@ -690,7 +891,7 @@
                     c.style.strokeDashoffset = offset;
                 }
 
-                // Update Row Highlighting for Today's specific active periods
+                // Row Highlighting
                 if (currentActiveId !== target.id) {
                     if (currentActiveId) {
                         const oldRow = document.getElementById(`row-${currentActiveId}`);
@@ -699,7 +900,6 @@
                             oldRow.classList.add('border-l-0');
                         }
                     }
-                    // Prevent highlighting a future day's period row unless it strictly applies to today.
                     if (pEnd.getDate() === now.getDate()) {
                         const newRow = document.getElementById(`row-${target.id}`);
                         if (newRow) {
@@ -756,66 +956,6 @@
                 bat.addEventListener('levelchange', upBat);
                 bat.addEventListener('chargingchange', upBat);
             });
-        }
-
-        // BACKGROUND ANIMATIONS
-        function startMatrix(canvas) {
-            const ctx = canvas.getContext('2d');
-            let w, h;
-            function rs() {
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
-            }
-            rs(); window.addEventListener('resize', rs);
-            
-            const cols = Math.floor(w / 20) + 1;
-            const yPos = Array(cols).fill(0);
-            
-            function draw() {
-                ctx.fillStyle = '#00000010';
-                ctx.fillRect(0,0,w,h);
-                ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--ctp-accent');
-                ctx.font = '15pt monospace';
-                
-                yPos.forEach((y, ind) => {
-                    const text = String.fromCharCode(Math.random() * 128);
-                    const x = ind * 20;
-                    ctx.fillText(text, x, y);
-                    if (y > 100 + Math.random() * 10000) yPos[ind] = 0;
-                    else yPos[ind] = y + 20;
-                });
-                window.bgAnimId = requestAnimationFrame(draw);
-            }
-            draw();
-        }
-
-        function startStars(canvas) {
-            const ctx = canvas.getContext('2d');
-            let w, h, stars = [];
-            function rs() {
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
-                stars = Array(200).fill().map(()=>({
-                    x: Math.random()*w, y: Math.random()*h,
-                    r: Math.random()*1.5, d: Math.random()*0.5
-                }));
-            }
-            rs(); window.addEventListener('resize', rs);
-            
-            function draw() {
-                ctx.clearRect(0,0,w,h);
-                const color = getComputedStyle(document.documentElement).getPropertyValue('--ctp-text');
-                ctx.fillStyle = `rgb(${color})`;
-                stars.forEach(s => {
-                    ctx.beginPath();
-                    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-                    ctx.fill();
-                    s.y += s.d;
-                    if(s.y > h) { s.y = 0; s.x = Math.random()*w; }
-                });
-                window.bgAnimId = requestAnimationFrame(draw);
-            }
-            draw();
         }
     </script>
 </body>
