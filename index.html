@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bell Schedule Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            900: '#134e4a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background-color: #475569; }
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300 font-sans min-h-screen">
+
+    <div class="max-w-3xl mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
+        
+        <!-- Header -->
+        <header class="flex items-center justify-between bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-blue-600 dark:from-brand-400 dark:to-blue-400">
+                    Bell Schedule
+                </h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1" id="current-date-display"></p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSettings()" class="p-2.5 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors" title="Settings">
+                    <svg class="w-5 h-5 text-gray-700 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </button>
+                <button onclick="toggleTheme()" class="p-2.5 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors" title="Toggle Theme">
+                    <svg id="theme-icon-light" class="w-5 h-5 hidden text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <svg id="theme-icon-dark" class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Settings Panel -->
+        <div id="settings-panel" class="hidden bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-all">
+            <h3 class="text-lg font-semibold mb-4">Dashboard Settings</h3>
+            <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                <div>
+                    <p class="font-medium">Hide Period 0</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Remove Period 0 from tracker and schedule.</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="toggle-p0" class="sr-only peer" onchange="togglePeriodZero()">
+                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-brand-500"></div>
+                </label>
+            </div>
+        </div>
+
+        <!-- Live Tracker Card -->
+        <div class="bg-white dark:bg-gray-800 p-6 sm:p-10 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 flex flex-col items-center text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-500 to-blue-500"></div>
+            
+            <p id="tracker-status" class="text-sm uppercase tracking-widest font-semibold text-brand-600 dark:text-brand-400 mb-2">Loading...</p>
+            <h2 id="tracker-period-name" class="text-3xl sm:text-5xl font-extrabold text-gray-900 dark:text-white mb-4">--</h2>
+            
+            <div class="bg-gray-50 dark:bg-gray-900 px-6 py-4 rounded-xl border border-gray-100 dark:border-gray-700 mb-6 w-full max-w-sm shadow-inner">
+                <p id="tracker-countdown" class="text-5xl sm:text-6xl font-black font-mono text-gray-800 dark:text-gray-100 tabular-nums">00:00</p>
+                <p class="text-xs font-medium text-gray-500 uppercase mt-2">Time Remaining</p>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full max-w-md">
+                <div class="flex justify-between text-xs font-medium text-gray-500 mb-1">
+                    <span id="tracker-start">--:--</span>
+                    <span id="tracker-end">--:--</span>
+                </div>
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 sm:h-4 overflow-hidden shadow-inner">
+                    <div id="tracker-progress" class="bg-gradient-to-r from-brand-500 to-blue-500 h-full rounded-full transition-all duration-1000 ease-linear" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Schedule Selector -->
+        <div class="flex p-1 bg-gray-200 dark:bg-gray-800 rounded-xl shadow-inner w-full sm:w-max self-center">
+            <button id="btn-regular" onclick="setManualSchedule('regular')" class="flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                Regular
+            </button>
+            <button id="btn-common" onclick="setManualSchedule('common')" class="flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-semibold transition-all text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
+                Common Planning
+            </button>
+        </div>
+
+        <!-- Schedule Table -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 flex justify-between items-center">
+                <h3 class="font-semibold text-gray-800 dark:text-gray-200" id="schedule-title">Today's Schedule</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <tbody id="schedule-body" class="divide-y divide-gray-100 dark:divide-gray-700/50">
+                        <!-- Rows injected via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // Data Configuration
+        const rawSchedules = {
+            regular: [
+                { id: 'p0', name: 'Period 0', defaultName: 'Period 0', start: '7:27 AM', end: '8:23 AM', editable: true },
+                { id: 'p1', name: 'Period 1', defaultName: 'Period 1', start: '8:30 AM', end: '9:35 AM', editable: true },
+                { id: 'p2', name: 'Period 2', defaultName: 'Period 2', start: '9:42 AM', end: '10:38 AM', editable: true },
+                { id: 'nut', name: 'Nutrition', defaultName: 'Nutrition', start: '10:38 AM', end: '10:54 AM', editable: false },
+                { id: 'p3', name: 'Period 3', defaultName: 'Period 3', start: '11:01 AM', end: '11:57 AM', editable: true },
+                { id: 'p4', name: 'Period 4', defaultName: 'Period 4', start: '12:04 PM', end: '1:00 PM', editable: true },
+                { id: 'lun', name: 'Lunch', defaultName: 'Lunch', start: '1:00 PM', end: '1:39 PM', editable: false },
+                { id: 'p5', name: 'Period 5', defaultName: 'Period 5', start: '1:46 PM', end: '2:42 PM', editable: true },
+                { id: 'p6', name: 'Period 6', defaultName: 'Period 6', start: '2:49 PM', end: '3:45 PM', editable: true }
+            ],
+            common: [
+                { id: 'p0', name: 'Period 0', defaultName: 'Period 0', start: '7:38 AM', end: '8:23 AM', editable: true },
+                { id: 'cpt', name: 'Common Planning', defaultName: 'Common Planning', start: '8:30 AM', end: '9:30 AM', editable: false },
+                { id: 'p1', name: 'Period 1', defaultName: 'Period 1', start: '9:37 AM', end: '10:30 AM', editable: true },
+                { id: 'p2', name: 'Period 2', defaultName: 'Period 2', start: '10:37 AM', end: '11:22 AM', editable: true },
+                { id: 'nut', name: 'Nutrition', defaultName: 'Nutrition', start: '11:22 AM', end: '11:38 AM', editable: false },
+                { id: 'p3', name: 'Period 3', defaultName: 'Period 3', start: '11:45 AM', end: '12:30 PM', editable: true },
+                { id: 'p4', name: 'Period 4', defaultName: 'Period 4', start: '12:37 PM', end: '1:22 PM', editable: true },
+                { id: 'lun', name: 'Lunch', defaultName: 'Lunch', start: '1:22 PM', end: '2:01 PM', editable: false },
+                { id: 'p5', name: 'Period 5', defaultName: 'Period 5', start: '2:08 PM', end: '2:53 PM', editable: true },
+                { id: 'p6', name: 'Period 6', defaultName: 'Period 6', start: '3:00 PM', end: '3:45 PM', editable: true }
+            ]
+        };
+
+        // Application State
+        let state = {
+            hidePeriod0: false,
+            customNames: {},
+            theme: 'light',
+            manualSchedule: null
+        };
+        let activeTimeline = [];
+        let clockInterval;
+
+        // --- Initialization ---
+        function init() {
+            loadState();
+            applyTheme();
+            updateDateDisplay();
+            document.getElementById('toggle-p0').checked = state.hidePeriod0;
+            
+            buildTimeline();
+            renderTable();
+            updateClock(); // Initial paint
+            
+            if(clockInterval) clearInterval(clockInterval);
+            clockInterval = setInterval(updateClock, 1000);
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('bellScheduleState');
+            if(saved) {
+                state = { ...state, ...JSON.parse(saved) };
+            } else {
+                // Check system preference
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    state.theme = 'dark';
+                }
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('bellScheduleState', JSON.stringify(state));
+            buildTimeline();
+            renderTable();
+            updateClock();
+        }
+
+        // --- Utility Methods ---
+        function parseTimeStr(timeStr) {
+            const [time, modifier] = timeStr.split(' ');
+            let [hours, minutes] = time.split(':').map(Number);
+            if (hours === 12 && modifier === 'AM') hours = 0;
+            if (hours !== 12 && modifier === 'PM') hours += 12;
+            
+            const now = new Date();
+            now.setHours(hours, minutes, 0, 0);
+            return now;
+        }
+
+        function getActiveScheduleKey() {
+            if (state.manualSchedule) return state.manualSchedule;
+            const isWednesday = new Date().getDay() === 3;
+            return isWednesday ? 'common' : 'regular';
+        }
+
+        function formatDuration(ms) {
+            if (ms < 0) ms = 0;
+            const totalSeconds = Math.floor(ms / 1000);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            
+            const pad = (num) => num.toString().padStart(2, '0');
+            if (hours > 0) return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+            return `${pad(minutes)}:${pad(seconds)}`;
+        }
+
+        function getDisplayName(period) {
+            return state.customNames[period.id] || period.defaultName;
+        }
+
+        // --- Core Logic ---
+        function buildTimeline() {
+            const schedKey = getActiveScheduleKey();
+            let baseSchedule = rawSchedules[schedKey];
+            
+            // Apply visual active state to toggle buttons
+            document.getElementById('btn-regular').className = schedKey === 'regular' 
+                ? 'flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white' 
+                : 'flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-semibold transition-all text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200';
+            document.getElementById('btn-common').className = schedKey === 'common' 
+                ? 'flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white' 
+                : 'flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-semibold transition-all text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200';
+            
+            document.getElementById('schedule-title').innerText = (schedKey === 'common' ? 'Common Planning (Wed)' : 'Regular Schedule');
+
+            // Filter out Period 0 if needed
+            if (state.hidePeriod0) {
+                baseSchedule = baseSchedule.filter(p => p.id !== 'p0');
+            }
+
+            activeTimeline = [];
+            for (let i = 0; i < baseSchedule.length; i++) {
+                const current = baseSchedule[i];
+                const startObj = parseTimeStr(current.start);
+                const endObj = parseTimeStr(current.end);
+                
+                activeTimeline.push({
+                    ...current,
+                    displayName: getDisplayName(current),
+                    startObj,
+                    endObj,
+                    type: 'class',
+                    isPassing: false
+                });
+
+                // Check for gap (passing period)
+                if (i < baseSchedule.length - 1) {
+                    const next = baseSchedule[i + 1];
+                    const nextStartObj = parseTimeStr(next.start);
+                    
+                    if (endObj.getTime() < nextStartObj.getTime()) {
+                        activeTimeline.push({
+                            id: `pass_${i}`,
+                            displayName: `Passing to ${getDisplayName(next)}`,
+                            startStr: current.end,
+                            endStr: next.start,
+                            startObj: endObj,
+                            endObj: nextStartObj,
+                            type: 'passing',
+                            isPassing: true
+                        });
+                    }
+                }
+            }
+        }
+
+        function updateClock() {
+            const now = new Date();
+            let currentBlock = null;
+            
+            if (activeTimeline.length === 0) return;
+
+            const firstStart = activeTimeline[0].startObj;
+            const lastEnd = activeTimeline[activeTimeline.length - 1].endObj;
+
+            // DOM Elements
+            const statusEl = document.getElementById('tracker-status');
+            const nameEl = document.getElementById('tracker-period-name');
+            const cdEl = document.getElementById('tracker-countdown');
+            const progEl = document.getElementById('tracker-progress');
+            const startEl = document.getElementById('tracker-start');
+            const endEl = document.getElementById('tracker-end');
+
+            // Reset highlights in table
+            document.querySelectorAll('.sched-row').forEach(row => {
+                row.classList.remove('bg-blue-50', 'dark:bg-blue-900/20', 'border-l-4', 'border-brand-500');
+                row.classList.add('border-l-4', 'border-transparent');
+            });
+
+            if (now < firstStart) {
+                // Before school
+                statusEl.innerText = "School starts in";
+                nameEl.innerText = "Waiting to Start";
+                cdEl.innerText = formatDuration(firstStart - now);
+                progEl.style.width = "0%";
+                startEl.innerText = "--:--";
+                endEl.innerText = activeTimeline[0].start;
+            } else if (now >= lastEnd) {
+                // After school
+                statusEl.innerText = "Enjoy your day";
+                nameEl.innerText = "Out of Session";
+                cdEl.innerText = "00:00";
+                progEl.style.width = "100%";
+                startEl.innerText = "--:--";
+                endEl.innerText = "--:--";
+            } else {
+                // During school
+                for (let block of activeTimeline) {
+                    if (now >= block.startObj && now < block.endObj) {
+                        currentBlock = block;
+                        break;
+                    }
+                }
+
+                if (currentBlock) {
+                    statusEl.innerText = currentBlock.isPassing ? "Passing Period" : "Current Period";
+                    nameEl.innerText = currentBlock.displayName;
+                    
+                    const duration = currentBlock.endObj - currentBlock.startObj;
+                    const elapsed = now - currentBlock.startObj;
+                    const remaining = currentBlock.endObj - now;
+                    
+                    cdEl.innerText = formatDuration(remaining);
+                    const progressPercent = Math.min(100, Math.max(0, (elapsed / duration) * 100));
+                    progEl.style.width = `${progressPercent}%`;
+                    
+                    startEl.innerText = currentBlock.start || currentBlock.startStr;
+                    endEl.innerText = currentBlock.end || currentBlock.endStr;
+
+                    // Highlight Table Row
+                    if (!currentBlock.isPassing) {
+                        const row = document.getElementById(`row-${currentBlock.id}`);
+                        if (row) {
+                            row.classList.remove('border-transparent');
+                            row.classList.add('bg-blue-50', 'dark:bg-blue-900/20', 'border-brand-500');
+                        }
+                    }
+                }
+            }
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('schedule-body');
+            tbody.innerHTML = '';
+
+            const classes = activeTimeline.filter(t => !t.isPassing);
+
+            classes.forEach(block => {
+                const tr = document.createElement('tr');
+                tr.id = `row-${block.id}`;
+                tr.className = "sched-row transition-colors border-l-4 border-transparent hover:bg-gray-50 dark:hover:bg-gray-700/30";
+                
+                const timeStr = `${block.start} - ${block.end}`;
+                const name = block.displayName;
+                
+                const editBtn = block.editable 
+                    ? `<button onclick="editPeriod('${block.id}')" class="ml-2 text-gray-400 hover:text-brand-500 transition-colors" title="Edit Class Name">
+                         <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                       </button>`
+                    : '';
+
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white w-1/2">
+                        ${name} ${editBtn}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 text-right w-1/2 font-mono">
+                        ${timeStr}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- Interaction ---
+        function setManualSchedule(type) {
+            state.manualSchedule = type;
+            saveState();
+        }
+
+        function toggleTheme() {
+            state.theme = state.theme === 'light' ? 'dark' : 'light';
+            applyTheme();
+            saveState();
+        }
+
+        function applyTheme() {
+            const html = document.documentElement;
+            const darkIcon = document.getElementById('theme-icon-dark');
+            const lightIcon = document.getElementById('theme-icon-light');
+
+            if (state.theme === 'dark') {
+                html.classList.add('dark');
+                darkIcon.classList.add('hidden');
+                lightIcon.classList.remove('hidden');
+            } else {
+                html.classList.remove('dark');
+                lightIcon.classList.add('hidden');
+                darkIcon.classList.remove('hidden');
+            }
+        }
+
+        function toggleSettings() {
+            const panel = document.getElementById('settings-panel');
+            panel.classList.toggle('hidden');
+        }
+
+        function togglePeriodZero() {
+            state.hidePeriod0 = document.getElementById('toggle-p0').checked;
+            saveState();
+        }
+
+        function editPeriod(id) {
+            // Find default name to show in prompt
+            let defaultName = '';
+            for(let key in rawSchedules) {
+                const found = rawSchedules[key].find(p => p.id === id);
+                if(found) { defaultName = found.defaultName; break; }
+            }
+
+            const current = state.customNames[id] || defaultName;
+            const newName = prompt(`Enter custom name for ${defaultName}:`, current);
+            
+            if (newName !== null) {
+                const trimmed = newName.trim();
+                if (trimmed === '' || trimmed === defaultName) {
+                    delete state.customNames[id]; // Revert to default
+                } else {
+                    state.customNames[id] = trimmed;
+                }
+                saveState();
+            }
+        }
+
+        function updateDateDisplay() {
+            const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('current-date-display').innerText = new Date().toLocaleDateString(undefined, opts);
+        }
+
+        // Run on load
+        window.onload = init;
+    </script>
+</body>
+</html>
