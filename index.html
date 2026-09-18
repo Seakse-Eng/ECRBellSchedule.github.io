@@ -664,14 +664,25 @@
                 const chars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
                 const fontSize = 14;
                 const columns = canvas.width / fontSize;
-                const drops = Array(Math.floor(columns)).fill(1);
+                
+                // Scatter the starting drops randomly above the screen so they don't fall in a flat uniform line
+                const drops = Array.from({length: Math.floor(columns)}, () => Math.floor(Math.random() * -30));
                 
                 let lastDraw = 0;
+                let frameCount = 0;
+                // Calculate roughly how many frames it takes to entirely fill the screen height
+                const maxInitialFrames = (canvas.height / fontSize) + 35;
+                
                 function drawMatrix(time) {
                     bgAnimId = requestAnimationFrame(drawMatrix);
                     if (!time) time = performance.now();
-                    if (time - lastDraw < 65) return; 
+                    
+                    // Run with 0 delay (maximum frame rate) during the initial rollout, then throttle down to 65ms
+                    const delay = frameCount < maxInitialFrames ? 0 : 65;
+                    
+                    if (time - lastDraw < delay) return; 
                     lastDraw = time;
+                    frameCount++;
 
                     ctx.fillStyle = wipeColor;
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
