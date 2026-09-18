@@ -41,10 +41,13 @@
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background-color: rgb(var(--ctp-surface2)); border-radius: 10px; }
-        
+
+        /* Keyboard focus stays visible everywhere */
+        :focus-visible { outline: 2px solid rgb(var(--ctp-accent)); outline-offset: 2px; border-radius: 6px; }
+
         .circle-bg { fill: none; stroke: currentColor; stroke-width: 8; }
-        .circle-progress { 
-            fill: none; stroke: rgb(var(--ctp-accent)); stroke-width: 8; stroke-linecap: round; 
+        .circle-progress {
+            fill: none; stroke: rgb(var(--ctp-accent)); stroke-width: 8; stroke-linecap: round;
             transition: stroke-dashoffset 1s linear; transform: rotate(-90deg); transform-origin: 50% 50%;
         }
 
@@ -63,7 +66,7 @@
         body.compact-mode .text-4xl.sm\:text-5xl { font-size: 1.5rem; }
         body.compact-mode .w-64.h-64 { width: 120px; height: 120px; }
         body.compact-mode .sched-row td { padding: 0.25rem 0.75rem; }
-        body.compact-mode .min-h-[350px], body.compact-mode .min-h-[300px] { min-height: auto; }
+        body.compact-mode .min-h-\[350px\], body.compact-mode .min-h-\[300px\] { min-height: auto; }
         body.compact-mode .text-3xl { font-size: 1.25rem; }
 
         /* Background Layers System */
@@ -73,19 +76,11 @@
             transition: opacity 0.5s ease;
         }
         .bg-layer.active { opacity: 1; visibility: visible; }
-        
-        /* 1. Topology Background (Inherits theme colors via mask) */
-        .bg-topology {
-            background-color: rgb(var(--ctp-text));
-            -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z' fill='%23fff' fill-opacity='1' fill-rule='evenodd'/%3E%3C/svg%3E");
-            -webkit-mask-repeat: repeat;
-            opacity: 0.05;
-        }
 
-        /* 2. Interactive Mesh Gradient Background */
+        /* Interactive Mesh Gradient Background */
         .mesh-gradient {
             background-color: rgb(var(--ctp-base));
-            background-image: 
+            background-image:
                 radial-gradient(at 40% 20%, rgb(var(--ctp-accent) / 0.3) 0px, transparent 50%),
                 radial-gradient(at 80% 0%, rgb(var(--ctp-surface2) / 0.3) 0px, transparent 50%),
                 radial-gradient(at 0% 50%, rgb(var(--ctp-surface0) / 0.3) 0px, transparent 50%),
@@ -100,25 +95,42 @@
             100% { transform: scale(1.1) translate(-5%, -5%); }
         }
 
-        /* 3. Rising Bubbles */
+        /* Rising Bubbles */
         .bubble-container.active { pointer-events: auto; }
         .bubble {
-            position: absolute; bottom: -50px;
-            background: rgba(var(--ctp-surface2), 0.2);
-            border: 1px solid rgba(var(--ctp-surface2), 0.5);
-            border-radius: 50%; backdrop-filter: blur(2px);
-            cursor: pointer; animation: rise linear forwards;
-            transition: transform 0.1s;
+            position: absolute; bottom: -80px;
+            background:
+                radial-gradient(circle at 30% 28%, rgb(var(--ctp-text) / 0.35) 0%, rgb(var(--ctp-text) / 0.06) 38%, transparent 60%),
+                rgb(var(--ctp-surface2) / 0.28);
+            border: 1px solid rgb(var(--ctp-surface2) / 0.65);
+            border-radius: 50%;
+            backdrop-filter: blur(2px);
+            cursor: pointer;
+            animation-name: rise;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            transition: transform 0.1s ease;
         }
-        .bubble:active { transform: scale(1.1); }
-        @keyframes rise { to { transform: translateY(-120vh) rotate(360deg); } }
+        .bubble:hover { transform: scale(1.08); }
+        .bubble:active { transform: scale(0.92); }
+        @keyframes rise {
+            from { transform: translate(0, 0) rotate(0deg); }
+            to { transform: translate(var(--sway, 0px), -120vh) rotate(360deg); }
+        }
 
-        /* Burst Particles for Popping Bubbles */
+        /* Burst particles when a bubble pops */
         .burst-particle {
-            position: absolute; border-radius: 50%;
+            position: fixed; border-radius: 50%;
             background: rgb(var(--ctp-accent));
-            box-shadow: 0 0 8px rgb(var(--ctp-accent));
+            box-shadow: 0 0 8px rgb(var(--ctp-accent) / 0.8);
             pointer-events: none; z-index: 50;
+        }
+
+        .sched-row.is-past { opacity: 0.45; }
+        .sched-row.is-now { background-color: rgb(var(--ctp-surface0) / 0.5); box-shadow: inset 3px 0 0 rgb(var(--ctp-accent)); }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
         }
     </style>
 </head>
@@ -126,13 +138,13 @@
 
     <!-- Background Layer Containers -->
     <canvas id="bg-matrix" class="bg-layer"></canvas>
-    <div id="bg-topology" class="bg-layer bg-topology"></div>
+    <canvas id="bg-topology" class="bg-layer"></canvas>
     <div id="bg-mesh" class="bg-layer mesh-gradient"></div>
     <div id="bg-bubbles" class="bg-layer bubble-container"></div>
     <canvas id="bg-constellations" class="bg-layer"></canvas>
 
     <div id="master-container" class="mx-auto p-4 sm:p-6 lg:p-8 flex flex-col relative z-10 transition-all duration-500 max-w-3xl">
-        
+
         <!-- Header -->
         <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-ctp-mantle/80 backdrop-blur-md p-4 sm:p-6 rounded-xl shadow-sm border border-ctp-surface0 transition-colors w-full">
             <div>
@@ -140,16 +152,17 @@
                     El Camino Real Bell Schedule
                 </h1>
                 <p class="text-sm text-ctp-subtext mt-1 flex flex-wrap items-center gap-2">
-                    <span id="current-date-display"></span> <span class="opacity-50 hidden sm:inline">•</span> <span class="hidden sm:inline">Pacific Time</span> 
-                    <span id="battery-container" class="hidden flex items-center gap-1 bg-ctp-surface0/50 px-2 py-0.5 rounded-full text-xs ml-1">
+                    <span id="current-date-display"></span> <span class="opacity-50 hidden sm:inline">•</span> <span class="hidden sm:inline">Pacific Time</span>
+                    <span id="battery-container" class="hidden items-center gap-1 bg-ctp-surface0/50 px-2 py-0.5 rounded-full text-xs ml-1">
                         <svg id="battery-icon" class="w-4 h-4 text-ctp-text" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
                         <span id="battery-level" class="font-mono font-bold"></span>%
                     </span>
                 </p>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="toggleSettings()" class="p-2.5 rounded-full bg-ctp-surface0 hover:bg-ctp-surface1 transition-colors" title="Settings">
-                    <svg class="w-5 h-5 text-ctp-text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <button id="settings-btn" onclick="toggleSettings()" aria-expanded="false" aria-controls="settings-wrapper" class="p-2.5 rounded-full bg-ctp-surface0 hover:bg-ctp-surface1 transition-colors" title="Settings">
+                    <span class="sr-only">Settings</span>
+                    <svg class="w-5 h-5 text-ctp-text" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 </button>
             </div>
         </header>
@@ -166,8 +179,9 @@
                                 <p class="text-xs text-ctp-subtext">Remove from tracker.</p>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
+                                <span class="sr-only">Hide Period 0</span>
                                 <input type="checkbox" id="toggle-p0" class="sr-only peer" onchange="togglePeriodZero()">
-                                <div class="w-11 h-6 bg-ctp-surface1 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-ctp-accent"></div>
+                                <div class="w-11 h-6 bg-ctp-surface1 peer-focus-visible:ring-2 peer-focus-visible:ring-ctp-accent rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-ctp-accent"></div>
                             </label>
                         </div>
                         <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
@@ -176,27 +190,28 @@
                                 <p class="text-xs text-ctp-subtext">Minimize screen usage.</p>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
+                                <span class="sr-only">Compact mode</span>
                                 <input type="checkbox" id="toggle-compact" class="sr-only peer" onchange="toggleCompactMode()">
-                                <div class="w-11 h-6 bg-ctp-surface1 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-ctp-accent"></div>
+                                <div class="w-11 h-6 bg-ctp-surface1 peer-focus-visible:ring-2 peer-focus-visible:ring-ctp-accent rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-ctp-accent"></div>
                             </label>
                         </div>
                         <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
                             <div><p class="font-medium">Dashboard Layout</p></div>
-                            <select id="select-layout" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg focus:ring-ctp-accent focus:border-ctp-accent block p-2 outline-none">
+                            <select id="select-layout" aria-label="Dashboard layout" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg block p-2 outline-none">
                                 <option value="vertical">Vertical</option>
                                 <option value="horizontal">Horizontal</option>
                             </select>
                         </div>
                         <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
                             <div><p class="font-medium">Progress Visual</p></div>
-                            <select id="select-shape" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg focus:ring-ctp-accent focus:border-ctp-accent block p-2 outline-none">
+                            <select id="select-shape" aria-label="Progress visual" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg block p-2 outline-none">
                                 <option value="horizontal">Bar Layout</option>
                                 <option value="circular">Ring Layout</option>
                             </select>
                         </div>
                         <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
                             <div><p class="font-medium">Theme</p></div>
-                            <select id="select-color" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg focus:ring-ctp-accent focus:border-ctp-accent block p-2 outline-none">
+                            <select id="select-color" aria-label="Theme" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg block p-2 outline-none">
                                 <option value="latte">Latte (Light)</option>
                                 <option value="frappe">Frappé (Dark)</option>
                                 <option value="macchiato">Macchiato (Dark)</option>
@@ -208,11 +223,14 @@
                             </select>
                         </div>
                         <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
-                            <div><p class="font-medium">Background</p></div>
-                            <select id="select-bg" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg focus:ring-ctp-accent focus:border-ctp-accent block p-2 outline-none min-w-[150px]">
+                            <div>
+                                <p class="font-medium">Background</p>
+                                <p class="text-xs text-ctp-subtext" id="bg-hint">&nbsp;</p>
+                            </div>
+                            <select id="select-bg" aria-label="Background" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg block p-2 outline-none min-w-[150px]">
                                 <option value="none">None (Default)</option>
                                 <option value="mesh">Mesh Gradient</option>
-                                <option value="topology">Topology Grid</option>
+                                <option value="topology">Contour Map</option>
                                 <option value="bubbles">Rising Bubbles</option>
                                 <option value="constellations">Constellations</option>
                                 <option value="matrix">Matrix Rain</option>
@@ -224,27 +242,27 @@
         </div>
 
         <!-- Schedule Selector (Glider) -->
-        <div class="relative flex p-1.5 bg-ctp-mantle/80 backdrop-blur-md rounded-xl shadow-inner w-full sm:w-[450px] self-center overflow-hidden border border-ctp-surface0 mt-4 mb-4">
+        <div role="tablist" aria-label="Schedule type" class="relative flex p-1.5 bg-ctp-mantle/80 backdrop-blur-md rounded-xl shadow-inner w-full sm:w-[450px] self-center overflow-hidden border border-ctp-surface0 mt-4 mb-4">
             <div id="glider" class="absolute top-1.5 bottom-1.5 left-0 bg-ctp-surface1 rounded-lg shadow-sm z-0"></div>
-            <button id="btn-auto" onclick="setManualSchedule('auto')" class="relative z-10 flex-1 py-2 text-sm font-semibold transition-colors text-ctp-subtext">Auto</button>
-            <button id="btn-regular" onclick="setManualSchedule('regular')" class="relative z-10 flex-1 py-2 text-sm font-semibold transition-colors text-ctp-subtext">Regular</button>
-            <button id="btn-common" onclick="setManualSchedule('common')" class="relative z-10 flex-1 py-2 text-sm font-semibold transition-colors text-ctp-subtext">Common</button>
+            <button role="tab" id="btn-auto" onclick="setManualSchedule('auto')" class="relative z-10 flex-1 py-2 text-sm font-semibold transition-colors text-ctp-subtext">Auto</button>
+            <button role="tab" id="btn-regular" onclick="setManualSchedule('regular')" class="relative z-10 flex-1 py-2 text-sm font-semibold transition-colors text-ctp-subtext">Regular</button>
+            <button role="tab" id="btn-common" onclick="setManualSchedule('common')" class="relative z-10 flex-1 py-2 text-sm font-semibold transition-colors text-ctp-subtext">Common</button>
         </div>
 
         <!-- Main Content Layout container -->
         <div id="main-content" class="w-full flex flex-col gap-6">
-            
+
             <!-- Live Tracker Card -->
             <div class="flex-1 bg-ctp-mantle/90 backdrop-blur-md p-6 sm:p-10 rounded-2xl shadow-lg border border-ctp-surface0 flex flex-col items-center justify-center text-center relative overflow-hidden transition-colors min-h-[350px]">
                 <div class="absolute top-0 left-0 w-full h-1 bg-ctp-accent"></div>
-                
-                <p id="tracker-status" class="text-sm uppercase tracking-widest font-semibold text-ctp-accent mb-2">Loading...</p>
+
+                <p id="tracker-status" class="text-sm uppercase tracking-widest font-semibold text-ctp-accent mb-2">Loading…</p>
                 <h2 id="tracker-period-name" class="text-3xl sm:text-4xl font-extrabold text-ctp-text mb-6">--</h2>
-                
+
                 <!-- Horizontal View -->
                 <div id="view-horizontal" class="w-full flex flex-col items-center">
                     <div class="bg-ctp-surface0/30 px-6 py-4 rounded-xl border border-ctp-surface1 mb-6 w-full max-w-sm shadow-inner text-center">
-                        <p id="tracker-countdown-hz" class="text-5xl sm:text-6xl font-black font-mono text-ctp-text tabular-nums tracking-tighter">00:00</p>
+                        <p id="tracker-countdown-hz" class="text-5xl sm:text-6xl font-black font-mono text-ctp-text tabular-nums tracking-tighter" aria-live="off">00:00</p>
                         <p class="text-xs font-medium text-ctp-subtext uppercase mt-2 hidden sm:block">Time Remaining</p>
                     </div>
                     <div class="w-full max-w-md">
@@ -259,9 +277,9 @@
                 </div>
 
                 <!-- Circular View -->
-                <div id="view-circular" class="hidden w-full flex flex-col items-center relative">
+                <div id="view-circular" class="hidden w-full flex-col items-center relative">
                     <div class="relative w-64 h-64 flex items-center justify-center">
-                        <svg class="absolute top-0 left-0 w-full h-full" viewBox="0 0 100 100">
+                        <svg class="absolute top-0 left-0 w-full h-full" viewBox="0 0 100 100" aria-hidden="true">
                             <circle class="circle-bg text-ctp-surface1" cx="50" cy="50" r="45"></circle>
                             <circle id="tracker-progress-circ" class="circle-progress" cx="50" cy="50" r="45" stroke-dasharray="283" stroke-dashoffset="283"></circle>
                         </svg>
@@ -275,14 +293,17 @@
                         <span id="tracker-end-circ">--:--</span>
                     </div>
                 </div>
+
+                <p id="tracker-next" class="mt-6 text-xs text-ctp-subtext"></p>
             </div>
 
             <!-- Schedule Table -->
             <div class="flex-1 bg-ctp-mantle/90 backdrop-blur-md rounded-2xl shadow-sm border border-ctp-surface0 overflow-hidden transition-colors flex flex-col max-h-[500px]">
-                <div class="px-6 py-4 border-b border-ctp-surface0 bg-ctp-surface0/20 flex justify-between items-center">
+                <div class="px-6 py-4 border-b border-ctp-surface0 bg-ctp-surface0/20 flex justify-between items-center gap-3">
                     <h3 class="font-semibold text-ctp-text" id="schedule-title">Today's Schedule</h3>
+                    <span id="schedule-meta" class="text-xs text-ctp-subtext tabular-nums"></span>
                 </div>
-                <div class="overflow-x-auto flex-1 overflow-y-auto">
+                <div id="schedule-scroll" class="overflow-x-auto flex-1 overflow-y-auto">
                     <table class="w-full text-left border-collapse">
                         <tbody id="schedule-body" class="divide-y divide-ctp-surface0/50">
                             <!-- Rows injected via JS -->
@@ -293,12 +314,16 @@
 
             <!-- Tasks Widget -->
             <div class="flex-1 bg-ctp-mantle/90 backdrop-blur-md rounded-2xl shadow-sm border border-ctp-surface0 overflow-hidden transition-colors flex flex-col min-h-[300px]">
-                <div class="px-6 py-4 border-b border-ctp-surface0 bg-ctp-surface0/20 flex justify-between items-center">
-                    <h3 class="font-semibold text-ctp-text">Tasks & Goals</h3>
+                <div class="px-6 py-4 border-b border-ctp-surface0 bg-ctp-surface0/20 flex justify-between items-center gap-3">
+                    <h3 class="font-semibold text-ctp-text">Tasks &amp; Goals</h3>
+                    <div class="flex items-center gap-3">
+                        <span id="task-count" class="text-xs text-ctp-subtext tabular-nums"></span>
+                        <button id="clear-done" onclick="clearCompleted()" class="hidden text-xs font-semibold text-ctp-subtext hover:text-ctp-accent transition-colors">Clear done</button>
+                    </div>
                 </div>
                 <div class="p-4 flex flex-col gap-3 flex-1 overflow-hidden">
                     <div class="flex gap-2">
-                        <input type="text" id="new-task-input" class="flex-1 bg-ctp-surface0/50 border border-ctp-surface1 rounded-lg px-3 py-2 text-sm text-ctp-text focus:outline-none focus:border-ctp-accent transition-colors" placeholder="e.g. Study for period 3..." onkeypress="if(event.key === 'Enter') addTask()">
+                        <input type="text" id="new-task-input" maxlength="120" aria-label="New task" class="flex-1 bg-ctp-surface0/50 border border-ctp-surface1 rounded-lg px-3 py-2 text-sm text-ctp-text focus:outline-none focus:border-ctp-accent transition-colors" placeholder="e.g. Study for period 3…" onkeydown="if(event.key === 'Enter') addTask()">
                         <button onclick="addTask()" class="bg-ctp-surface1 hover:bg-ctp-surface2 text-ctp-text px-4 py-2 rounded-lg transition-colors text-sm font-semibold">Add</button>
                     </div>
                     <ul id="task-list" class="flex flex-col gap-2 mt-2 overflow-y-auto pr-1 pb-2 flex-1">
@@ -311,7 +336,9 @@
     </div>
 
     <script>
-        // Setup Schedule Data
+        // ---------------------------------------------------------------
+        // Schedule data
+        // ---------------------------------------------------------------
         const rawSchedules = {
             regular: [
                 { id: 'p0', name: 'Period 0', defaultName: 'Period 0', start: '7:27 AM', end: '8:23 AM', editable: true },
@@ -337,7 +364,7 @@
                 { id: 'p6', name: 'Period 6', defaultName: 'Period 6', start: '2:56 PM', end: '3:45 PM', editable: true }
             ]
         };
-        
+
         let state = {
             manualType: 'auto',
             hideP0: false,
@@ -350,29 +377,34 @@
             tasks: []
         };
 
+        const BASE_TITLE = 'El Camino Real Bell Schedule';
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
         let currentActiveId = null;
-        let activeInterval = null;
         let compiledSchedules = {};
-        
-        // Globals for Backgrounds
+
+        // Background runtime handles
         let globalAnimId = null;
         let bubbleIntervalId = null;
+        let bgAbort = null;
 
         function loadState() {
             const s = localStorage.getItem('ecr_state');
             if (s) {
-                try { 
+                try {
                     const parsed = JSON.parse(s);
                     state = { ...state, ...parsed };
-                    if (!state.tasks) state.tasks = [];
-                } catch(e) {}
+                    if (!Array.isArray(state.tasks)) state.tasks = [];
+                } catch (e) {}
             }
         }
         function saveState() {
-            localStorage.setItem('ecr_state', JSON.stringify(state));
+            try { localStorage.setItem('ecr_state', JSON.stringify(state)); } catch (e) {}
         }
 
-        // TIME UTILS
+        // ---------------------------------------------------------------
+        // Time helpers
+        // ---------------------------------------------------------------
         function timeToDate(timeStr, baseDate = new Date()) {
             const d = new Date(baseDate);
             const [time, modifier] = timeStr.split(' ');
@@ -389,32 +421,33 @@
             const h = Math.floor((totalS % 86400) / 3600);
             const m = Math.floor((totalS % 3600) / 60);
             const s = totalS % 60;
-            
-            if (d > 0) return `${d}d ${h}h ${m}m`; // Hide seconds if counting days
-            if (h > 0) return `${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-            return `${m}:${s.toString().padStart(2,'0')}`;
+
+            if (d > 0) return `${d}d ${h}h ${m}m`;
+            if (h > 0) return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            return `${m}:${s.toString().padStart(2, '0')}`;
         }
 
-        function determineScheduleType(date) {
+        function typeForDate(date) {
             if (state.manualType !== 'auto') return state.manualType;
             const day = date.getDay();
-            if (day === 0 || day === 6) return 'none'; // Weekend
+            if (day === 0 || day === 6) return 'none';
             if (day === 2) return 'common';
             return 'regular';
         }
+
+        function determineScheduleType(date) { return typeForDate(date); }
 
         function compileSchedules() {
             for (const key in rawSchedules) {
                 compiledSchedules[key] = rawSchedules[key]
                     .filter(p => !(state.hideP0 && p.id === 'p0'))
-                    .map(p => ({
-                        ...p,
-                        name: state.customNames[p.id] || p.defaultName
-                    }));
+                    .map(p => ({ ...p, name: state.customNames[p.id] || p.defaultName }));
             }
         }
 
-        // DOM UPDATES
+        // ---------------------------------------------------------------
+        // Settings / layout
+        // ---------------------------------------------------------------
         function updateUIState() {
             document.documentElement.setAttribute('data-theme', state.colorTheme);
             document.getElementById('toggle-p0').checked = state.hideP0;
@@ -423,24 +456,35 @@
             document.getElementById('select-shape').value = state.shape;
             document.getElementById('select-color').value = state.colorTheme;
             document.getElementById('select-bg').value = state.bg;
+            document.getElementById('bg-hint').textContent =
+                state.bg === 'topology' ? 'Bulges toward your cursor.'
+                : state.bg === 'bubbles' ? 'Click a bubble to pop it.'
+                : '\u00A0';
 
             updateGlider();
             updateCompactMode();
             updateShapeView();
             updateBackground();
             renderTasks();
-            
+
             compileSchedules();
+            currentActiveId = null;
             buildScheduleTable();
             tick();
         }
 
-        function toggleSettings() {
+        function settingsOpen() {
+            return document.getElementById('settings-wrapper').style.gridTemplateRows === '1fr';
+        }
+
+        function toggleSettings(force) {
             const w = document.getElementById('settings-wrapper');
-            if (w.style.gridTemplateRows === '1fr') {
+            const open = typeof force === 'boolean' ? force : !settingsOpen();
+            document.getElementById('settings-btn').setAttribute('aria-expanded', String(open));
+            if (!open) {
                 w.style.gridTemplateRows = '0fr';
                 w.style.opacity = '0';
-                setTimeout(()=> w.style.visibility = 'hidden', 400);
+                setTimeout(() => { if (!settingsOpen()) w.style.visibility = 'hidden'; }, 400);
             } else {
                 w.style.visibility = 'visible';
                 w.style.gridTemplateRows = '1fr';
@@ -477,37 +521,31 @@
             const glider = document.getElementById('glider');
             glider.style.width = '33.333%';
             glider.style.transform = `translateX(${idx * 100}%)`;
-            
+
             types.forEach(t => {
                 const btn = document.getElementById(`btn-${t}`);
-                if (t === state.manualType) {
-                    btn.classList.add('text-ctp-base');
-                    btn.classList.remove('text-ctp-subtext');
-                } else {
-                    btn.classList.remove('text-ctp-base');
-                    btn.classList.add('text-ctp-subtext');
-                }
+                const on = t === state.manualType;
+                btn.setAttribute('aria-selected', String(on));
+                btn.classList.toggle('text-ctp-base', on);
+                btn.classList.toggle('text-ctp-subtext', !on);
             });
         }
 
         function updateCompactMode() {
-            if (state.compactMode) document.body.classList.add('compact-mode');
-            else document.body.classList.remove('compact-mode');
+            document.body.classList.toggle('compact-mode', state.compactMode);
             updateDashboardLayout();
         }
 
         function updateDashboardLayout() {
             const mc = document.getElementById('main-content');
             const container = document.getElementById('master-container');
-            
             container.classList.remove('max-w-3xl', 'max-w-6xl', 'max-w-2xl', 'max-w-xl', 'max-w-5xl');
-            
+
             if (state.layout === 'horizontal') {
                 mc.className = `w-full grid grid-cols-1 lg:grid-cols-3 ${state.compactMode ? 'gap-4' : 'gap-6'}`;
                 container.classList.add(state.compactMode ? 'max-w-5xl' : 'max-w-6xl');
             } else {
                 mc.className = `flex flex-col w-full ${state.compactMode ? 'gap-4' : 'gap-6'}`;
-                // Drop max width down to extra-small if compact mode is enabled on vertical layout
                 container.classList.add(state.compactMode ? 'max-w-xl' : 'max-w-3xl');
             }
         }
@@ -515,66 +553,224 @@
         function updateShapeView() {
             const hz = document.getElementById('view-horizontal');
             const circ = document.getElementById('view-circular');
-            if (state.shape === 'circular') {
-                hz.classList.add('hidden');
-                circ.classList.remove('hidden');
-            } else {
-                circ.classList.add('hidden');
-                hz.classList.remove('hidden');
-            }
+            const circular = state.shape === 'circular';
+            hz.classList.toggle('hidden', circular);
+            hz.classList.toggle('flex', !circular);
+            circ.classList.toggle('hidden', !circular);
+            circ.classList.toggle('flex', circular);
         }
 
-        // BACKGROUND MANAGEMENT
+        // ---------------------------------------------------------------
+        // Backgrounds
+        // ---------------------------------------------------------------
         function clearBackgrounds() {
             if (globalAnimId) cancelAnimationFrame(globalAnimId);
+            globalAnimId = null;
             if (bubbleIntervalId) clearInterval(bubbleIntervalId);
+            bubbleIntervalId = null;
+            if (bgAbort) bgAbort.abort();
+            bgAbort = new AbortController();
             document.querySelectorAll('.bg-layer').forEach(el => el.classList.remove('active'));
-            document.getElementById('bg-bubbles').innerHTML = ''; // Clear leftover bubbles
+            document.getElementById('bg-bubbles').innerHTML = '';
         }
 
         function updateBackground() {
             clearBackgrounds();
             const bgType = state.bg;
-
             if (bgType === 'none') return;
-            
+
             const targetEl = document.getElementById(`bg-${bgType}`);
             if (targetEl) targetEl.classList.add('active');
 
-            if (bgType === 'matrix') {
-                startMatrix(targetEl);
-            } else if (bgType === 'bubbles') {
-                startBubbles(targetEl);
-            } else if (bgType === 'constellations') {
-                startConstellations(targetEl);
+            if (bgType === 'matrix') startMatrix(targetEl);
+            else if (bgType === 'bubbles') startBubbles(targetEl);
+            else if (bgType === 'constellations') startConstellations(targetEl);
+            else if (bgType === 'topology') startContourMap(targetEl);
+        }
+
+        function cssVar(name) {
+            return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+        }
+
+        /* --- Contour map: value-noise terrain drawn with marching squares.
+               Slowly drifts, and magnifies (bulges) around the pointer. --- */
+        function mulberry32(a) {
+            return function () {
+                a |= 0; a = a + 0x6D2B79F5 | 0;
+                let t = Math.imul(a ^ a >>> 15, 1 | a);
+                t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+                return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
+        }
+
+        function makeNoise(seed) {
+            const P = 64;
+            const rnd = mulberry32(seed);
+            const lattice = new Float32Array(P * P);
+            for (let i = 0; i < P * P; i++) lattice[i] = rnd();
+            const fade = t => t * t * t * (t * (t * 6 - 15) + 10);
+            const at = (ix, iy) => lattice[((iy % P) + P) % P * P + (((ix % P) + P) % P)];
+
+            function noise2(x, y) {
+                const x0 = Math.floor(x), y0 = Math.floor(y);
+                const fx = fade(x - x0), fy = fade(y - y0);
+                const v00 = at(x0, y0), v10 = at(x0 + 1, y0);
+                const v01 = at(x0, y0 + 1), v11 = at(x0 + 1, y0 + 1);
+                return (v00 + (v10 - v00) * fx) * (1 - fy) + (v01 + (v11 - v01) * fx) * fy;
             }
+            return function fbm(x, y) {
+                let amp = 0.5, freq = 1, sum = 0, norm = 0;
+                for (let o = 0; o < 4; o++) {
+                    sum += amp * noise2(x * freq, y * freq);
+                    norm += amp; amp *= 0.5; freq *= 2.03;
+                }
+                return sum / norm;
+            };
+        }
+
+        function startContourMap(canvas) {
+            const ctx = canvas.getContext('2d');
+            const fbm = makeNoise(20260917);
+            const signal = bgAbort.signal;
+
+            const CELL = 15;              // grid spacing in CSS px
+            const SCALE = 1 / 330;        // noise units per px
+            const L_START = 0.10, L_STEP = 0.042, N_LEVELS = 20;
+            const RADIUS = 240;           // bulge radius in px
+            const STRENGTH = 0.55;        // 0 = flat, higher = more bulge
+
+            let w = 0, h = 0, cols = 0, rows = 0, field = null, dpr = 1;
+            // Pointer starts parked off-screen so nothing bulges until you move.
+            let tx = -9999, ty = -9999, mx = -9999, my = -9999;
+
+            function resize() {
+                dpr = Math.min(window.devicePixelRatio || 1, 2);
+                w = window.innerWidth; h = window.innerHeight;
+                canvas.width = Math.floor(w * dpr);
+                canvas.height = Math.floor(h * dpr);
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                cols = Math.ceil(w / CELL) + 2;
+                rows = Math.ceil(h / CELL) + 2;
+                field = new Float32Array(cols * rows);
+            }
+            resize();
+            window.addEventListener('resize', resize, { signal });
+            window.addEventListener('pointermove', e => { tx = e.clientX; ty = e.clientY; }, { signal, passive: true });
+            window.addEventListener('pointerleave', () => { tx = -9999; ty = -9999; }, { signal });
+
+            const start = performance.now();
+            let last = 0;
+
+            function frame(now) {
+                globalAnimId = requestAnimationFrame(frame);
+                if (now - last < 26) return;   // ~38fps ceiling
+                last = now;
+
+                // ease the bulge toward the pointer so it feels physical
+                if (mx < -5000) { mx = tx; my = ty; }
+                else { mx += (tx - mx) * 0.12; my += (ty - my) * 0.12; }
+
+                const t = reduceMotion ? 0 : (now - start) / 1000;
+                const driftX = t * 0.010, driftY = t * 0.0055;
+
+                // 1. sample the terrain, warping sample coords near the cursor
+                for (let j = 0; j < rows; j++) {
+                    const y = j * CELL;
+                    for (let i = 0; i < cols; i++) {
+                        const x = i * CELL;
+                        let sx = x, sy = y;
+                        const dx = x - mx, dy = y - my;
+                        const d2 = dx * dx + dy * dy;
+                        if (d2 < RADIUS * RADIUS) {
+                            const d = Math.sqrt(d2);
+                            const f = 1 - d / RADIUS;
+                            const k = f * f * STRENGTH;
+                            sx = x - dx * k;
+                            sy = y - dy * k;
+                        }
+                        field[j * cols + i] = fbm(sx * SCALE + driftX, sy * SCALE + driftY);
+                    }
+                }
+
+                // 2. trace iso-lines
+                const far = new Path2D();
+                const near = new Path2D();
+                const R2 = (RADIUS + CELL) * (RADIUS + CELL);
+
+                for (let j = 0; j < rows - 1; j++) {
+                    const y = j * CELL;
+                    for (let i = 0; i < cols - 1; i++) {
+                        const x = i * CELL;
+                        const a = field[j * cols + i];
+                        const b = field[j * cols + i + 1];
+                        const c = field[(j + 1) * cols + i + 1];
+                        const d = field[(j + 1) * cols + i];
+                        const mn = Math.min(a, b, c, d), mxv = Math.max(a, b, c, d);
+                        let lo = Math.ceil((mn - L_START) / L_STEP);
+                        let hi = Math.floor((mxv - L_START) / L_STEP);
+                        if (lo < 0) lo = 0;
+                        if (hi > N_LEVELS - 1) hi = N_LEVELS - 1;
+                        if (hi < lo) continue;
+
+                        const cx = x - mx + CELL / 2, cy = y - my + CELL / 2;
+                        const path = (cx * cx + cy * cy) < R2 ? near : far;
+
+                        for (let li = lo; li <= hi; li++) {
+                            const L = L_START + li * L_STEP;
+                            let n = 0;
+                            let px0, py0, px1, py1, px2, py2, px3, py3;
+                            if ((a < L) !== (b < L)) { px0 = x + CELL * (L - a) / (b - a); py0 = y; n++; }
+                            if ((b < L) !== (c < L)) { const p = x + CELL, q = y + CELL * (L - b) / (c - b); if (n === 0) { px0 = p; py0 = q; } else { px1 = p; py1 = q; } n++; }
+                            if ((d < L) !== (c < L)) { const p = x + CELL * (L - d) / (c - d), q = y + CELL; if (n === 0) { px0 = p; py0 = q; } else if (n === 1) { px1 = p; py1 = q; } else { px2 = p; py2 = q; } n++; }
+                            if ((a < L) !== (d < L)) { const p = x, q = y + CELL * (L - a) / (d - a); if (n === 1) { px1 = p; py1 = q; } else if (n === 2) { px2 = p; py2 = q; } else if (n === 3) { px3 = p; py3 = q; } n++; }
+
+                            if (n === 2) {
+                                path.moveTo(px0, py0); path.lineTo(px1, py1);
+                            } else if (n === 4) {
+                                path.moveTo(px0, py0); path.lineTo(px1, py1);
+                                path.moveTo(px2, py2); path.lineTo(px3, py3);
+                            }
+                        }
+                    }
+                }
+
+                // 3. paint
+                const text = cssVar('--ctp-text');
+                const accent = cssVar('--ctp-accent');
+                ctx.clearRect(0, 0, w, h);
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = `rgb(${text} / 0.17)`;
+                ctx.stroke(far);
+                ctx.lineWidth = 1.2;
+                ctx.strokeStyle = `rgb(${accent} / 0.5)`;
+                ctx.stroke(near);
+            }
+            globalAnimId = requestAnimationFrame(frame);
         }
 
         function startMatrix(canvas) {
             const ctx = canvas.getContext('2d');
-            let w, h;
+            const signal = bgAbort.signal;
+            let w, h, cols, yPos;
             function rs() {
                 w = canvas.width = window.innerWidth;
                 h = canvas.height = window.innerHeight;
+                cols = Math.floor(w / 20) + 1;
+                yPos = Array(cols).fill(0);
             }
-            rs(); window.addEventListener('resize', rs);
-            
-            const cols = Math.floor(w / 20) + 1;
-            const yPos = Array(cols).fill(0);
-            
+            rs();
+            window.addEventListener('resize', rs, { signal });
+
             function draw() {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                ctx.fillStyle = `rgb(${cssVar('--ctp-base')} / 0.12)`;
                 ctx.fillRect(0, 0, w, h);
-                
-                // Read CSS custom property and format properly
-                const rawColor = getComputedStyle(document.documentElement).getPropertyValue('--ctp-accent').trim();
-                ctx.fillStyle = `rgb(${rawColor})`;
+                ctx.fillStyle = `rgb(${cssVar('--ctp-accent')})`;
                 ctx.font = '15pt monospace';
-                
                 yPos.forEach((y, ind) => {
-                    const text = String.fromCharCode(Math.random() * 128);
-                    const x = ind * 20;
-                    ctx.fillText(text, x, y);
+                    const text = String.fromCharCode(0x30A0 + Math.random() * 96);
+                    ctx.fillText(text, ind * 20, y);
                     if (y > 100 + Math.random() * 10000) yPos[ind] = 0;
                     else yPos[ind] = y + 20;
                 });
@@ -584,11 +780,12 @@
         }
 
         function startBubbles(container) {
+            const MAX_BUBBLES = 26;
+
             function createBurst(x, y) {
-                const particleCount = 12;
-                for (let i = 0; i < particleCount; i++) {
+                for (let i = 0; i < 12; i++) {
                     const p = document.createElement('div');
-                    p.classList.add('burst-particle');
+                    p.className = 'burst-particle';
                     const size = Math.random() * 6 + 4;
                     p.style.width = `${size}px`;
                     p.style.height = `${size}px`;
@@ -598,45 +795,45 @@
 
                     const angle = Math.random() * Math.PI * 2;
                     const dist = Math.random() * 60 + 40;
-                    const tx = Math.cos(angle) * dist;
-                    const ty = Math.sin(angle) * dist;
-
                     const anim = p.animate([
                         { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-                        { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
-                    ], {
-                        duration: Math.random() * 300 + 400,
-                        easing: 'cubic-bezier(0.25, 1, 0.5, 1)'
-                    });
+                        { transform: `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px) scale(0)`, opacity: 0 }
+                    ], { duration: Math.random() * 300 + 400, easing: 'cubic-bezier(0.25, 1, 0.5, 1)' });
                     anim.onfinish = () => p.remove();
                 }
             }
 
             function spawnBubble() {
                 if (!container.classList.contains('active')) return;
+                if (document.hidden) return;
+                if (container.childElementCount >= MAX_BUBBLES) return;
+
                 const b = document.createElement('div');
-                b.classList.add('bubble');
+                b.className = 'bubble';
                 const size = Math.random() * 40 + 20;
                 b.style.width = `${size}px`;
                 b.style.height = `${size}px`;
-                b.style.left = `${Math.random() * 100}vw`;
-                b.style.animationDuration = `${Math.random() * 5 + 5}s`;
+                b.style.left = `${Math.random() * Math.max(0, window.innerWidth - size)}px`;
+                b.style.setProperty('--sway', `${(Math.random() - 0.5) * 140}px`);
+                b.style.animationDuration = `${Math.random() * 6 + 7}s`;
 
-                b.addEventListener('click', (e) => {
+                b.addEventListener('pointerdown', e => {
                     createBurst(e.clientX, e.clientY);
                     b.remove();
                 });
                 b.addEventListener('animationend', () => b.remove());
                 container.appendChild(b);
             }
-            
-            bubbleIntervalId = setInterval(spawnBubble, 500);
+
+            for (let i = 0; i < 5; i++) setTimeout(spawnBubble, i * 220);
+            bubbleIntervalId = setInterval(spawnBubble, 650);
         }
 
         function startConstellations(canvas) {
             const ctx = canvas.getContext('2d');
+            const signal = bgAbort.signal;
             let w, h, stars = [];
-            const cfg = { count: 120, dist: 130, glow: 10 };
+            const cfg = { count: 110, dist: 130, glow: 10 };
 
             function rs() {
                 w = canvas.width = window.innerWidth;
@@ -647,11 +844,12 @@
                     r: Math.random() * 1.5 + 0.5
                 }));
             }
-            rs(); window.addEventListener('resize', rs);
+            rs();
+            window.addEventListener('resize', rs, { signal });
 
             function draw() {
                 ctx.clearRect(0, 0, w, h);
-                const rawText = getComputedStyle(document.documentElement).getPropertyValue('--ctp-text').trim();
+                const rawText = cssVar('--ctp-text');
                 const textColor = `rgb(${rawText})`;
 
                 for (let i = 0; i < stars.length; i++) {
@@ -672,13 +870,11 @@
                         const s2 = stars[j];
                         const dx = s.x - s2.x, dy = s.y - s2.y;
                         const dist = Math.sqrt(dx * dx + dy * dy);
-
                         if (dist < cfg.dist) {
                             ctx.beginPath();
                             ctx.moveTo(s.x, s.y);
                             ctx.lineTo(s2.x, s2.y);
-                            const op = 1 - (dist / cfg.dist);
-                            ctx.strokeStyle = `rgba(${rawText}, ${op * 0.4})`;
+                            ctx.strokeStyle = `rgb(${rawText} / ${(1 - dist / cfg.dist) * 0.4})`;
                             ctx.lineWidth = 0.5;
                             ctx.stroke();
                         }
@@ -689,24 +885,31 @@
             draw();
         }
 
-        // TASK WIDGET LOGIC
+        // ---------------------------------------------------------------
+        // Tasks
+        // ---------------------------------------------------------------
         function renderTasks() {
             const list = document.getElementById('task-list');
+            const done = state.tasks.filter(t => t.done).length;
+            document.getElementById('task-count').textContent = state.tasks.length ? `${done}/${state.tasks.length} done` : '';
+            document.getElementById('clear-done').classList.toggle('hidden', done === 0);
+
             list.innerHTML = '';
             if (state.tasks.length === 0) {
-                list.innerHTML = `<li class="text-xs text-ctp-subtext text-center italic py-4">No tasks yet. You're all caught up!</li>`;
+                list.innerHTML = `<li class="text-xs text-ctp-subtext text-center py-4">Nothing tracked yet. Add what you want to finish today.</li>`;
                 return;
             }
             state.tasks.forEach(task => {
                 const li = document.createElement('li');
                 li.className = "flex items-center justify-between bg-ctp-surface0/30 p-2.5 rounded-lg border border-ctp-surface0/50 hover:border-ctp-surface1 transition-colors";
                 li.innerHTML = `
-                    <div class="flex items-center gap-3 overflow-hidden">
+                    <label class="flex items-center gap-3 overflow-hidden cursor-pointer">
                         <input type="checkbox" ${task.done ? 'checked' : ''} onchange="toggleTask(${task.id})" class="w-4 h-4 accent-ctp-accent cursor-pointer rounded border-ctp-surface2 bg-ctp-surface0 flex-shrink-0">
                         <span class="text-sm truncate ${task.done ? 'line-through text-ctp-subtext' : 'text-ctp-text'}">${escapeHTML(task.text)}</span>
-                    </div>
-                    <button onclick="deleteTask(${task.id})" class="text-ctp-subtext hover:text-red-400 transition-colors p-1 flex-shrink-0">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </label>
+                    <button onclick="deleteTask(${task.id})" title="Delete task" class="text-ctp-subtext hover:text-red-400 transition-colors p-1 flex-shrink-0">
+                        <span class="sr-only">Delete task</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 `;
                 list.appendChild(li);
@@ -715,247 +918,270 @@
         function addTask() {
             const input = document.getElementById('new-task-input');
             const text = input.value.trim();
-            if(text) {
+            if (text) {
                 state.tasks.push({ id: Date.now(), text, done: false });
                 input.value = '';
                 saveState(); renderTasks();
             }
+            input.focus();
         }
         function toggleTask(id) {
             const task = state.tasks.find(t => t.id === id);
-            if(task) { task.done = !task.done; saveState(); renderTasks(); }
+            if (task) { task.done = !task.done; saveState(); renderTasks(); }
         }
         function deleteTask(id) {
             state.tasks = state.tasks.filter(t => t.id !== id);
             saveState(); renderTasks();
         }
+        function clearCompleted() {
+            state.tasks = state.tasks.filter(t => !t.done);
+            saveState(); renderTasks();
+        }
         function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, tag => ({
-                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
-            }[tag]));
+            return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
         }
 
-        // SCHEDULE TABLE
+        // ---------------------------------------------------------------
+        // Schedule table
+        // ---------------------------------------------------------------
+        function minutesBetween(a, b) { return Math.round((b - a) / 60000); }
+
         function buildScheduleTable() {
             const tbody = document.getElementById('schedule-body');
             tbody.innerHTML = '';
-            
+
             const now = new Date();
             const type = determineScheduleType(now);
             const periods = compiledSchedules[type] || [];
-            
-            document.getElementById('schedule-title').innerText = type === 'none' ? 'No School Today' : `Schedule (${type})`;
+            const label = type === 'common' ? 'Common planning day' : type === 'regular' ? 'Regular day' : '';
+
+            document.getElementById('schedule-title').innerText = type === 'none' ? 'No school today' : 'Today’s schedule';
+            document.getElementById('schedule-meta').innerText = label;
 
             if (periods.length === 0) {
-                tbody.innerHTML = `<tr><td class="p-4 text-center text-ctp-subtext text-sm">Enjoy your day!</td></tr>`;
+                tbody.innerHTML = `<tr><td class="p-4 text-center text-ctp-subtext text-sm">Nothing scheduled. Pick Regular or Common above to preview a school day.</td></tr>`;
                 return;
             }
 
-            periods.forEach((p, i) => {
+            periods.forEach(p => {
+                const mins = minutesBetween(timeToDate(p.start, now), timeToDate(p.end, now));
                 const tr = document.createElement('tr');
                 tr.id = `row-${p.id}`;
                 tr.className = "sched-row transition-colors duration-300";
-                
+
                 let nameCell = `<span class="font-medium">${p.name}</span>`;
                 if (p.editable) {
                     nameCell = `
                         <div class="flex items-center gap-2 group">
                             <span class="font-medium truncate max-w-[120px] sm:max-w-xs" id="name-txt-${p.id}">${p.name}</span>
-                            <button onclick="editName('${p.id}')" class="text-ctp-subtext opacity-0 group-hover:opacity-100 hover:text-ctp-accent transition-all"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
+                            <button onclick="editName('${p.id}')" title="Rename ${p.name}" class="text-ctp-subtext opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:text-ctp-accent transition-all"><span class="sr-only">Rename</span><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
                         </div>
-                        <div id="name-edit-${p.id}" class="hidden flex items-center gap-2">
-                            <input type="text" id="name-inp-${p.id}" class="bg-ctp-surface0 border border-ctp-surface1 text-xs px-2 py-1 rounded w-24 sm:w-32 outline-none focus:border-ctp-accent" value="${p.name}" onkeypress="if(event.key==='Enter') saveName('${p.id}')">
-                            <button onclick="saveName('${p.id}')" class="text-green-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>
-                            <button onclick="cancelName('${p.id}')" class="text-red-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                        <div id="name-edit-${p.id}" class="hidden items-center gap-2">
+                            <input type="text" id="name-inp-${p.id}" maxlength="28" aria-label="Period name" class="bg-ctp-surface0 border border-ctp-surface1 text-xs px-2 py-1 rounded w-24 sm:w-32 outline-none focus:border-ctp-accent" value="${p.name}" onkeydown="if(event.key==='Enter') saveName('${p.id}'); if(event.key==='Escape') cancelName('${p.id}')">
+                            <button onclick="saveName('${p.id}')" class="text-green-500" title="Save name"><span class="sr-only">Save name</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>
+                            <button onclick="cancelName('${p.id}')" class="text-red-500" title="Cancel"><span class="sr-only">Cancel</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
                         </div>
                     `;
                 }
 
                 tr.innerHTML = `
                     <td class="p-3 sm:p-4 text-sm w-1/2">${nameCell}</td>
-                    <td class="p-3 sm:p-4 text-sm text-right text-ctp-subtext tabular-nums font-medium">${p.start} - ${p.end}</td>
+                    <td class="p-3 sm:p-4 text-sm text-right text-ctp-subtext tabular-nums font-medium">
+                        ${p.start} – ${p.end}
+                        <span class="block text-[11px] opacity-70">${mins} min</span>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        window.editName = function(id) {
+        function refreshRowStates(activeId) {
+            const now = new Date();
+            const periods = compiledSchedules[determineScheduleType(now)] || [];
+            periods.forEach(p => {
+                const row = document.getElementById(`row-${p.id}`);
+                if (!row) return;
+                const isNow = p.id === activeId;
+                row.classList.toggle('is-now', isNow);
+                row.classList.toggle('is-past', !isNow && now >= timeToDate(p.end, now));
+            });
+            const row = activeId ? document.getElementById(`row-${activeId}`) : null;
+            const scroller = document.getElementById('schedule-scroll');
+            if (row && scroller && scroller.scrollHeight > scroller.clientHeight) {
+                scroller.scrollTop = row.offsetTop - scroller.clientHeight / 2 + row.clientHeight / 2;
+            }
+        }
+
+        window.editName = function (id) {
             document.getElementById(`name-txt-${id}`).parentElement.classList.add('hidden');
-            document.getElementById(`name-edit-${id}`).classList.remove('hidden');
+            const box = document.getElementById(`name-edit-${id}`);
+            box.classList.remove('hidden');
+            box.classList.add('flex');
             document.getElementById(`name-inp-${id}`).focus();
         };
-        window.saveName = function(id) {
+        window.saveName = function (id) {
             const val = document.getElementById(`name-inp-${id}`).value.trim();
-            const defName = rawSchedules.regular.find(p=>p.id===id)?.defaultName || '';
+            const defName = (rawSchedules.regular.find(p => p.id === id) || rawSchedules.common.find(p => p.id === id) || {}).defaultName || '';
             if (val && val !== defName) state.customNames[id] = val;
             else delete state.customNames[id];
             saveState(); updateUIState();
         };
-        window.cancelName = function(id) {
-            document.getElementById(`name-edit-${id}`).classList.add('hidden');
+        window.cancelName = function (id) {
+            const box = document.getElementById(`name-edit-${id}`);
+            box.classList.add('hidden');
+            box.classList.remove('flex');
             document.getElementById(`name-txt-${id}`).parentElement.classList.remove('hidden');
         };
 
-        // CORE TRACKER TICK
+        // ---------------------------------------------------------------
+        // Live tracker
+        // ---------------------------------------------------------------
         function tick() {
             const now = new Date();
-            const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
-            document.getElementById('current-date-display').innerText = dateStr;
+            document.getElementById('current-date-display').innerText =
+                now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
 
             const type = determineScheduleType(now);
             const periods = compiledSchedules[type] || [];
-            
-            let status = 'Outside School Hours';
-            let activePeriod = null;
-            let nextPeriod = null;
+
+            let status = 'Outside school hours';
+            let active = null, next = null, upcoming = null;
             let pStart, pEnd;
 
-            // Step 1: Check Current Day
-            if (periods.length > 0) {
-                for (let i = 0; i < periods.length; i++) {
-                    const p = periods[i];
-                    const start = timeToDate(p.start, now);
-                    const end = timeToDate(p.end, now);
-                    
-                    if (now >= start && now < end) {
-                        activePeriod = p;
-                        pStart = start; pEnd = end;
-                        status = 'In Progress';
-                        break;
-                    } else if (now < start) {
-                        if (!nextPeriod) {
-                            nextPeriod = p;
-                            pStart = now; // Setup for countdown-only
-                            pEnd = start;
-                            status = 'Starting In';
-                        }
-                    }
+            for (let i = 0; i < periods.length; i++) {
+                const p = periods[i];
+                const start = timeToDate(p.start, now);
+                const end = timeToDate(p.end, now);
+
+                if (now >= start && now < end) {
+                    active = p; pStart = start; pEnd = end;
+                    status = 'In progress';
+                    upcoming = periods[i + 1] || null;
+                    break;
+                }
+                if (now < start && !next) {
+                    next = p;
+                    // A passing period runs from the previous bell to this one.
+                    const prevEnd = i > 0 ? timeToDate(periods[i - 1].end, now) : null;
+                    pStart = (prevEnd && prevEnd <= now) ? prevEnd : now;
+                    pEnd = start;
+                    status = i === 0 ? 'Starting in' : 'Passing period';
+                    upcoming = periods[i + 1] || null;
                 }
             }
 
-            // Step 2: 7-Day Lookahead if school is done for today
-            if (!activePeriod && !nextPeriod) {
+            // Look ahead up to a week when today is done
+            if (!active && !next) {
                 for (let offset = (periods.length === 0 ? 0 : 1); offset <= 7; offset++) {
-                    let checkDate = new Date(now);
+                    const checkDate = new Date(now);
                     checkDate.setDate(now.getDate() + offset);
-                    
-                    const typeForDay = (state.manualType !== 'auto') ? state.manualType : 
-                        ((checkDate.getDay() === 0 || checkDate.getDay() === 6) ? 'none' : (checkDate.getDay() === 2 ? 'common' : 'regular'));
-                    
-                    if (typeForDay === 'none') continue;
-                    
-                    const dayPeriods = compiledSchedules[typeForDay] || [];
-                    if (dayPeriods.length > 0) {
+                    const dayType = typeForDate(checkDate);
+                    if (dayType === 'none') continue;
+
+                    const dayPeriods = compiledSchedules[dayType] || [];
+                    if (dayPeriods.length) {
                         const firstStart = timeToDate(dayPeriods[0].start, checkDate);
                         if (firstStart > now) {
-                            nextPeriod = dayPeriods[0];
-                            pStart = now;
-                            pEnd = firstStart;
-                            status = 'School Starts In';
+                            next = dayPeriods[0];
+                            pStart = now; pEnd = firstStart;
+                            status = 'School starts in';
+                            upcoming = dayPeriods[1] || null;
                             break;
                         }
                     }
                 }
             }
 
-            if (type === 'none' && !activePeriod && !nextPeriod) {
-                status = 'Weekend / Holiday';
-            }
+            if (type === 'none' && !active && !next) status = 'Weekend / holiday';
 
-            if (activePeriod || nextPeriod) {
-                const target = activePeriod || nextPeriod;
-                
+            const nextLine = document.getElementById('tracker-next');
+
+            if (active || next) {
+                const target = active || next;
                 document.getElementById('tracker-period-name').innerText = target.name;
                 document.getElementById('tracker-status').innerText = status;
-                
-                const totalDur = pEnd - pStart;
-                const elapsed = now - pStart;
-                const rem = pEnd - now;
-                const pct = totalDur <= 0 ? 0 : Math.min(100, Math.max(0, (elapsed / totalDur) * 100));
 
-                const hzCd = document.getElementById('tracker-countdown-hz');
-                const circCd = document.getElementById('tracker-countdown-circ');
-                
-                hzCd.innerText = formatTimeRemaining(rem);
-                circCd.innerText = formatTimeRemaining(rem);
+                const totalDur = pEnd - pStart;
+                const rem = pEnd - now;
+                const pct = totalDur <= 0 ? 0 : Math.min(100, Math.max(0, ((now - pStart) / totalDur) * 100));
+                const countdown = formatTimeRemaining(rem);
+
+                document.getElementById('tracker-countdown-hz').innerText = countdown;
+                document.getElementById('tracker-countdown-circ').innerText = countdown;
 
                 if (state.shape === 'horizontal') {
-                    document.getElementById('tracker-start-hz').innerText = target.start;
-                    document.getElementById('tracker-end-hz').innerText = target.end;
+                    document.getElementById('tracker-start-hz').innerText = active ? target.start : 'now';
+                    document.getElementById('tracker-end-hz').innerText = active ? target.end : target.start;
                     document.getElementById('tracker-progress-hz').style.width = `${pct}%`;
                 } else {
-                    document.getElementById('tracker-start-circ').innerText = target.start;
-                    document.getElementById('tracker-end-circ').innerText = target.end;
-                    const c = document.getElementById('tracker-progress-circ');
-                    const offset = 283 - (283 * pct / 100);
-                    c.style.strokeDashoffset = offset;
+                    document.getElementById('tracker-start-circ').innerText = active ? target.start : 'now';
+                    document.getElementById('tracker-end-circ').innerText = active ? target.end : target.start;
+                    document.getElementById('tracker-progress-circ').style.strokeDashoffset = 283 - (283 * pct / 100);
                 }
 
-                // Row Highlighting
-                if (currentActiveId !== target.id) {
-                    if (currentActiveId) {
-                        const oldRow = document.getElementById(`row-${currentActiveId}`);
-                        if (oldRow) {
-                            oldRow.classList.remove('bg-ctp-surface0/50', 'border-l-4', 'border-ctp-accent');
-                            oldRow.classList.add('border-l-0');
-                        }
-                    }
-                    if (pEnd.getDate() === now.getDate()) {
-                        const newRow = document.getElementById(`row-${target.id}`);
-                        if (newRow) {
-                            newRow.classList.add('bg-ctp-surface0/50', 'border-l-4', 'border-ctp-accent');
-                            newRow.classList.remove('border-l-0');
-                        }
-                    }
-                    currentActiveId = target.id;
+                nextLine.innerText = upcoming ? `Up next: ${upcoming.name} at ${upcoming.start}` : (active ? 'Last period of the day.' : '');
+                document.title = `${countdown} · ${target.name}`;
+
+                const rowId = (pEnd.getDate() === now.getDate() && active) ? target.id : null;
+                if (currentActiveId !== rowId) {
+                    currentActiveId = rowId;
+                    refreshRowStates(rowId);
                 }
             } else {
                 document.getElementById('tracker-period-name').innerText = '--';
                 document.getElementById('tracker-status').innerText = status;
                 document.getElementById('tracker-countdown-hz').innerText = '00:00';
                 document.getElementById('tracker-countdown-circ').innerText = '00:00';
-                document.getElementById('tracker-progress-hz').style.width = `0%`;
+                document.getElementById('tracker-progress-hz').style.width = '0%';
                 document.getElementById('tracker-progress-circ').style.strokeDashoffset = 283;
-                if (currentActiveId) {
-                    const r = document.getElementById(`row-${currentActiveId}`);
-                    if (r) r.classList.remove('bg-ctp-surface0/50', 'border-l-4', 'border-ctp-accent');
-                    currentActiveId = null;
-                }
+                nextLine.innerText = '';
+                document.title = BASE_TITLE;
+                if (currentActiveId !== null) { currentActiveId = null; refreshRowStates(null); }
             }
         }
 
-        // INIT
+        // ---------------------------------------------------------------
+        // Init
+        // ---------------------------------------------------------------
         loadState();
         updateUIState();
-        activeInterval = setInterval(tick, 1000);
+        setInterval(tick, 1000);
 
-        // BATTERY
+        // Rebuild the table when the calendar day rolls over
+        let lastDay = new Date().getDate();
+        setInterval(() => {
+            const d = new Date().getDate();
+            if (d !== lastDay) { lastDay = d; currentActiveId = null; buildScheduleTable(); tick(); }
+        }, 30000);
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && settingsOpen()) toggleSettings(false);
+        });
+
+        // Battery indicator
         if ('getBattery' in navigator) {
             navigator.getBattery().then(bat => {
                 const bCont = document.getElementById('battery-container');
                 const bLev = document.getElementById('battery-level');
                 const bIcon = document.getElementById('battery-icon');
                 bCont.classList.remove('hidden');
-                
+                bCont.classList.add('flex');
+
+                const shell = `<rect x="2" y="8" width="16" height="9" rx="2" stroke-width="1.8"></rect><path d="M20.5 11.5v2" stroke-width="2.5" stroke-linecap="round"></path>`;
                 function upBat() {
                     const pct = Math.round(bat.level * 100);
                     bLev.innerText = pct;
-                    if(bat.charging) {
-                        bIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>`;
-                        bIcon.classList.add('text-green-500');
-                    } else {
-                        bIcon.classList.remove('text-green-500');
-                        if (pct > 20) bIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16M4 12h16"></path>`;
-                        else {
-                            bIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>`;
-                            bIcon.classList.add('text-red-500');
-                        }
-                    }
+                    const fillW = Math.max(1, (pct / 100) * 12);
+                    bIcon.classList.toggle('text-green-500', bat.charging);
+                    bIcon.classList.toggle('text-red-500', !bat.charging && pct <= 20);
+                    bIcon.innerHTML = shell + `<rect x="4" y="10" width="${fillW}" height="5" rx="1" fill="currentColor" stroke="none"></rect>` +
+                        (bat.charging ? `<path d="M12 7.5l-2.2 4h2.4l-.6 3.2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>` : '');
+                    bCont.title = bat.charging ? `Charging · ${pct}%` : `Battery ${pct}%`;
                 }
                 upBat();
                 bat.addEventListener('levelchange', upBat);
                 bat.addEventListener('chargingchange', upBat);
-            });
+            }).catch(() => {});
         }
     </script>
 </body>
