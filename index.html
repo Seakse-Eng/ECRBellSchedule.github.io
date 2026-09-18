@@ -75,6 +75,7 @@
         body.compact-mode .text-5xl, body.compact-mode .sm\:text-6xl { font-size: 1.75rem; }
         body.compact-mode .text-4xl.sm\:text-5xl { font-size: 1.5rem; }
         body.compact-mode .w-64.h-64 { width: 120px; height: 120px; }
+        body.compact-mode #hourglass-stage { width: 8rem; }
         body.compact-mode .sched-row td { padding: 0.25rem 0.75rem; }
         body.compact-mode .min-h-\[350px\], body.compact-mode .min-h-\[300px\] { min-height: auto; }
         body.compact-mode .text-3xl { font-size: 1.25rem; }
@@ -114,6 +115,9 @@
             border-radius: 50%;
             backdrop-filter: blur(2px);
             cursor: pointer;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
             animation-name: rise;
             animation-timing-function: linear;
             animation-fill-mode: forwards;
@@ -241,6 +245,45 @@
             box-shadow: 0 0 6px rgb(var(--ctp-surface2) / 0.6);
         }
 
+        /* Hourglass Progress */
+        .hourglass-stage {
+            will-change: transform, opacity;
+            transform-origin: 50% 50%;
+        }
+        .hourglass-stage.flipping { animation: hourglassFlip 0.72s cubic-bezier(0.37, 0.19, 0.16, 0.9); }
+        @keyframes hourglassFlip {
+            0%   { transform: rotate(0deg)  scale(1);    opacity: 1; }
+            32%  { transform: rotate(150deg) scale(1.03, 0.78); opacity: 0.9; }
+            48%  { transform: rotate(180deg) scale(0.72, 0.6);  opacity: 0.55; }
+            66%  { transform: rotate(214deg) scale(1.08, 0.78); opacity: 0.85; }
+            100% { transform: rotate(360deg) scale(1);    opacity: 1; }
+        }
+        #hourglass-svg { filter: drop-shadow(0 10px 18px rgb(0 0 0 / 0.3)); }
+
+        /* Weekly grid — container-query based so the 7 days never cram together */
+        #task-widget-body .weekly-wrap {
+            container-type: inline-size;
+        }
+        #task-widget-body .weekly-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem 1.25rem;
+            padding-bottom: 0.25rem;
+        }
+        #task-widget-body .week-day-cell { min-width: 0; }
+        @container (min-width: 620px) {
+            #task-widget-body .weekly-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+        @container (min-width: 860px) {
+            #task-widget-body .weekly-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        }
+        @container (min-width: 1080px) {
+            #task-widget-body .weekly-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+        }
+        @container (min-width: 1280px) {
+            #task-widget-body .weekly-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+        }
+
         /* Task Widget Transitions */
         #tasks-widget {
             will-change: height;
@@ -352,6 +395,7 @@
                             <select id="select-shape" aria-label="Progress visual" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg block p-2 outline-none">
                                 <option value="horizontal">Bar Layout</option>
                                 <option value="circular">Ring Layout</option>
+                                <option value="hourglass">Hourglass</option>
                             </select>
                         </div>
                         <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
@@ -474,26 +518,30 @@
 
             <!-- Live Tracker Card -->
             <div class="flex-1 bg-ctp-mantle/90 backdrop-blur-md p-6 sm:p-10 rounded-2xl shadow-lg border border-ctp-surface0 flex flex-col items-center justify-center text-center relative overflow-hidden transition-colors min-h-[350px]">
-                <div class="absolute top-0 left-0 w-full h-1 bg-ctp-accent"></div>
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-ctp-accent to-transparent"></div>
 
-                <p id="tracker-status" class="text-sm uppercase tracking-widest font-semibold text-ctp-accent mb-2">Loading…</p>
-                <h2 id="tracker-period-name" class="text-3xl sm:text-4xl font-extrabold text-ctp-text mb-1">--</h2>
-                <p id="tracker-period-meta" class="text-sm text-ctp-subtext mb-5 empty:mb-3 flex flex-wrap items-center justify-center gap-x-2 gap-y-1"></p>
+                <p id="tracker-status" class="text-sm uppercase tracking-[0.2em] font-bold text-ctp-accent mb-2">Loading…</p>
+                <h2 id="tracker-period-name" class="text-3xl sm:text-4xl font-extrabold text-ctp-text mb-1.5">--</h2>
+                <p id="tracker-period-meta" class="text-sm text-ctp-subtext mb-6 empty:mb-4 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1"></p>
                 <p id="tracker-live" class="sr-only" aria-live="polite"></p>
 
                 <!-- Horizontal View -->
                 <div id="view-horizontal" class="w-full flex flex-col items-center">
-                    <div class="bg-ctp-surface0/30 px-6 py-4 rounded-xl border border-ctp-surface1 mb-6 w-full max-w-sm shadow-inner text-center">
-                        <p id="tracker-countdown-hz" class="text-5xl sm:text-6xl font-black font-mono text-ctp-text tabular-nums tracking-tighter" aria-live="off">00:00</p>
-                        <p class="text-xs font-medium text-ctp-subtext uppercase mt-2 hidden sm:block">Time Remaining</p>
+                    <div class="relative w-full max-w-sm bg-ctp-surface0/40 px-8 py-6 rounded-2xl border border-ctp-surface1 mb-7 overflow-hidden shadow-lg shadow-black/10 text-center">
+                        <div class="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-ctp-accent/70 to-transparent"></div>
+                        <p id="tracker-countdown-hz" class="text-5xl sm:text-6xl font-black font-mono text-ctp-text tabular-nums tracking-tighter leading-none" aria-live="off">00:00</p>
+                        <p class="mt-2.5 text-[11px] font-semibold text-ctp-subtext uppercase tracking-[0.18em] flex items-center justify-center gap-2">
+                            Time Remaining
+                            <span id="tracker-pct-hz" class="font-mono text-ctp-accent font-bold tabular-nums">0%</span>
+                        </p>
                     </div>
                     <div class="w-full max-w-md">
-                        <div class="flex justify-between text-xs font-medium text-ctp-subtext mb-1">
-                            <span id="tracker-start-hz">--:--</span>
-                            <span id="tracker-end-hz">--:--</span>
+                        <div class="flex justify-between text-xs font-semibold text-ctp-subtext mb-1.5">
+                            <span id="tracker-start-hz" class="tabular-nums">--:--</span>
+                            <span id="tracker-end-hz" class="tabular-nums">--:--</span>
                         </div>
-                        <div class="w-full bg-ctp-surface0 rounded-full h-3 sm:h-4 overflow-hidden shadow-inner">
-                            <div id="tracker-progress-hz" class="bg-ctp-accent h-full rounded-full transition-all duration-1000 ease-linear" style="width: 0%"></div>
+                        <div class="w-full bg-ctp-surface0 rounded-full h-4 overflow-hidden shadow-inner">
+                            <div id="tracker-progress-hz" class="bg-gradient-to-r from-ctp-accent/60 to-ctp-accent h-full rounded-full transition-all duration-1000 ease-linear" style="width: 0%"></div>
                         </div>
                     </div>
                 </div>
@@ -506,26 +554,51 @@
                             <circle id="tracker-progress-circ" class="circle-progress" cx="50" cy="50" r="45" stroke-dasharray="283" stroke-dashoffset="283"></circle>
                         </svg>
                         <div class="z-10 flex flex-col items-center">
-                            <p id="tracker-countdown-circ" class="text-4xl sm:text-5xl font-black font-mono text-ctp-text tabular-nums tracking-tighter">00:00</p>
-                            <p class="text-[10px] font-medium text-ctp-subtext uppercase mt-1">Remaining</p>
+                            <p id="tracker-countdown-circ" class="text-4xl sm:text-5xl font-black font-mono text-ctp-text tabular-nums tracking-tighter leading-none">00:00</p>
+                            <p class="text-[10px] font-semibold text-ctp-subtext uppercase tracking-[0.16em] mt-1.5">Remaining</p>
+                            <p id="tracker-pct-circ" class="text-xs font-mono text-ctp-accent font-bold tabular-nums mt-1">0%</p>
                         </div>
                     </div>
-                    <div class="flex justify-between text-xs font-medium text-ctp-subtext mt-4 w-64 px-2">
+                    <div class="flex justify-between text-xs font-semibold text-ctp-subtext mt-4 w-full max-w-md px-2 tabular-nums">
                         <span id="tracker-start-circ">--:--</span>
                         <span id="tracker-end-circ">--:--</span>
                     </div>
                 </div>
 
-                <p id="tracker-next" class="mt-6 text-xs text-ctp-subtext"></p>
+                <!-- Hourglass View -->
+                <div id="view-hourglass" class="hidden w-full flex-col items-center">
+                    <div class="relative w-full max-w-sm flex flex-col items-center">
+                        <div id="hourglass-stage" class="hourglass-stage w-44 sm:w-52">
+                            <svg id="hourglass-svg" viewBox="0 0 100 160" class="w-full h-auto" aria-hidden="true"></svg>
+                        </div>
+                        <div class="flex flex-col items-center -mt-1">
+                            <p id="tracker-countdown-hg" class="text-4xl sm:text-5xl font-black font-mono text-ctp-text tabular-nums tracking-tighter leading-none">00:00</p>
+                            <p class="mt-1.5 text-[10px] font-semibold text-ctp-subtext uppercase tracking-[0.16em] flex items-center gap-2">
+                                Time Remaining
+                                <span id="tracker-pct-hg" class="font-mono text-ctp-accent font-bold tabular-nums">0%</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-xs font-semibold text-ctp-subtext mt-4 w-full max-w-md px-2 tabular-nums">
+                        <span id="tracker-start-hg">--:--</span>
+                        <span id="tracker-end-hg">--:--</span>
+                    </div>
+                </div>
+
+                <!-- Next up chip -->
+                <div id="tracker-next" class="mt-6 w-full max-w-md min-h-[40px] flex items-center justify-between gap-3 rounded-xl border border-ctp-surface1 bg-ctp-surface0/30 px-4 py-2.5 transition-colors">
+                    <span id="tracker-next-label" class="text-[10px] font-bold uppercase tracking-[0.16em] text-ctp-subtext">Next</span>
+                    <span id="tracker-next-value" class="text-sm font-semibold text-ctp-text truncate"></span>
+                </div>
 
                 <!-- Whole-day progress wrapper (Always shown, updated based on day state) -->
-                <div id="day-progress-wrap" class="w-full max-w-md mt-5">
-                    <div class="flex justify-between items-baseline text-[11px] text-ctp-subtext mb-1">
-                        <span id="day-progress-label">Day progress</span>
-                        <span id="day-progress-pct" class="tabular-nums font-mono">0%</span>
+                <div id="day-progress-wrap" class="w-full max-w-md mt-6">
+                    <div class="flex justify-between items-baseline text-[11px] text-ctp-subtext mb-1.5">
+                        <span id="day-progress-label" class="font-semibold uppercase tracking-[0.14em]">Day progress</span>
+                        <span id="day-progress-pct" class="tabular-nums font-mono font-bold text-ctp-accent/90">0%</span>
                     </div>
-                    <div class="w-full bg-ctp-surface0 rounded-full h-1.5 overflow-hidden">
-                        <div id="day-progress-bar" class="bg-ctp-accent/60 h-full rounded-full transition-all duration-1000 ease-linear" style="width: 0%"></div>
+                    <div class="w-full bg-ctp-surface0 rounded-full h-2 overflow-hidden shadow-inner">
+                        <div id="day-progress-bar" class="bg-ctp-accent/70 h-full rounded-full transition-all duration-1000 ease-linear" style="width: 0%"></div>
                     </div>
                 </div>
             </div>
@@ -957,11 +1030,118 @@
         function updateShapeView() {
             const hz = document.getElementById('view-horizontal');
             const circ = document.getElementById('view-circular');
+            const hg = document.getElementById('view-hourglass');
             const circular = state.shape === 'circular';
-            hz.classList.toggle('hidden', circular);
-            hz.classList.toggle('flex', !circular);
+            const hourglass = state.shape === 'hourglass';
+            const bar = !circular && !hourglass;
+            hz.classList.toggle('hidden', !bar);
+            hz.classList.toggle('flex', bar);
             circ.classList.toggle('hidden', !circular);
             circ.classList.toggle('flex', circular);
+            hg.classList.toggle('hidden', !hourglass);
+            hg.classList.toggle('flex', hourglass);
+            if (hourglass) { buildHourglass(); renderHourglass(hgElapsed); }
+        }
+
+        // ---------------------------------------------------------------
+        // Hourglass Progress
+        // ---------------------------------------------------------------
+        let hgBuilt = false;
+        let hgStageEl = null;
+        let hgSvgEl = null;
+        let hgTopEl = null;
+        let hgBottomEl = null;
+        let hgStreamEl = null;
+        let hgLastBlockId = null;
+        let hgInitialized = false;
+        let hgElapsed = 0;
+
+        function buildHourglass() {
+            if (hgBuilt) return;
+            hgStageEl = document.getElementById('hourglass-stage');
+            hgSvgEl = document.getElementById('hourglass-svg');
+            if (!hgStageEl || !hgSvgEl) return;
+            hgBuilt = true;
+
+            const NS = 'http://www.w3.org/2000/svg';
+            const mk = (tag, attrs, css) => {
+                const el = document.createElementNS(NS, tag);
+                for (const k in attrs) el.setAttribute(k, attrs[k]);
+                if (css) for (const k in css) el.style.setProperty(k, css[k]);
+                return el;
+            };
+
+            // Caps + glass frame (theme colors via CSS vars)
+            hgSvgEl.appendChild(mk('rect', { x: '6', y: '6', width: '88', height: '12', rx: '4' }, { fill: 'rgb(var(--ctp-surface1))', stroke: 'rgb(var(--ctp-surface2))', 'stroke-width': '1' }));
+            hgSvgEl.appendChild(mk('rect', { x: '46', y: '10', width: '8', height: '4', rx: '2' }, { fill: 'rgb(var(--ctp-accent))' }));
+            hgSvgEl.appendChild(mk('path', { d: 'M12 20 Q50 10 88 20 L60 76 Q50 84 40 76 Z' }, { fill: 'rgb(var(--ctp-surface0) / 0.4)', stroke: 'rgb(var(--ctp-surface2) / 0.9)', 'stroke-width': '1.6', 'stroke-linejoin': 'round' }));
+            hgSvgEl.appendChild(mk('path', { d: 'M40 84 Q50 76 60 84 L88 138 Q50 148 12 138 L40 84 Z' }, { fill: 'rgb(var(--ctp-surface0) / 0.4)', stroke: 'rgb(var(--ctp-surface2) / 0.9)', 'stroke-width': '1.6', 'stroke-linejoin': 'round' }));
+
+            // Sand
+            hgTopEl = mk('path', { d: 'M0 0' }, { fill: 'rgb(var(--ctp-accent))', opacity: '0' });
+            hgBottomEl = mk('path', { d: 'M0 0' }, { fill: 'rgb(var(--ctp-accent))', opacity: '0' });
+            hgStreamEl = mk('rect', { x: '49', y: '78', width: '2', height: '0' }, { fill: 'rgb(var(--ctp-accent))', opacity: '0' });
+            hgSvgEl.appendChild(hgTopEl);
+            hgSvgEl.appendChild(hgBottomEl);
+            hgSvgEl.appendChild(hgStreamEl);
+
+            hgSvgEl.appendChild(mk('rect', { x: '6', y: '142', width: '88', height: '12', rx: '4' }, { fill: 'rgb(var(--ctp-surface1))', stroke: 'rgb(var(--ctp-surface2))', 'stroke-width': '1' }));
+            hgSvgEl.appendChild(mk('rect', { x: '46', y: '146', width: '8', height: '4', rx: '2' }, { fill: 'rgb(var(--ctp-accent))' }));
+
+            // Accent rim glow overlays
+            hgSvgEl.appendChild(mk('path', { d: 'M12 22 Q50 13 88 22 L60 75 Q50 83 40 75 Z' }, { fill: 'none', stroke: 'rgb(var(--ctp-accent) / 0.22)', 'stroke-width': '1' }));
+            hgSvgEl.appendChild(mk('path', { d: 'M40 85 Q50 77 60 85 L88 137 Q50 146 12 137 L40 85 Z' }, { fill: 'none', stroke: 'rgb(var(--ctp-accent) / 0.22)', 'stroke-width': '1' }));
+        }
+
+        function renderHourglass(elapsed) {
+            if (!hgBuilt) return;
+            elapsed = Math.min(1, Math.max(0, elapsed));
+            hgElapsed = elapsed;
+            const rf = 1 - elapsed;
+
+            // Top chamber: surface descends as sand drains (sqrt for a steady-looking pour)
+            const sandTopY = 22 + (76 - 22) * (1 - Math.sqrt(rf));
+            const x1 = 12 + (sandTopY - 20) * 0.5;
+            const x2 = 88 - (sandTopY - 20) * 0.5;
+            if (rf > 0.0015) {
+                hgTopEl.setAttribute('d', `M${x1.toFixed(2)} ${sandTopY.toFixed(2)} L${x2.toFixed(2)} ${sandTopY.toFixed(2)} L60 76 L40 76 Z`);
+                hgTopEl.style.opacity = '0.95';
+            } else {
+                hgTopEl.setAttribute('d', 'M0 0');
+                hgTopEl.style.opacity = '0';
+            }
+
+            // Bottom chamber: mound grows from the base toward the neck
+            const surfY = 138 - (138 - 98) * elapsed;
+            const apexY = Math.min(100, 84 + (surfY - 98) * 0.42);
+            const b1 = 40 - (surfY - 84) * 0.5;
+            const b2 = 60 + (surfY - 84) * 0.5;
+            if (elapsed > 0.0015) {
+                hgBottomEl.setAttribute('d', `M${b1.toFixed(2)} ${surfY.toFixed(2)} L50 ${apexY.toFixed(2)} L${b2.toFixed(2)} ${surfY.toFixed(2)} L88 138 L12 138 Z`);
+                hgBottomEl.style.opacity = '1';
+            } else {
+                hgBottomEl.setAttribute('d', 'M0 0');
+                hgBottomEl.style.opacity = '0';
+            }
+
+            // Falling stream through the neck
+            if (rf > 0.04 && elapsed > 0.001) {
+                hgStreamEl.setAttribute('y', '78');
+                hgStreamEl.setAttribute('height', Math.max(0, Math.round(apexY - 78)));
+                hgStreamEl.style.opacity = '0.7';
+            } else {
+                hgStreamEl.setAttribute('height', '0');
+                hgStreamEl.style.opacity = '0';
+            }
+        }
+
+        function triggerHourglassFlip() {
+            if (!hgBuilt) return;
+            if (reduceMotion) { renderHourglass(0); return; }
+            hgStageEl.classList.remove('flipping');
+            void hgStageEl.offsetWidth;
+            hgStageEl.classList.add('flipping');
+            setTimeout(() => { if (hgStageEl) hgStageEl.classList.remove('flipping'); }, 800);
         }
 
         // ---------------------------------------------------------------
@@ -1609,8 +1789,8 @@
                 const r = b.getBoundingClientRect();
 
                 const burst = b.animate(
-                    [{ scale: 1, opacity: 0.95 }, { scale: 1.45, opacity: 0 }],
-                    { duration: reduceMotion ? 1 : 150, easing: 'ease-out' }
+                    [{ transform: 'scale(1)', opacity: 0.95 }, { transform: 'scale(1.45)', opacity: 0 }],
+                    { duration: reduceMotion ? 1 : 160, easing: 'ease-out' }
                 );
                 burst.onfinish = () => b.remove();
                 setTimeout(() => b.remove(), 400);
@@ -1975,29 +2155,31 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 overflow-x-auto pb-1">
+                <div class="weekly-wrap">
+                <div class="weekly-grid">
                     ${weekDays.map(wd => `
-                        <div class="flex flex-col bg-ctp-surface0/20 border ${wd.isToday ? 'border-ctp-accent shadow-sm' : 'border-ctp-surface1'} rounded-xl p-2.5 min-w-[130px]">
-                            <div class="flex items-center justify-between mb-2 border-b border-ctp-surface0 pb-1.5">
+                        <div class="week-day-cell flex flex-col bg-ctp-surface0/20 border ${wd.isToday ? 'border-ctp-accent shadow-sm' : 'border-ctp-surface1'} rounded-xl p-3 min-w-0">
+                            <div class="flex items-center justify-between gap-2 mb-2.5 border-b border-ctp-surface0 pb-2">
                                 <span class="text-xs font-bold ${wd.isToday ? 'text-ctp-accent' : 'text-ctp-text'}">${wd.dayName} ${wd.dateNum}</span>
-                                <span class="text-[10px] text-ctp-subtext">${wd.tasks.length}</span>
+                                <span class="text-[10px] font-semibold text-ctp-subtext tabular-nums px-1.5 py-0.5 rounded-full bg-ctp-surface0/60">${wd.tasks.length}</span>
                             </div>
-                            <div class="flex gap-1 mb-2">
-                                <input type="text" id="week-input-${wd.iso}" maxlength="100" class="w-full bg-ctp-surface0/70 border border-ctp-surface1 rounded px-2 py-1 text-xs text-ctp-text focus:outline-none focus:border-ctp-accent" placeholder="+ Task" onkeydown="if(event.key==='Enter') addDateTask('${wd.iso}', 'week-input-${wd.iso}')">
+                            <div class="mb-2.5">
+                                <input type="text" id="week-input-${wd.iso}" maxlength="100" class="w-full bg-ctp-surface0/70 border border-ctp-surface1 rounded-md px-2.5 py-1.5 text-xs text-ctp-text focus:outline-none focus:border-ctp-accent" placeholder="+ Add task" onkeydown="if(event.key==='Enter') addDateTask('${wd.iso}', 'week-input-${wd.iso}')">
                             </div>
-                            <ul class="flex flex-col gap-1.5 flex-1 overflow-y-auto max-h-[180px]">
+                            <ul class="flex flex-col gap-2 flex-1 overflow-y-auto max-h-[200px] pr-0.5">
                                 ${wd.tasks.map(t => `
-                                    <li class="flex items-start justify-between p-1.5 bg-ctp-surface0/40 rounded border border-ctp-surface0 group">
-                                        <label class="flex items-start gap-1.5 flex-1 min-w-0 cursor-pointer">
+                                    <li class="flex items-start justify-between gap-2 p-2 bg-ctp-surface0/40 rounded-lg border border-ctp-surface0 group">
+                                        <label class="flex items-start gap-2 flex-1 min-w-0 cursor-pointer">
                                             <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleDateTask('${wd.iso}', ${t.id})" class="mt-0.5 rounded border-ctp-surface1 text-ctp-accent">
-                                            <span class="text-xs text-ctp-text break-all ${t.done ? 'line-through text-ctp-subtext' : ''}">${escapeHTML(t.text)}</span>
+                                            <span class="text-xs text-ctp-text break-all leading-relaxed ${t.done ? 'line-through text-ctp-subtext' : ''}">${escapeHTML(t.text)}</span>
                                         </label>
-                                        <button onclick="deleteDateTask('${wd.iso}', ${t.id})" class="opacity-0 group-hover:opacity-100 text-[10px] text-ctp-subtext hover:text-ctp-accent px-1">✕</button>
+                                        <button onclick="deleteDateTask('${wd.iso}', ${t.id})" class="opacity-0 group-hover:opacity-100 text-[10px] text-ctp-subtext hover:text-ctp-accent px-1 py-0.5 flex-shrink-0">✕</button>
                                     </li>
                                 `).join('')}
                             </ul>
                         </div>
                     `).join('')}
+                </div>
                 </div>
             `;
         }
@@ -2205,15 +2387,29 @@
             const metaEl = document.getElementById('tracker-period-meta');
             const hzCd = document.getElementById('tracker-countdown-hz');
             const circCd = document.getElementById('tracker-countdown-circ');
+            const hgCd = document.getElementById('tracker-countdown-hg');
             const hzStart = document.getElementById('tracker-start-hz');
             const hzEnd = document.getElementById('tracker-end-hz');
             const circStart = document.getElementById('tracker-start-circ');
             const circEnd = document.getElementById('tracker-end-circ');
+            const hgStart = document.getElementById('tracker-start-hg');
+            const hgEnd = document.getElementById('tracker-end-hg');
+            const hzPct = document.getElementById('tracker-pct-hz');
+            const circPct = document.getElementById('tracker-pct-circ');
+            const hgPct = document.getElementById('tracker-pct-hg');
             const hzBar = document.getElementById('tracker-progress-hz');
             const circBar = document.getElementById('tracker-progress-circ');
-            const nextEl = document.getElementById('tracker-next');
 
             let currentPct = 0;
+
+            function setNextBlock(label, value) {
+                const lab = document.getElementById('tracker-next-label');
+                const val = document.getElementById('tracker-next-value');
+                if (!lab || !val) return;
+                lab.style.display = label ? '' : 'none';
+                val.textContent = value || '';
+                val.classList.toggle('mx-auto', !label);
+            }
 
             if (periods.length === 0) {
                 // Weekend / Holiday / No Classes state
@@ -2222,13 +2418,21 @@
                 metaEl.innerHTML = '';
                 hzCd.textContent = '--:--';
                 circCd.textContent = '--:--';
+                hgCd.textContent = '--:--';
                 hzStart.textContent = '--:--';
                 hzEnd.textContent = '--:--';
                 circStart.textContent = '--:--';
                 circEnd.textContent = '--:--';
+                hgStart.textContent = '--:--';
+                hgEnd.textContent = '--:--';
+                hzPct.textContent = '—';
+                circPct.textContent = '—';
+                hgPct.textContent = '—';
                 hzBar.style.width = '0%';
                 circBar.style.strokeDashoffset = '283';
-                nextEl.textContent = 'Enjoy your day off!';
+                setNextBlock(null, 'Enjoy your day off!');
+                renderHourglass(1);
+                hgLastBlockId = null;
             } else if (activePeriod) {
                 const totalMs = activePeriod.endD - activePeriod.startD;
                 const elapsedMs = now - activePeriod.startD;
@@ -2246,16 +2450,38 @@
                 const remStr = formatTimeRemaining(remMs);
                 hzCd.textContent = remStr;
                 circCd.textContent = remStr;
+                hgCd.textContent = remStr;
 
                 hzStart.textContent = activePeriod.start;
                 hzEnd.textContent = activePeriod.end;
                 circStart.textContent = activePeriod.start;
                 circEnd.textContent = activePeriod.end;
+                hgStart.textContent = activePeriod.start;
+                hgEnd.textContent = activePeriod.end;
 
                 hzBar.style.width = `${currentPct}%`;
                 circBar.style.strokeDashoffset = `${283 - (283 * currentPct) / 100}`;
 
-                nextEl.textContent = upcomingPeriod ? `Up Next: ${upcomingPeriod.name} at ${upcomingPeriod.start}` : 'Last period of the day';
+                const pctTxt = `${Math.round(currentPct)}% elapsed`;
+                hzPct.textContent = pctTxt;
+                circPct.textContent = pctTxt;
+                hgPct.textContent = pctTxt;
+
+                setNextBlock(
+                    upcomingPeriod ? 'Up next' : 'Last period',
+                    upcomingPeriod ? `${upcomingPeriod.name} · ${upcomingPeriod.start}` : 'End of day'
+                );
+
+                if (state.shape === 'hourglass') {
+                    if (!hgInitialized) { hgInitialized = true; hgLastBlockId = activePeriod.id; }
+                    if (hgLastBlockId !== activePeriod.id) {
+                        hgLastBlockId = activePeriod.id;
+                        renderHourglass(0);
+                        triggerHourglassFlip();
+                    } else {
+                        renderHourglass(currentPct / 100);
+                    }
+                }
             } else if (upcomingPeriod && now < upcomingPeriod.startD) {
                 const remMs = upcomingPeriod.startD - now;
                 statusEl.textContent = 'Upcoming';
@@ -2265,29 +2491,46 @@
                 const remStr = formatTimeRemaining(remMs);
                 hzCd.textContent = remStr;
                 circCd.textContent = remStr;
+                hgCd.textContent = remStr;
 
                 hzStart.textContent = '--:--';
                 hzEnd.textContent = upcomingPeriod.start;
                 circStart.textContent = '--:--';
                 circEnd.textContent = upcomingPeriod.start;
+                hgStart.textContent = '--:--';
+                hgEnd.textContent = upcomingPeriod.start;
 
                 hzBar.style.width = '0%';
                 circBar.style.strokeDashoffset = '283';
 
-                nextEl.textContent = `Get ready for ${upcomingPeriod.name}`;
+                hzPct.textContent = 'Ready';
+                circPct.textContent = 'Ready';
+                hgPct.textContent = 'Ready';
+
+                setNextBlock('Coming up', `${upcomingPeriod.name} · ${upcomingPeriod.start}`);
+                renderHourglass(1);
+                hgLastBlockId = null;
             } else {
                 statusEl.textContent = 'School Day Ended';
                 nameEl.textContent = 'All Classes Done';
                 metaEl.innerHTML = '';
                 hzCd.textContent = '00:00';
                 circCd.textContent = '00:00';
+                hgCd.textContent = '00:00';
                 hzStart.textContent = '--:--';
                 hzEnd.textContent = '--:--';
                 circStart.textContent = '--:--';
                 circEnd.textContent = '--:--';
+                hgStart.textContent = '--:--';
+                hgEnd.textContent = '--:--';
                 hzBar.style.width = '100%';
                 circBar.style.strokeDashoffset = '0';
-                nextEl.textContent = 'See you tomorrow!';
+                hzPct.textContent = '100%';
+                circPct.textContent = '100%';
+                hgPct.textContent = '100%';
+                setNextBlock(null, 'School day complete — see you tomorrow!');
+                renderHourglass(1);
+                hgLastBlockId = null;
             }
 
             // --- Day Progress Bar State Fix ---
