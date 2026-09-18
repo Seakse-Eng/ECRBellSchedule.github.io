@@ -26,15 +26,21 @@
         }
     </script>
     <style>
-        /* Themes */
+        /* Themes — :root carries Mocha as the pre-hydration default */
+        :root { --ctp-base: 30 30 46; --ctp-mantle: 24 24 37; --ctp-surface0: 49 50 68; --ctp-surface1: 69 71 90; --ctp-surface2: 88 91 112; --ctp-text: 205 214 244; --ctp-subtext: 186 194 222; --ctp-accent: 203 166 247; color-scheme: dark; }
         :root[data-theme="latte"] { --ctp-base: 239 241 245; --ctp-mantle: 230 233 239; --ctp-surface0: 204 208 218; --ctp-surface1: 188 192 204; --ctp-surface2: 172 176 190; --ctp-text: 76 79 105; --ctp-subtext: 92 95 119; --ctp-accent: 136 57 239; color-scheme: light; }
         :root[data-theme="frappe"] { --ctp-base: 48 52 70; --ctp-mantle: 41 44 60; --ctp-surface0: 65 69 89; --ctp-surface1: 81 87 109; --ctp-surface2: 98 104 128; --ctp-text: 198 208 245; --ctp-subtext: 181 191 226; --ctp-accent: 202 158 230; color-scheme: dark; }
         :root[data-theme="macchiato"] { --ctp-base: 36 39 58; --ctp-mantle: 30 32 48; --ctp-surface0: 54 58 79; --ctp-surface1: 73 77 100; --ctp-surface2: 91 96 120; --ctp-text: 202 211 245; --ctp-subtext: 184 192 224; --ctp-accent: 198 160 246; color-scheme: dark; }
         :root[data-theme="mocha"] { --ctp-base: 30 30 46; --ctp-mantle: 24 24 37; --ctp-surface0: 49 50 68; --ctp-surface1: 69 71 90; --ctp-surface2: 88 91 112; --ctp-text: 205 214 244; --ctp-subtext: 186 194 222; --ctp-accent: 203 166 247; color-scheme: dark; }
-        :root[data-theme="dracula"] { --ctp-base: 40 42 54; --ctp-mantle: 68 71 90; --ctp-surface0: 98 114 164; --ctp-surface1: 139 233 253; --ctp-surface2: 80 250 123; --ctp-text: 248 248 242; --ctp-subtext: 189 147 249; --ctp-accent: 255 121 198; color-scheme: dark; }
+        /* Dracula, rebuilt on the real palette: bg #282a36, darker chrome #21222c,
+           current-line #44475a for surfaces, comment #6272a4 as the top surface,
+           foreground #f8f8f2 for text, purple #bd93f9 as the accent. */
+        :root[data-theme="dracula"] { --ctp-base: 40 42 54; --ctp-mantle: 33 34 44; --ctp-surface0: 55 58 74; --ctp-surface1: 68 71 90; --ctp-surface2: 98 114 164; --ctp-text: 248 248 242; --ctp-subtext: 191 198 224; --ctp-accent: 189 147 249; color-scheme: dark; }
         :root[data-theme="atom-dark"] { --ctp-base: 29 31 33; --ctp-mantle: 40 42 46; --ctp-surface0: 55 59 65; --ctp-surface1: 76 81 88; --ctp-surface2: 97 104 112; --ctp-text: 197 200 198; --ctp-subtext: 180 183 180; --ctp-accent: 129 162 190; color-scheme: dark; }
         :root[data-theme="nord"] { --ctp-base: 46 52 64; --ctp-mantle: 59 66 82; --ctp-surface0: 67 76 94; --ctp-surface1: 76 86 106; --ctp-surface2: 97 104 112; --ctp-text: 216 222 233; --ctp-subtext: 229 233 240; --ctp-accent: 136 192 208; color-scheme: dark; }
         :root[data-theme="gruvbox"] { --ctp-base: 40 40 40; --ctp-mantle: 60 56 54; --ctp-surface0: 80 73 69; --ctp-surface1: 102 92 84; --ctp-surface2: 124 111 100; --ctp-text: 235 219 178; --ctp-subtext: 168 153 132; --ctp-accent: 254 128 25; color-scheme: dark; }
+        :root[data-theme="tokyo-night"] { --ctp-base: 26 27 38; --ctp-mantle: 22 22 30; --ctp-surface0: 36 40 59; --ctp-surface1: 47 51 77; --ctp-surface2: 65 72 104; --ctp-text: 192 202 245; --ctp-subtext: 169 177 214; --ctp-accent: 122 162 247; color-scheme: dark; }
+        :root[data-theme="rose-pine"] { --ctp-base: 25 23 36; --ctp-mantle: 31 29 46; --ctp-surface0: 38 35 58; --ctp-surface1: 64 61 82; --ctp-surface2: 82 79 103; --ctp-text: 224 222 244; --ctp-subtext: 144 140 170; --ctp-accent: 196 167 231; color-scheme: dark; }
 
         body { background-color: rgb(var(--ctp-base)); color: rgb(var(--ctp-text)); }
 
@@ -128,6 +134,97 @@
 
         .sched-row.is-past { opacity: 0.45; }
         .sched-row.is-now { background-color: rgb(var(--ctp-surface0) / 0.5); box-shadow: inset 3px 0 0 rgb(var(--ctp-accent)); }
+        .pass-row td { background-color: rgb(var(--ctp-surface0) / 0.15); }
+
+        /* ---------------------------------------------------------------
+           Custom pointer
+           --------------------------------------------------------------- */
+        body.cursor-on, body.cursor-on * { cursor: none !important; }
+
+        .cursor-el {
+            position: fixed; left: 0; top: 0; z-index: 9999;
+            pointer-events: none; opacity: 0;
+            transform: translate3d(-200px, -200px, 0);
+            will-change: transform;
+        }
+        body.cursor-on .cursor-el { opacity: 1; }
+
+        #cursor-ring {
+            width: 34px; height: 34px; margin: -17px 0 0 -17px;
+            border: 1.5px solid rgb(var(--ctp-accent) / 0.8); border-radius: 50%;
+            transition: width .18s ease, height .18s ease, margin .18s ease,
+                        border-radius .18s ease, background-color .18s ease, opacity .2s ease;
+        }
+        #cursor-dot {
+            width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px;
+            background: rgb(var(--ctp-accent)); border-radius: 50%;
+            transition: width .14s ease, height .14s ease, margin .14s ease,
+                        border-radius .14s ease, opacity .2s ease;
+        }
+
+        /* shape: square */
+        body[data-cursor="square"] #cursor-ring { border-radius: 5px; }
+        body[data-cursor="square"] #cursor-dot { border-radius: 1px; }
+        body[data-cursor="square"] .cursor-ripple { border-radius: 10px; }
+
+        /* shape: dot — one solid dot, no ring */
+        body[data-cursor="dot"] #cursor-ring { opacity: 0; }
+        body[data-cursor="dot"] #cursor-dot { width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px; }
+
+        /* shape: crosshair */
+        body[data-cursor="crosshair"] #cursor-ring { width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; border-color: rgb(var(--ctp-accent) / 0.5); }
+        body[data-cursor="crosshair"] #cursor-dot { width: 0; height: 0; margin: 0; background: none; }
+        body[data-cursor="crosshair"] #cursor-dot::before,
+        body[data-cursor="crosshair"] #cursor-dot::after {
+            content: ''; position: absolute; background: rgb(var(--ctp-accent));
+        }
+        body[data-cursor="crosshair"] #cursor-dot::before { width: 1.5px; height: 26px; left: -0.75px; top: -13px; }
+        body[data-cursor="crosshair"] #cursor-dot::after { height: 1.5px; width: 26px; top: -0.75px; left: -13px; }
+
+        /* shape: glow — soft blurred halo trailing a small dot */
+        body[data-cursor="glow"] #cursor-ring {
+            width: 46px; height: 46px; margin: -23px 0 0 -23px;
+            border: none; background: rgb(var(--ctp-accent) / 0.35); filter: blur(9px);
+        }
+        body[data-cursor="glow"] #cursor-dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; }
+
+        /* hover + press states */
+        body.cursor-hover #cursor-ring { width: 48px; height: 48px; margin: -24px 0 0 -24px; background-color: rgb(var(--ctp-accent) / 0.14); }
+        body.cursor-hover[data-cursor="glow"] #cursor-ring { width: 62px; height: 62px; margin: -31px 0 0 -31px; background-color: rgb(var(--ctp-accent) / 0.45); }
+        body.cursor-hover[data-cursor="crosshair"] #cursor-ring { width: 20px; height: 20px; margin: -10px 0 0 -10px; }
+        body.cursor-down #cursor-ring { width: 20px; height: 20px; margin: -10px 0 0 -10px; background-color: rgb(var(--ctp-accent) / 0.3); }
+        body.cursor-down #cursor-dot { width: 4px; height: 4px; margin: -2px 0 0 -2px; }
+        body.cursor-down[data-cursor="dot"] #cursor-dot { width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; }
+
+        .cursor-ripple {
+            position: fixed; width: 54px; height: 54px; margin: -27px 0 0 -27px;
+            border: 2px solid rgb(var(--ctp-accent)); border-radius: 50%;
+            pointer-events: none; z-index: 9998;
+        }
+        .cursor-spark {
+            position: fixed; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px;
+            background: rgb(var(--ctp-accent)); border-radius: 50%;
+            pointer-events: none; z-index: 9998;
+        }
+
+        /* ---------------------------------------------------------------
+           Toasts
+           --------------------------------------------------------------- */
+        #toast-container {
+            position: fixed; right: 1rem; bottom: 1rem; z-index: 80;
+            display: flex; flex-direction: column-reverse; gap: 0.6rem;
+            width: min(23rem, calc(100vw - 2rem)); pointer-events: none;
+        }
+        .toast {
+            position: relative; overflow: hidden; pointer-events: auto;
+            background-color: rgb(var(--ctp-mantle) / 0.97);
+            border: 1px solid rgb(var(--ctp-surface1));
+            border-left: 4px solid var(--toast-tone, rgb(var(--ctp-accent)));
+            border-radius: 0.85rem;
+            box-shadow: 0 18px 40px -12px rgb(0 0 0 / 0.55);
+            backdrop-filter: blur(10px);
+        }
+        .toast-timer { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--toast-tone, rgb(var(--ctp-accent))); opacity: 0.55; transform-origin: left center; }
 
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
@@ -143,6 +240,13 @@
     <div id="bg-bubbles" class="bg-layer bubble-container"></div>
     <canvas id="bg-constellations" class="bg-layer"></canvas>
 
+    <!-- Custom pointer -->
+    <div id="cursor-ring" class="cursor-el" aria-hidden="true"></div>
+    <div id="cursor-dot" class="cursor-el" aria-hidden="true"></div>
+
+    <!-- Toasts -->
+    <div id="toast-container" aria-live="polite" aria-atomic="false"></div>
+
     <div id="master-container" class="mx-auto p-4 sm:p-6 lg:p-8 flex flex-col relative z-10 transition-all duration-500 max-w-3xl">
 
         <!-- Header -->
@@ -152,15 +256,29 @@
                     El Camino Real Bell Schedule
                 </h1>
                 <p class="text-sm text-ctp-subtext mt-1 flex flex-wrap items-center gap-2">
-                    <span id="current-date-display"></span> <span class="opacity-50 hidden sm:inline">•</span> <span class="hidden sm:inline">Pacific Time</span>
+                    <span id="current-date-display"></span>
+                    <span class="opacity-50">•</span>
+                    <span id="current-time-display" class="font-mono tabular-nums"></span>
                     <span id="battery-container" class="hidden items-center gap-1 bg-ctp-surface0/50 px-2 py-0.5 rounded-full text-xs ml-1">
                         <svg id="battery-icon" class="w-4 h-4 text-ctp-text" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
                         <span id="battery-level" class="font-mono font-bold"></span>%
                     </span>
                 </p>
             </div>
-            <div class="flex items-center gap-3">
-                <button id="settings-btn" onclick="toggleSettings()" aria-expanded="false" aria-controls="settings-wrapper" class="p-2.5 rounded-full bg-ctp-surface0 hover:bg-ctp-surface1 transition-colors" title="Settings">
+            <div class="flex items-center gap-2">
+                <button id="mute-btn" onclick="toggleSound()" class="p-2.5 rounded-full bg-ctp-surface0 hover:bg-ctp-surface1 transition-colors" title="Alert sound">
+                    <span class="sr-only">Toggle alert sound</span>
+                    <svg id="mute-icon" class="w-5 h-5 text-ctp-text" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"></svg>
+                </button>
+                <button onclick="toggleHelp()" class="p-2.5 rounded-full bg-ctp-surface0 hover:bg-ctp-surface1 transition-colors" title="Keyboard shortcuts (?)">
+                    <span class="sr-only">Keyboard shortcuts</span>
+                    <svg class="w-5 h-5 text-ctp-text" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"></rect><path stroke-linecap="round" d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M18 14h.01M9.5 14h5"></path></svg>
+                </button>
+                <button onclick="toggleFullscreen()" class="p-2.5 rounded-full bg-ctp-surface0 hover:bg-ctp-surface1 transition-colors" title="Fullscreen (F)">
+                    <span class="sr-only">Toggle fullscreen</span>
+                    <svg class="w-5 h-5 text-ctp-text" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V5a1 1 0 011-1h4M20 9V5a1 1 0 00-1-1h-4M4 15v4a1 1 0 001 1h4M20 15v4a1 1 0 01-1 1h-4"></path></svg>
+                </button>
+                <button id="settings-btn" onclick="toggleSettings()" aria-expanded="false" aria-controls="settings-wrapper" class="p-2.5 rounded-full bg-ctp-surface0 hover:bg-ctp-surface1 transition-colors" title="Settings (S)">
                     <span class="sr-only">Settings</span>
                     <svg class="w-5 h-5 text-ctp-text" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 </button>
@@ -171,7 +289,10 @@
         <div id="settings-wrapper" class="grid transition-all duration-400 ease-in-out" style="grid-template-rows: 0fr; opacity: 0; visibility: hidden;">
             <div class="overflow-hidden">
                 <div class="bg-ctp-mantle/80 backdrop-blur-md p-5 rounded-xl shadow-sm border border-ctp-surface0 mb-2 mt-4">
-                    <h3 class="text-lg font-semibold mb-4 border-b border-ctp-surface0 pb-2">Settings</h3>
+                    <div class="flex items-center justify-between mb-4 border-b border-ctp-surface0 pb-2">
+                        <h3 class="text-lg font-semibold">Settings</h3>
+                        <button onclick="resetSettings()" class="text-xs font-semibold text-ctp-subtext hover:text-ctp-accent transition-colors">Reset to defaults</button>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
                             <div>
@@ -220,6 +341,8 @@
                                 <option value="atom-dark">Atom Dark</option>
                                 <option value="nord">Nord</option>
                                 <option value="gruvbox">Gruvbox</option>
+                                <option value="tokyo-night">Tokyo Night</option>
+                                <option value="rose-pine">Rosé Pine</option>
                             </select>
                         </div>
                         <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
@@ -235,6 +358,68 @@
                                 <option value="constellations">Constellations</option>
                                 <option value="matrix">Matrix Rain</option>
                             </select>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
+                            <div>
+                                <p class="font-medium">Cursor</p>
+                                <p class="text-xs text-ctp-subtext" id="cursor-hint">&nbsp;</p>
+                            </div>
+                            <select id="select-cursor" aria-label="Cursor style" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg block p-2 outline-none min-w-[150px]">
+                                <option value="none">System Default</option>
+                                <option value="ring">Ring + Dot</option>
+                                <option value="square">Square</option>
+                                <option value="dot">Solid Dot</option>
+                                <option value="crosshair">Crosshair</option>
+                                <option value="glow">Glow</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
+                            <div>
+                                <p class="font-medium">Period Alerts</p>
+                                <p class="text-xs text-ctp-subtext">Warn before a period ends.</p>
+                            </div>
+                            <select id="select-alerts" aria-label="Period alerts" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg block p-2 outline-none min-w-[150px]">
+                                <option value="off">Off</option>
+                                <option value="minimal">5 and 1 min</option>
+                                <option value="standard">10, 5, 2, 1 min</option>
+                                <option value="frequent">15, 10, 5, 2, 1 min</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
+                            <div>
+                                <p class="font-medium">Alert Sound</p>
+                                <p class="text-xs text-ctp-subtext" id="sound-hint">&nbsp;</p>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <button onclick="testAlert()" class="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-ctp-surface1 hover:bg-ctp-surface2 transition-colors">Test</button>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <span class="sr-only">Alert sound</span>
+                                    <input type="checkbox" id="toggle-sound" class="sr-only peer" onchange="updateSettings()">
+                                    <div class="w-11 h-6 bg-ctp-surface1 peer-focus-visible:ring-2 peer-focus-visible:ring-ctp-accent rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-ctp-accent"></div>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
+                            <div>
+                                <p class="font-medium">Ticking Tab Clock</p>
+                                <p class="text-xs text-ctp-subtext">Live clock as the favicon.</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <span class="sr-only">Ticking tab clock</span>
+                                <input type="checkbox" id="toggle-favclock" class="sr-only peer" onchange="updateSettings()">
+                                <div class="w-11 h-6 bg-ctp-surface1 peer-focus-visible:ring-2 peer-focus-visible:ring-ctp-accent rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-ctp-accent"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
+                            <div>
+                                <p class="font-medium">Keep Screen Awake</p>
+                                <p class="text-xs text-ctp-subtext">For classroom displays.</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <span class="sr-only">Keep screen awake</span>
+                                <input type="checkbox" id="toggle-wakelock" class="sr-only peer" onchange="updateSettings()">
+                                <div class="w-11 h-6 bg-ctp-surface1 peer-focus-visible:ring-2 peer-focus-visible:ring-ctp-accent rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-ctp-accent"></div>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -258,6 +443,7 @@
 
                 <p id="tracker-status" class="text-sm uppercase tracking-widest font-semibold text-ctp-accent mb-2">Loading…</p>
                 <h2 id="tracker-period-name" class="text-3xl sm:text-4xl font-extrabold text-ctp-text mb-6">--</h2>
+                <p id="tracker-live" class="sr-only" aria-live="polite"></p>
 
                 <!-- Horizontal View -->
                 <div id="view-horizontal" class="w-full flex flex-col items-center">
@@ -295,6 +481,17 @@
                 </div>
 
                 <p id="tracker-next" class="mt-6 text-xs text-ctp-subtext"></p>
+
+                <!-- Whole-day progress -->
+                <div id="day-progress-wrap" class="hidden w-full max-w-md mt-5">
+                    <div class="flex justify-between items-baseline text-[11px] text-ctp-subtext mb-1">
+                        <span id="day-progress-label">Day progress</span>
+                        <span id="day-progress-pct" class="tabular-nums font-mono"></span>
+                    </div>
+                    <div class="w-full bg-ctp-surface0 rounded-full h-1.5 overflow-hidden">
+                        <div id="day-progress-bar" class="bg-ctp-accent/60 h-full rounded-full transition-all duration-1000 ease-linear" style="width: 0%"></div>
+                    </div>
+                </div>
             </div>
 
             <!-- Schedule Table -->
@@ -335,6 +532,20 @@
         </div>
     </div>
 
+    <!-- Keyboard shortcuts -->
+    <div id="help-modal" class="hidden fixed inset-0 z-[90] items-center justify-center bg-black/50 backdrop-blur-sm p-4" onclick="if(event.target === this) toggleHelp(false)">
+        <div role="dialog" aria-modal="true" aria-label="Keyboard shortcuts" class="bg-ctp-mantle border border-ctp-surface0 rounded-2xl shadow-2xl p-6 w-full max-w-md">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold">Keyboard shortcuts</h3>
+                <button onclick="toggleHelp(false)" class="text-ctp-subtext hover:text-ctp-accent transition-colors" title="Close">
+                    <span class="sr-only">Close</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <ul id="shortcut-list" class="text-sm divide-y divide-ctp-surface0/60"></ul>
+        </div>
+    </div>
+
     <script>
         // ---------------------------------------------------------------
         // Schedule data
@@ -365,7 +576,7 @@
             ]
         };
 
-        let state = {
+        const defaultState = {
             manualType: 'auto',
             hideP0: false,
             compactMode: false,
@@ -373,12 +584,20 @@
             shape: 'horizontal',
             colorTheme: 'mocha',
             bg: 'none',
+            cursor: 'none',
+            alerts: 'standard',
+            sound: true,
+            favClock: true,
+            wakeLock: false,
             customNames: {},
             tasks: []
         };
 
+        let state = { ...defaultState };
+
         const BASE_TITLE = 'El Camino Real Bell Schedule';
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const finePointer = window.matchMedia('(pointer: fine)').matches;
 
         let currentActiveId = null;
         let compiledSchedules = {};
@@ -452,19 +671,33 @@
             document.documentElement.setAttribute('data-theme', state.colorTheme);
             document.getElementById('toggle-p0').checked = state.hideP0;
             document.getElementById('toggle-compact').checked = state.compactMode;
+            document.getElementById('toggle-sound').checked = state.sound;
+            document.getElementById('toggle-favclock').checked = state.favClock;
+            document.getElementById('toggle-wakelock').checked = state.wakeLock;
             document.getElementById('select-layout').value = state.layout;
             document.getElementById('select-shape').value = state.shape;
             document.getElementById('select-color').value = state.colorTheme;
             document.getElementById('select-bg').value = state.bg;
+            document.getElementById('select-cursor').value = state.cursor;
+            document.getElementById('select-alerts').value = state.alerts;
             document.getElementById('bg-hint').textContent =
                 state.bg === 'topology' ? 'Bulges toward your cursor.'
                 : state.bg === 'bubbles' ? 'Click a bubble to pop it.'
                 : '\u00A0';
+            document.getElementById('cursor-hint').textContent =
+                !finePointer ? 'Touch screen — uses system default.'
+                : state.cursor === 'none' ? '\u00A0'
+                : 'Click anywhere for the ripple.';
+            document.getElementById('sound-hint').textContent =
+                audioCtx ? '\u00A0' : 'Click the page once to enable audio.';
 
+            updateMuteIcon();
             updateGlider();
             updateCompactMode();
             updateShapeView();
             updateBackground();
+            updateCursor();
+            applyWakeLock();
             renderTasks();
 
             compileSchedules();
@@ -507,7 +740,19 @@
             state.shape = document.getElementById('select-shape').value;
             state.colorTheme = document.getElementById('select-color').value;
             state.bg = document.getElementById('select-bg').value;
+            state.cursor = document.getElementById('select-cursor').value;
+            state.alerts = document.getElementById('select-alerts').value;
+            state.sound = document.getElementById('toggle-sound').checked;
+            state.favClock = document.getElementById('toggle-favclock').checked;
+            state.wakeLock = document.getElementById('toggle-wakelock').checked;
             saveState(); updateUIState();
+        }
+
+        function resetSettings() {
+            const tasks = state.tasks;
+            state = { ...defaultState, tasks };
+            saveState(); updateUIState();
+            toast({ title: 'Settings reset', msg: 'Back to defaults. Your tasks were kept.', tone: 'success' });
         }
 
         function setManualSchedule(type) {
@@ -558,6 +803,354 @@
             hz.classList.toggle('flex', !circular);
             circ.classList.toggle('hidden', !circular);
             circ.classList.toggle('flex', circular);
+        }
+
+        // ---------------------------------------------------------------
+        // Custom cursor
+        // ---------------------------------------------------------------
+        const cursorDot = document.getElementById('cursor-dot');
+        const cursorRing = document.getElementById('cursor-ring');
+        let cursorRaf = null;
+        let ptX = -200, ptY = -200, ringX = -200, ringY = -200, dotX = -200, dotY = -200;
+        let cursorBound = false;
+
+        const INTERACTIVE = 'button, a, select, input, label, textarea, [role="tab"], .bubble';
+
+        function cursorActive() { return finePointer && state.cursor !== 'none'; }
+
+        function updateCursor() {
+            document.body.setAttribute('data-cursor', state.cursor);
+            const on = cursorActive();
+            document.body.classList.toggle('cursor-on', on);
+            if (!on) {
+                document.body.classList.remove('cursor-hover', 'cursor-down');
+                if (cursorRaf) cancelAnimationFrame(cursorRaf);
+                cursorRaf = null;
+                return;
+            }
+            if (!cursorBound) bindCursor();
+            if (!cursorRaf) cursorRaf = requestAnimationFrame(cursorLoop);
+        }
+
+        function bindCursor() {
+            cursorBound = true;
+            window.addEventListener('pointermove', e => {
+                ptX = e.clientX; ptY = e.clientY;
+                if (ringX < -100) { ringX = dotX = ptX; ringY = dotY = ptY; }
+                const hot = e.target instanceof Element && e.target.closest(INTERACTIVE);
+                document.body.classList.toggle('cursor-hover', !!hot);
+            }, { passive: true });
+
+            window.addEventListener('pointerdown', e => {
+                if (!cursorActive()) return;
+                document.body.classList.add('cursor-down');
+                cursorRipple(e.clientX, e.clientY);
+            });
+            window.addEventListener('pointerup', () => document.body.classList.remove('cursor-down'));
+            window.addEventListener('pointerleave', () => { ptX = -200; ptY = -200; });
+        }
+
+        function cursorLoop() {
+            cursorRaf = requestAnimationFrame(cursorLoop);
+            // The dot tracks the pointer almost exactly; the ring lags behind it.
+            dotX += (ptX - dotX) * 0.55;
+            dotY += (ptY - dotY) * 0.55;
+            ringX += (ptX - ringX) * 0.16;
+            ringY += (ptY - ringY) * 0.16;
+            cursorDot.style.transform = `translate3d(${dotX}px, ${dotY}px, 0)`;
+            cursorRing.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
+        }
+
+        function cursorRipple(x, y) {
+            if (reduceMotion) return;
+            const r = document.createElement('div');
+            r.className = 'cursor-ripple';
+            r.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+            document.body.appendChild(r);
+            const a = r.animate([
+                { transform: `translate3d(${x}px, ${y}px, 0) scale(.28)`, opacity: 0.9 },
+                { transform: `translate3d(${x}px, ${y}px, 0) scale(1)`, opacity: 0 }
+            ], { duration: 520, easing: 'cubic-bezier(.22,1,.36,1)' });
+            a.onfinish = () => r.remove();
+
+            // four little sparks flicking outward
+            for (let i = 0; i < 4; i++) {
+                const p = document.createElement('div');
+                p.className = 'cursor-spark';
+                document.body.appendChild(p);
+                const ang = (Math.PI / 2) * i + Math.random() * 0.8;
+                const dist = 16 + Math.random() * 14;
+                const pa = p.animate([
+                    { transform: `translate3d(${x}px, ${y}px, 0) scale(1)`, opacity: 0.9 },
+                    { transform: `translate3d(${x + Math.cos(ang) * dist}px, ${y + Math.sin(ang) * dist}px, 0) scale(0)`, opacity: 0 }
+                ], { duration: 380 + Math.random() * 180, easing: 'cubic-bezier(.25,1,.5,1)' });
+                pa.onfinish = () => p.remove();
+            }
+        }
+
+        // ---------------------------------------------------------------
+        // Toasts
+        // ---------------------------------------------------------------
+        const TONES = {
+            info: 'rgb(var(--ctp-accent))',
+            warn: '#f5a97f',
+            alert: '#ed8796',
+            success: '#a6da95'
+        };
+        const TONE_ICONS = {
+            info: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 8h.01M11 12h1v4h1"></path><circle cx="12" cy="12" r="9"></circle>',
+            warn: '<circle cx="12" cy="12" r="9"></circle><path stroke-linecap="round" d="M12 7v5l3 2"></path>',
+            alert: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.3 4.3L2.6 17.6A2 2 0 004.3 20.6h15.4a2 2 0 001.7-3L13.7 4.3a2 2 0 00-3.4 0z"></path>',
+            success: '<circle cx="12" cy="12" r="9"></circle><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 12.5l2.5 2.5 4.5-5"></path>'
+        };
+
+        function toast({ title = '', msg = '', tone = 'info', duration = 6000, action = null } = {}) {
+            const wrap = document.getElementById('toast-container');
+            while (wrap.childElementCount >= 4) wrap.firstElementChild.remove();
+
+            const el = document.createElement('div');
+            el.className = 'toast p-3 pr-9 flex gap-3 items-start';
+            el.style.setProperty('--toast-tone', TONES[tone] || TONES.info);
+            el.innerHTML = `
+                <svg class="w-5 h-5 mt-0.5 flex-shrink-0" style="color: var(--toast-tone)" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true">${TONE_ICONS[tone] || TONE_ICONS.info}</svg>
+                <div class="min-w-0 flex-1">
+                    <p class="text-sm font-semibold text-ctp-text leading-snug">${escapeHTML(title)}</p>
+                    ${msg ? `<p class="text-xs text-ctp-subtext mt-0.5 leading-relaxed">${escapeHTML(msg)}</p>` : ''}
+                </div>
+                <button class="toast-close absolute top-2 right-2 p-1 text-ctp-subtext hover:text-ctp-text transition-colors" title="Dismiss">
+                    <span class="sr-only">Dismiss</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+                <div class="toast-timer"></div>
+            `;
+
+            if (action && action.label) {
+                const btn = document.createElement('button');
+                btn.className = 'text-xs font-semibold px-2.5 py-1 rounded-lg bg-ctp-surface1 hover:bg-ctp-surface2 transition-colors flex-shrink-0 mt-0.5';
+                btn.textContent = action.label;
+                btn.addEventListener('click', () => { action.fn(); dismiss(); });
+                el.querySelector('div.min-w-0').after(btn);
+            }
+
+            wrap.appendChild(el);
+
+            let dismissed = false;
+            let timerId = null;
+            function dismiss() {
+                if (dismissed) return;
+                dismissed = true;
+                clearTimeout(timerId);
+                const out = el.animate([
+                    { opacity: 1, transform: 'translateX(0) scale(1)' },
+                    { opacity: 0, transform: 'translateX(18px) scale(.97)' }
+                ], { duration: 220, easing: 'ease-in' });
+                out.onfinish = () => el.remove();
+            }
+
+            el.querySelector('.toast-close').addEventListener('click', dismiss);
+            el.animate([
+                { opacity: 0, transform: 'translateX(28px) scale(.96)' },
+                { opacity: 1, transform: 'translateX(0) scale(1)' }
+            ], { duration: 320, easing: 'cubic-bezier(.22,1,.36,1)' });
+
+            const bar = el.querySelector('.toast-timer');
+            bar.animate([{ transform: 'scaleX(1)' }, { transform: 'scaleX(0)' }], { duration, easing: 'linear', fill: 'forwards' });
+            timerId = setTimeout(dismiss, duration);
+            return dismiss;
+        }
+
+        // ---------------------------------------------------------------
+        // Alert sound (synthesized, no assets)
+        // ---------------------------------------------------------------
+        let audioCtx = null;
+
+        function ensureAudio() {
+            if (!audioCtx) {
+                const AC = window.AudioContext || window.webkitAudioContext;
+                if (!AC) return;
+                try { audioCtx = new AC(); } catch (e) { return; }
+                const hint = document.getElementById('sound-hint');
+                if (hint) hint.textContent = '\u00A0';
+            }
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+        window.addEventListener('pointerdown', ensureAudio);
+        window.addEventListener('keydown', ensureAudio);
+
+        function bellTone(freq, at, vol = 0.2, len = 0.9) {
+            const o = audioCtx.createOscillator();
+            const harm = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            const hg = audioCtx.createGain();
+            o.type = 'sine'; o.frequency.value = freq;
+            harm.type = 'triangle'; harm.frequency.value = freq * 2.01;
+            hg.gain.value = 0.22;
+            g.gain.setValueAtTime(0.0001, at);
+            g.gain.exponentialRampToValueAtTime(vol, at + 0.012);
+            g.gain.exponentialRampToValueAtTime(0.0001, at + len);
+            o.connect(g); harm.connect(hg); hg.connect(g); g.connect(audioCtx.destination);
+            o.start(at); harm.start(at);
+            o.stop(at + len + 0.05); harm.stop(at + len + 0.05);
+        }
+
+        const CHIMES = {
+            warn:  [[880, 0, 0.18, 0.8], [1174.7, 0.16, 0.16, 1.0]],
+            final: [[1174.7, 0, 0.2, 0.45], [1174.7, 0.16, 0.2, 0.45], [1567.98, 0.34, 0.22, 1.1]],
+            start: [[523.25, 0, 0.16, 0.6], [784, 0.13, 0.18, 0.9]],
+            done:  [[784, 0, 0.18, 0.5], [659.25, 0.15, 0.16, 0.5], [523.25, 0.3, 0.18, 1.1]]
+        };
+
+        function playChime(kind) {
+            if (!state.sound) return;
+            ensureAudio();
+            if (!audioCtx) return;
+            const t0 = audioCtx.currentTime + 0.03;
+            (CHIMES[kind] || CHIMES.warn).forEach(([f, d, v, l]) => bellTone(f, t0 + d, v, l));
+        }
+
+        function toggleSound() {
+            state.sound = !state.sound;
+            saveState();
+            document.getElementById('toggle-sound').checked = state.sound;
+            updateMuteIcon();
+            if (state.sound) playChime('start');
+            toast({ title: state.sound ? 'Alert sound on' : 'Alert sound off', tone: 'info', duration: 2600 });
+        }
+
+        function updateMuteIcon() {
+            const icon = document.getElementById('mute-icon');
+            const speaker = '<path d="M11 5L6 9H3v6h3l5 4V5z"></path>';
+            icon.innerHTML = speaker + (state.sound
+                ? '<path d="M15.5 8.5a5 5 0 010 7M18.5 5.5a9 9 0 010 13"></path>'
+                : '<path d="M16 9l5 6M21 9l-5 6"></path>');
+            document.getElementById('mute-btn').title = state.sound ? 'Alert sound on' : 'Alert sound off';
+        }
+
+        function testAlert() {
+            ensureAudio();
+            toast({ title: '5 minutes left', msg: 'This is what a period warning looks like.', tone: 'warn', duration: 4500 });
+            playChime('warn');
+        }
+
+        // ---------------------------------------------------------------
+        // Period alerts
+        // ---------------------------------------------------------------
+        const ALERT_SETS = { off: [], minimal: [5, 1], standard: [10, 5, 2, 1], frequent: [15, 10, 5, 2, 1] };
+        let lastActiveKey = null;
+        let prevRemain = null;
+        let alertsPrimed = false;
+
+        function handleAlerts(active, pEnd, upcoming, now, dayOver) {
+            if (!active) {
+                // Only celebrate once the last bell has rung — not between periods.
+                if (lastActiveKey && dayOver && alertsPrimed && state.alerts !== 'off') {
+                    toast({ title: 'That was the last bell', msg: 'Nothing else on the schedule today.', tone: 'success', duration: 7000 });
+                    playChime('done');
+                }
+                lastActiveKey = null; prevRemain = null;
+                return;
+            }
+
+            const rem = pEnd - now;
+
+            if (active.id !== lastActiveKey) {
+                if (alertsPrimed && state.alerts !== 'off') {
+                    toast({
+                        title: `${active.name} started`,
+                        msg: `Ends at ${active.end}${upcoming ? ` · then ${upcoming.name}` : ''}.`,
+                        tone: 'info', duration: 5000
+                    });
+                    playChime('start');
+                }
+                lastActiveKey = active.id;
+                prevRemain = rem;
+                return;
+            }
+
+            if (alertsPrimed && state.alerts !== 'off' && prevRemain !== null) {
+                (ALERT_SETS[state.alerts] || []).forEach(mins => {
+                    const ms = mins * 60000;
+                    if (prevRemain > ms && rem <= ms) {
+                        const urgent = mins <= 2;
+                        toast({
+                            title: `${mins} minute${mins === 1 ? '' : 's'} left in ${active.name}`,
+                            msg: upcoming ? `Next up: ${upcoming.name} at ${upcoming.start}.` : 'Last period of the day.',
+                            tone: urgent ? 'alert' : 'warn',
+                            duration: urgent ? 9000 : 7000
+                        });
+                        playChime(urgent ? 'final' : 'warn');
+                    }
+                });
+            }
+            prevRemain = rem;
+        }
+
+        // ---------------------------------------------------------------
+        // Ticking clock favicon
+        // ---------------------------------------------------------------
+        const favCanvas = document.createElement('canvas');
+        favCanvas.width = 64; favCanvas.height = 64;
+        const favCtx = favCanvas.getContext('2d');
+        const favLink = document.createElement('link');
+        favLink.rel = 'icon';
+        favLink.type = 'image/png';
+        document.head.appendChild(favLink);
+        let lastFavKey = '';
+
+        function drawFavicon(pct) {
+            const now = new Date();
+            const key = state.favClock
+                ? `${state.colorTheme}:${now.getSeconds()}:${Math.round(pct)}`
+                : `${state.colorTheme}:static:${Math.round(pct)}`;
+            if (key === lastFavKey) return;
+            lastFavKey = key;
+
+            const ctx = favCtx;
+            const face = cssVar('--ctp-mantle');
+            const text = cssVar('--ctp-text');
+            const accent = cssVar('--ctp-accent');
+            const rim = cssVar('--ctp-surface2');
+
+            ctx.clearRect(0, 0, 64, 64);
+            ctx.beginPath(); ctx.arc(32, 32, 30, 0, Math.PI * 2);
+            ctx.fillStyle = `rgb(${face})`; ctx.fill();
+
+            ctx.lineWidth = 4; ctx.lineCap = 'butt';
+            ctx.strokeStyle = `rgb(${rim})`;
+            ctx.beginPath(); ctx.arc(32, 32, 28, 0, Math.PI * 2); ctx.stroke();
+
+            // period progress rides the rim
+            if (pct > 0) {
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = `rgb(${accent})`;
+                ctx.beginPath();
+                ctx.arc(32, 32, 28, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.min(1, pct / 100));
+                ctx.stroke();
+            }
+
+            if (!state.favClock) {
+                ctx.beginPath(); ctx.arc(32, 32, 9, 0, Math.PI * 2);
+                ctx.fillStyle = `rgb(${accent})`; ctx.fill();
+                favLink.href = favCanvas.toDataURL('image/png');
+                return;
+            }
+
+            const h = now.getHours() % 12, m = now.getMinutes(), s = now.getSeconds();
+            function hand(turns, len, width, color) {
+                const a = turns * Math.PI * 2;
+                ctx.beginPath(); ctx.lineWidth = width; ctx.lineCap = 'round';
+                ctx.strokeStyle = color;
+                ctx.moveTo(32, 32);
+                ctx.lineTo(32 + Math.sin(a) * len, 32 - Math.cos(a) * len);
+                ctx.stroke();
+            }
+            hand((h + m / 60) / 12, 11, 5.5, `rgb(${text})`);
+            hand((m + s / 60) / 60, 17, 4, `rgb(${text})`);
+            hand(s / 60, 20, 2, `rgb(${accent})`);
+            ctx.beginPath(); ctx.arc(32, 32, 2.6, 0, Math.PI * 2);
+            ctx.fillStyle = `rgb(${accent})`; ctx.fill();
+
+            favLink.href = favCanvas.toDataURL('image/png');
         }
 
         // ---------------------------------------------------------------
@@ -930,15 +1523,29 @@
             if (task) { task.done = !task.done; saveState(); renderTasks(); }
         }
         function deleteTask(id) {
-            state.tasks = state.tasks.filter(t => t.id !== id);
+            const idx = state.tasks.findIndex(t => t.id === id);
+            if (idx === -1) return;
+            const [removed] = state.tasks.splice(idx, 1);
             saveState(); renderTasks();
+            toast({
+                title: 'Task deleted', msg: removed.text, tone: 'info', duration: 6000,
+                action: { label: 'Undo', fn: () => { state.tasks.splice(idx, 0, removed); saveState(); renderTasks(); } }
+            });
         }
         function clearCompleted() {
+            const removed = state.tasks.filter(t => t.done);
+            if (!removed.length) return;
+            const snapshot = [...state.tasks];
             state.tasks = state.tasks.filter(t => !t.done);
             saveState(); renderTasks();
+            toast({
+                title: `Cleared ${removed.length} finished task${removed.length === 1 ? '' : 's'}`,
+                tone: 'success', duration: 6000,
+                action: { label: 'Undo', fn: () => { state.tasks = snapshot; saveState(); renderTasks(); } }
+            });
         }
         function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
+            return String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
         }
 
         // ---------------------------------------------------------------
@@ -963,21 +1570,22 @@
                 return;
             }
 
-            periods.forEach(p => {
+            periods.forEach((p, i) => {
                 const mins = minutesBetween(timeToDate(p.start, now), timeToDate(p.end, now));
                 const tr = document.createElement('tr');
                 tr.id = `row-${p.id}`;
                 tr.className = "sched-row transition-colors duration-300";
+                const safeName = escapeHTML(p.name);
 
-                let nameCell = `<span class="font-medium">${p.name}</span>`;
+                let nameCell = `<span class="font-medium">${safeName}</span>`;
                 if (p.editable) {
                     nameCell = `
                         <div class="flex items-center gap-2 group">
-                            <span class="font-medium truncate max-w-[120px] sm:max-w-xs" id="name-txt-${p.id}">${p.name}</span>
-                            <button onclick="editName('${p.id}')" title="Rename ${p.name}" class="text-ctp-subtext opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:text-ctp-accent transition-all"><span class="sr-only">Rename</span><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
+                            <span class="font-medium truncate max-w-[120px] sm:max-w-xs" id="name-txt-${p.id}">${safeName}</span>
+                            <button onclick="editName('${p.id}')" title="Rename ${safeName}" class="text-ctp-subtext opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:text-ctp-accent transition-all"><span class="sr-only">Rename</span><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
                         </div>
                         <div id="name-edit-${p.id}" class="hidden items-center gap-2">
-                            <input type="text" id="name-inp-${p.id}" maxlength="28" aria-label="Period name" class="bg-ctp-surface0 border border-ctp-surface1 text-xs px-2 py-1 rounded w-24 sm:w-32 outline-none focus:border-ctp-accent" value="${p.name}" onkeydown="if(event.key==='Enter') saveName('${p.id}'); if(event.key==='Escape') cancelName('${p.id}')">
+                            <input type="text" id="name-inp-${p.id}" maxlength="28" aria-label="Period name" class="bg-ctp-surface0 border border-ctp-surface1 text-xs px-2 py-1 rounded w-24 sm:w-32 outline-none focus:border-ctp-accent" value="${safeName}" onkeydown="if(event.key==='Enter') saveName('${p.id}'); if(event.key==='Escape') cancelName('${p.id}')">
                             <button onclick="saveName('${p.id}')" class="text-green-500" title="Save name"><span class="sr-only">Save name</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>
                             <button onclick="cancelName('${p.id}')" class="text-red-500" title="Cancel"><span class="sr-only">Cancel</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
                         </div>
@@ -992,6 +1600,18 @@
                     </td>
                 `;
                 tbody.appendChild(tr);
+
+                // Passing time between bells, so the gaps aren't invisible
+                const nextP = periods[i + 1];
+                if (nextP) {
+                    const gap = minutesBetween(timeToDate(p.end, now), timeToDate(nextP.start, now));
+                    if (gap > 0) {
+                        const gapRow = document.createElement('tr');
+                        gapRow.className = 'pass-row';
+                        gapRow.innerHTML = `<td colspan="2" class="px-3 sm:px-4 py-1 text-[10px] tracking-wider text-ctp-subtext/70">${gap} min passing</td>`;
+                        tbody.appendChild(gapRow);
+                    }
+                }
             });
         }
 
@@ -1036,10 +1656,31 @@
         // ---------------------------------------------------------------
         // Live tracker
         // ---------------------------------------------------------------
+        let lastLiveAnnounce = '';
+
+        function updateDayProgress(now, periods) {
+            const wrap = document.getElementById('day-progress-wrap');
+            if (!periods.length) { wrap.classList.add('hidden'); return; }
+            wrap.classList.remove('hidden');
+
+            const dayStart = timeToDate(periods[0].start, now);
+            const dayEnd = timeToDate(periods[periods.length - 1].end, now);
+            const pct = Math.min(100, Math.max(0, ((now - dayStart) / (dayEnd - dayStart)) * 100));
+
+            document.getElementById('day-progress-bar').style.width = `${pct}%`;
+            document.getElementById('day-progress-pct').innerText = `${Math.round(pct)}%`;
+            document.getElementById('day-progress-label').innerText =
+                now < dayStart ? `First bell at ${periods[0].start}`
+                : now >= dayEnd ? 'School day finished'
+                : `Out at ${periods[periods.length - 1].end}`;
+        }
+
         function tick() {
             const now = new Date();
             document.getElementById('current-date-display').innerText =
                 now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+            document.getElementById('current-time-display').innerText =
+                now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
 
             const type = determineScheduleType(now);
             const periods = compiledSchedules[type] || [];
@@ -1071,6 +1712,7 @@
             }
 
             // Look ahead up to a week when today is done
+            let lookahead = false;
             if (!active && !next) {
                 for (let offset = (periods.length === 0 ? 0 : 1); offset <= 7; offset++) {
                     const checkDate = new Date(now);
@@ -1086,6 +1728,7 @@
                             pStart = now; pEnd = firstStart;
                             status = 'School starts in';
                             upcoming = dayPeriods[1] || null;
+                            lookahead = true;
                             break;
                         }
                     }
@@ -1095,6 +1738,7 @@
             if (type === 'none' && !active && !next) status = 'Weekend / holiday';
 
             const nextLine = document.getElementById('tracker-next');
+            updateDayProgress(now, periods);
 
             if (active || next) {
                 const target = active || next;
@@ -1122,6 +1766,14 @@
                 nextLine.innerText = upcoming ? `Up next: ${upcoming.name} at ${upcoming.start}` : (active ? 'Last period of the day.' : '');
                 document.title = `${countdown} · ${target.name}`;
 
+                const announce = `${status}: ${target.name}`;
+                if (announce !== lastLiveAnnounce) {
+                    lastLiveAnnounce = announce;
+                    document.getElementById('tracker-live').innerText = announce;
+                }
+
+                drawFavicon(active ? pct : 0);
+
                 const rowId = (pEnd.getDate() === now.getDate() && active) ? target.id : null;
                 if (currentActiveId !== rowId) {
                     currentActiveId = rowId;
@@ -1136,16 +1788,106 @@
                 document.getElementById('tracker-progress-circ').style.strokeDashoffset = 283;
                 nextLine.innerText = '';
                 document.title = BASE_TITLE;
+                drawFavicon(0);
                 if (currentActiveId !== null) { currentActiveId = null; refreshRowStates(null); }
             }
+
+            handleAlerts(active, pEnd, upcoming, now, !active && (lookahead || !next));
         }
+
+        // ---------------------------------------------------------------
+        // Screen wake lock (handy when this is left up on a display)
+        // ---------------------------------------------------------------
+        let wakeLockObj = null;
+        async function applyWakeLock() {
+            try {
+                if (state.wakeLock && 'wakeLock' in navigator && document.visibilityState === 'visible') {
+                    if (!wakeLockObj) {
+                        wakeLockObj = await navigator.wakeLock.request('screen');
+                        wakeLockObj.addEventListener('release', () => { wakeLockObj = null; });
+                    }
+                } else if (wakeLockObj) {
+                    await wakeLockObj.release();
+                    wakeLockObj = null;
+                }
+            } catch (e) { /* denied or unsupported — nothing to do */ }
+        }
+        document.addEventListener('visibilitychange', () => { if (state.wakeLock) applyWakeLock(); });
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+            else document.exitFullscreen().catch(() => {});
+        }
+
+        // ---------------------------------------------------------------
+        // Keyboard shortcuts
+        // ---------------------------------------------------------------
+        const SHORTCUTS = [
+            ['S', 'Open or close settings'],
+            ['C', 'Compact mode'],
+            ['F', 'Fullscreen'],
+            ['V', 'Switch bar / ring countdown'],
+            ['L', 'Switch vertical / horizontal layout'],
+            ['M', 'Mute or unmute alerts'],
+            ['1 2 3', 'Auto, Regular, Common schedule'],
+            ['/', 'Jump to the task box'],
+            ['?', 'This list'],
+            ['Esc', 'Close whatever is open']
+        ];
+
+        function buildShortcutList() {
+            document.getElementById('shortcut-list').innerHTML = SHORTCUTS.map(([k, d]) => `
+                <li class="flex items-center justify-between gap-4 py-2">
+                    <span class="text-ctp-subtext">${d}</span>
+                    <kbd class="font-mono text-xs bg-ctp-surface0 border border-ctp-surface1 rounded px-2 py-1 whitespace-nowrap">${k}</kbd>
+                </li>`).join('');
+        }
+
+        function helpOpen() { return !document.getElementById('help-modal').classList.contains('hidden'); }
+        function toggleHelp(force) {
+            const m = document.getElementById('help-modal');
+            const open = typeof force === 'boolean' ? force : !helpOpen();
+            m.classList.toggle('hidden', !open);
+            m.classList.toggle('flex', open);
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                if (helpOpen()) { toggleHelp(false); return; }
+                if (settingsOpen()) { toggleSettings(false); return; }
+            }
+            const tag = (e.target.tagName || '').toLowerCase();
+            if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.metaKey || e.ctrlKey || e.altKey) return;
+
+            switch (e.key) {
+                case 's': case 'S': toggleSettings(); break;
+                case 'c': case 'C':
+                    state.compactMode = !state.compactMode; saveState(); updateUIState(); break;
+                case 'f': case 'F': toggleFullscreen(); break;
+                case 'v': case 'V':
+                    state.shape = state.shape === 'horizontal' ? 'circular' : 'horizontal'; saveState(); updateUIState(); break;
+                case 'l': case 'L':
+                    state.layout = state.layout === 'vertical' ? 'horizontal' : 'vertical'; saveState(); updateUIState(); break;
+                case 'm': case 'M': toggleSound(); break;
+                case '1': setManualSchedule('auto'); break;
+                case '2': setManualSchedule('regular'); break;
+                case '3': setManualSchedule('common'); break;
+                case '?': toggleHelp(true); break;
+                case '/':
+                    e.preventDefault();
+                    document.getElementById('new-task-input').focus();
+                    break;
+            }
+        });
 
         // ---------------------------------------------------------------
         // Init
         // ---------------------------------------------------------------
         loadState();
+        buildShortcutList();
         updateUIState();
         setInterval(tick, 1000);
+        setTimeout(() => { alertsPrimed = true; }, 1500);
 
         // Rebuild the table when the calendar day rolls over
         let lastDay = new Date().getDate();
@@ -1153,10 +1895,6 @@
             const d = new Date().getDate();
             if (d !== lastDay) { lastDay = d; currentActiveId = null; buildScheduleTable(); tick(); }
         }, 30000);
-
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape' && settingsOpen()) toggleSettings(false);
-        });
 
         // Battery indicator
         if ('getBattery' in navigator) {
@@ -1168,6 +1906,7 @@
                 bCont.classList.add('flex');
 
                 const shell = `<rect x="2" y="8" width="16" height="9" rx="2" stroke-width="1.8"></rect><path d="M20.5 11.5v2" stroke-width="2.5" stroke-linecap="round"></path>`;
+                let lowWarned = false;
                 function upBat() {
                     const pct = Math.round(bat.level * 100);
                     bLev.innerText = pct;
@@ -1177,6 +1916,12 @@
                     bIcon.innerHTML = shell + `<rect x="4" y="10" width="${fillW}" height="5" rx="1" fill="currentColor" stroke="none"></rect>` +
                         (bat.charging ? `<path d="M12 7.5l-2.2 4h2.4l-.6 3.2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>` : '');
                     bCont.title = bat.charging ? `Charging · ${pct}%` : `Battery ${pct}%`;
+
+                    if (!bat.charging && pct <= 15 && !lowWarned && alertsPrimed) {
+                        lowWarned = true;
+                        toast({ title: 'Battery at ' + pct + '%', msg: 'Plug in if you want this running all day.', tone: 'warn', duration: 7000 });
+                    }
+                    if (bat.charging) lowWarned = false;
                 }
                 upBat();
                 bat.addEventListener('levelchange', upBat);
