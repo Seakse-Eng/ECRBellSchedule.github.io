@@ -2071,7 +2071,13 @@
                     document.getElementById('tracker-progress-circ').style.strokeDashoffset = 283 - (283 * pct / 100);
                 }
 
-                nextLine.innerText = upcoming ? `Up next: ${upcoming.name} at ${upcoming.start}` : (active ? 'Last period of the day.' : '');
+                // When a period is active, show the following period as "Up next" (upcoming).
+                // When there is no active period but a next period is scheduled, show that next period.
+                if (active) {
+                    nextLine.innerText = upcoming ? `Up next: ${upcoming.name} at ${upcoming.start}` : 'Last period of the day.';
+                } else {
+                    nextLine.innerText = next ? `Up next: ${next.name} at ${next.start}` : '';
+                }
                 document.title = `${countdown} · ${target.name}`;
 
                 const announce = `${status}: ${target.name}`;
