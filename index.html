@@ -26,51 +26,17 @@
         }
     </script>
     <style>
-        /* Catppuccin Palettes */
-        :root[data-theme="latte"] {
-            --ctp-base: 239 241 245; 
-            --ctp-mantle: 230 233 239; 
-            --ctp-surface0: 204 208 218; 
-            --ctp-surface1: 188 192 204; 
-            --ctp-surface2: 172 176 190; 
-            --ctp-text: 76 79 105; 
-            --ctp-subtext: 92 95 119; 
-            --ctp-accent: 136 57 239; /* Mauve */
-            color-scheme: light;
-        }
-        :root[data-theme="frappe"] {
-            --ctp-base: 48 52 70;
-            --ctp-mantle: 41 44 60;
-            --ctp-surface0: 65 69 89;
-            --ctp-surface1: 81 87 109;
-            --ctp-surface2: 98 104 128;
-            --ctp-text: 198 208 245;
-            --ctp-subtext: 181 191 226;
-            --ctp-accent: 202 158 230; /* Mauve */
-            color-scheme: dark;
-        }
-        :root[data-theme="macchiato"] {
-            --ctp-base: 36 39 58;
-            --ctp-mantle: 30 32 48;
-            --ctp-surface0: 54 58 79;
-            --ctp-surface1: 73 77 100;
-            --ctp-surface2: 91 96 120;
-            --ctp-text: 202 211 245;
-            --ctp-subtext: 184 192 224;
-            --ctp-accent: 198 160 246; /* Mauve */
-            color-scheme: dark;
-        }
-        :root[data-theme="mocha"] {
-            --ctp-base: 30 30 46;
-            --ctp-mantle: 24 24 37;
-            --ctp-surface0: 49 50 68;
-            --ctp-surface1: 69 71 90;
-            --ctp-surface2: 88 91 112;
-            --ctp-text: 205 214 244;
-            --ctp-subtext: 186 194 222;
-            --ctp-accent: 203 166 247; /* Mauve */
-            color-scheme: dark;
-        }
+        /* Themes */
+        :root[data-theme="latte"] { --ctp-base: 239 241 245; --ctp-mantle: 230 233 239; --ctp-surface0: 204 208 218; --ctp-surface1: 188 192 204; --ctp-surface2: 172 176 190; --ctp-text: 76 79 105; --ctp-subtext: 92 95 119; --ctp-accent: 136 57 239; color-scheme: light; }
+        :root[data-theme="frappe"] { --ctp-base: 48 52 70; --ctp-mantle: 41 44 60; --ctp-surface0: 65 69 89; --ctp-surface1: 81 87 109; --ctp-surface2: 98 104 128; --ctp-text: 198 208 245; --ctp-subtext: 181 191 226; --ctp-accent: 202 158 230; color-scheme: dark; }
+        :root[data-theme="macchiato"] { --ctp-base: 36 39 58; --ctp-mantle: 30 32 48; --ctp-surface0: 54 58 79; --ctp-surface1: 73 77 100; --ctp-surface2: 91 96 120; --ctp-text: 202 211 245; --ctp-subtext: 184 192 224; --ctp-accent: 198 160 246; color-scheme: dark; }
+        :root[data-theme="mocha"] { --ctp-base: 30 30 46; --ctp-mantle: 24 24 37; --ctp-surface0: 49 50 68; --ctp-surface1: 69 71 90; --ctp-surface2: 88 91 112; --ctp-text: 205 214 244; --ctp-subtext: 186 194 222; --ctp-accent: 203 166 247; color-scheme: dark; }
+        
+        /* New Themes */
+        :root[data-theme="dracula"] { --ctp-base: 40 42 54; --ctp-mantle: 68 71 90; --ctp-surface0: 98 114 164; --ctp-surface1: 139 233 253; --ctp-surface2: 80 250 123; --ctp-text: 248 248 242; --ctp-subtext: 189 147 249; --ctp-accent: 255 121 198; color-scheme: dark; }
+        :root[data-theme="atom-dark"] { --ctp-base: 29 31 33; --ctp-mantle: 40 42 46; --ctp-surface0: 55 59 65; --ctp-surface1: 76 81 88; --ctp-surface2: 97 104 112; --ctp-text: 197 200 198; --ctp-subtext: 180 183 180; --ctp-accent: 129 162 190; color-scheme: dark; }
+        :root[data-theme="nord"] { --ctp-base: 46 52 64; --ctp-mantle: 59 66 82; --ctp-surface0: 67 76 94; --ctp-surface1: 76 86 106; --ctp-surface2: 97 104 112; --ctp-text: 216 222 233; --ctp-subtext: 229 233 240; --ctp-accent: 136 192 208; color-scheme: dark; }
+        :root[data-theme="gruvbox"] { --ctp-base: 40 40 40; --ctp-mantle: 60 56 54; --ctp-surface0: 80 73 69; --ctp-surface1: 102 92 84; --ctp-surface2: 124 111 100; --ctp-text: 235 219 178; --ctp-subtext: 168 153 132; --ctp-accent: 254 128 25; color-scheme: dark; }
 
         body { background-color: rgb(var(--ctp-base)); color: rgb(var(--ctp-text)); }
 
@@ -93,6 +59,19 @@
             background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z' fill='currentColor' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
             background-repeat: repeat;
         }
+
+        /* Compact Mode Overrides */
+        body.compact-mode #master-container { padding: 0.5rem; gap: 0.5rem; max-width: 100%; }
+        body.compact-mode header { padding: 0.5rem 1rem; flex-direction: row; align-items: center; }
+        body.compact-mode header h1 { font-size: 1.25rem; }
+        body.compact-mode .p-6, body.compact-mode .sm\:p-10 { padding: 1rem; }
+        body.compact-mode .mb-6 { margin-bottom: 0.5rem; }
+        body.compact-mode .text-5xl, body.compact-mode .sm\:text-6xl { font-size: 2.25rem; }
+        body.compact-mode .w-64.h-64 { width: 120px; height: 120px; }
+        body.compact-mode #main-content { gap: 0.5rem; }
+        body.compact-mode .sched-row td { padding: 0.5rem 1rem; }
+        body.compact-mode .min-h-[350px], body.compact-mode .min-h-[300px] { min-height: auto; }
+        body.compact-mode .text-3xl { font-size: 1.5rem; }
     </style>
 </head>
 <body class="transition-colors duration-300 font-sans min-h-screen relative overflow-x-hidden">
@@ -110,7 +89,7 @@
                     El Camino Real Bell Schedule
                 </h1>
                 <p class="text-sm text-ctp-subtext mt-1 flex flex-wrap items-center gap-2">
-                    <span id="current-date-display"></span> <span class="opacity-50">•</span> Pacific Time 
+                    <span id="current-date-display"></span> <span class="opacity-50 hidden sm:inline">•</span> <span class="hidden sm:inline">Pacific Time</span> 
                     <span id="battery-container" class="hidden flex items-center gap-1 bg-ctp-surface0/50 px-2 py-0.5 rounded-full text-xs ml-1">
                         <svg id="battery-icon" class="w-4 h-4 text-ctp-text" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
                         <span id="battery-level" class="font-mono font-bold"></span>%
@@ -141,6 +120,16 @@
                             </label>
                         </div>
                         <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
+                            <div>
+                                <p class="font-medium">Compact Mode</p>
+                                <p class="text-xs text-ctp-subtext">Minimize screen usage.</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="toggle-compact" class="sr-only peer" onchange="toggleCompactMode()">
+                                <div class="w-11 h-6 bg-ctp-surface1 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-ctp-accent"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
                             <div><p class="font-medium">Dashboard Layout</p></div>
                             <select id="select-layout" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg focus:ring-ctp-accent focus:border-ctp-accent block p-2 outline-none">
                                 <option value="vertical">Vertical</option>
@@ -155,15 +144,19 @@
                             </select>
                         </div>
                         <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
-                            <div><p class="font-medium">Catppuccin Theme</p></div>
+                            <div><p class="font-medium">Theme</p></div>
                             <select id="select-color" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg focus:ring-ctp-accent focus:border-ctp-accent block p-2 outline-none">
                                 <option value="latte">Latte (Light)</option>
                                 <option value="frappe">Frappé (Dark)</option>
                                 <option value="macchiato">Macchiato (Dark)</option>
                                 <option value="mocha">Mocha (Dark)</option>
+                                <option value="dracula">Dracula</option>
+                                <option value="atom-dark">Atom Dark</option>
+                                <option value="nord">Nord</option>
+                                <option value="gruvbox">Gruvbox</option>
                             </select>
                         </div>
-                        <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg md:col-span-2">
+                        <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
                             <div><p class="font-medium">Background</p></div>
                             <select id="select-bg" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg focus:ring-ctp-accent focus:border-ctp-accent block p-2 outline-none min-w-[150px]">
                                 <option value="none">None (Default)</option>
@@ -199,7 +192,7 @@
                 <div id="view-horizontal" class="w-full flex flex-col items-center">
                     <div class="bg-ctp-surface0/30 px-6 py-4 rounded-xl border border-ctp-surface1 mb-6 w-full max-w-sm shadow-inner text-center">
                         <p id="tracker-countdown-hz" class="text-5xl sm:text-6xl font-black font-mono text-ctp-text tabular-nums tracking-tighter">00:00</p>
-                        <p class="text-xs font-medium text-ctp-subtext uppercase mt-2">Time Remaining</p>
+                        <p class="text-xs font-medium text-ctp-subtext uppercase mt-2 hidden sm:block">Time Remaining</p>
                     </div>
                     <div class="w-full max-w-md">
                         <div class="flex justify-between text-xs font-medium text-ctp-subtext mb-1">
@@ -232,16 +225,32 @@
             </div>
 
             <!-- Schedule Table -->
-            <div class="flex-1 bg-ctp-mantle/90 backdrop-blur-md rounded-2xl shadow-sm border border-ctp-surface0 overflow-hidden transition-colors self-stretch flex flex-col">
+            <div class="flex-1 bg-ctp-mantle/90 backdrop-blur-md rounded-2xl shadow-sm border border-ctp-surface0 overflow-hidden transition-colors flex flex-col max-h-[500px]">
                 <div class="px-6 py-4 border-b border-ctp-surface0 bg-ctp-surface0/20 flex justify-between items-center">
                     <h3 class="font-semibold text-ctp-text" id="schedule-title">Today's Schedule</h3>
                 </div>
-                <div class="overflow-x-auto flex-1 max-h-[500px] overflow-y-auto">
+                <div class="overflow-x-auto flex-1 overflow-y-auto">
                     <table class="w-full text-left border-collapse">
                         <tbody id="schedule-body" class="divide-y divide-ctp-surface0/50">
                             <!-- Rows injected via JS -->
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- Tasks Widget -->
+            <div class="flex-1 bg-ctp-mantle/90 backdrop-blur-md rounded-2xl shadow-sm border border-ctp-surface0 overflow-hidden transition-colors flex flex-col min-h-[300px]">
+                <div class="px-6 py-4 border-b border-ctp-surface0 bg-ctp-surface0/20 flex justify-between items-center">
+                    <h3 class="font-semibold text-ctp-text">Tasks & Goals</h3>
+                </div>
+                <div class="p-4 flex flex-col gap-3 flex-1 overflow-hidden">
+                    <div class="flex gap-2">
+                        <input type="text" id="new-task-input" class="flex-1 bg-ctp-surface0/50 border border-ctp-surface1 rounded-lg px-3 py-2 text-sm text-ctp-text focus:outline-none focus:border-ctp-accent transition-colors" placeholder="e.g. Study for period 3..." onkeypress="if(event.key === 'Enter') addTask()">
+                        <button onclick="addTask()" class="bg-ctp-surface1 hover:bg-ctp-surface2 text-ctp-text px-4 py-2 rounded-lg transition-colors text-sm font-semibold">Add</button>
+                    </div>
+                    <ul id="task-list" class="flex flex-col gap-2 mt-2 overflow-y-auto pr-1 pb-2 flex-1">
+                        <!-- Tasks injected here -->
+                    </ul>
                 </div>
             </div>
 
@@ -264,466 +273,527 @@
             ],
             common: [
                 { id: 'p0', name: 'Period 0', defaultName: 'Period 0', start: '7:38 AM', end: '8:23 AM', editable: true },
-                { id: 'cpt', name: 'Common Planning', defaultName: 'Common Planning', start: '8:30 AM', end: '9:30 AM', editable: false },
-                { id: 'p1', name: 'Period 1', defaultName: 'Period 1', start: '9:37 AM', end: '10:30 AM', editable: true },
-                { id: 'p2', name: 'Period 2', defaultName: 'Period 2', start: '10:37 AM', end: '11:22 AM', editable: true },
-                { id: 'nut', name: 'Nutrition', defaultName: 'Nutrition', start: '11:22 AM', end: '11:38 AM', editable: false },
-                { id: 'p3', name: 'Period 3', defaultName: 'Period 3', start: '11:45 AM', end: '12:30 PM', editable: true },
-                { id: 'p4', name: 'Period 4', defaultName: 'Period 4', start: '12:37 PM', end: '1:22 PM', editable: true },
-                { id: 'lun', name: 'Lunch', defaultName: 'Lunch', start: '1:22 PM', end: '2:01 PM', editable: false },
-                { id: 'p5', name: 'Period 5', defaultName: 'Period 5', start: '2:08 PM', end: '2:53 PM', editable: true },
-                { id: 'p6', name: 'Period 6', defaultName: 'Period 6', start: '3:00 PM', end: '3:45 PM', editable: true }
+                { id: 'cpt', name: 'Common Planning', defaultName: 'Common Planning', start: '8:30 AM', end: '9:38 AM', editable: false },
+                { id: 'p1', name: 'Period 1', defaultName: 'Period 1', start: '9:45 AM', end: '10:31 AM', editable: true },
+                { id: 'nut', name: 'Nutrition', defaultName: 'Nutrition', start: '10:31 AM', end: '10:47 AM', editable: false },
+                { id: 'p2', name: 'Period 2', defaultName: 'Period 2', start: '10:54 AM', end: '11:40 AM', editable: true },
+                { id: 'p3', name: 'Period 3', defaultName: 'Period 3', start: '11:47 AM', end: '12:33 PM', editable: true },
+                { id: 'p4', name: 'Period 4', defaultName: 'Period 4', start: '12:40 PM', end: '1:26 PM', editable: true },
+                { id: 'lun', name: 'Lunch', defaultName: 'Lunch', start: '1:26 PM', end: '1:56 PM', editable: false },
+                { id: 'p5', name: 'Period 5', defaultName: 'Period 5', start: '2:03 PM', end: '2:49 PM', editable: true },
+                { id: 'p6', name: 'Period 6', defaultName: 'Period 6', start: '2:56 PM', end: '3:45 PM', editable: true }
             ]
         };
 
+        const ECR_COORDS = { lat: 34.1685, lng: -118.6343 }; // Keep simple calculations
+        
         let state = {
-            hidePeriod0: false, customNames: {},
-            scheduleMode: 'auto', theme: 'mocha', progressShape: 'horizontal', bgMode: 'none', layout: 'vertical'
+            manualType: 'auto',
+            hideP0: false,
+            compactMode: false,
+            layout: 'vertical',
+            shape: 'horizontal',
+            colorTheme: 'mocha',
+            bg: 'none',
+            customNames: {},
+            tasks: []
         };
-        let activeTimeline = [];
-        let clockInterval;
-        let bgAnimId = null;
 
-        // Interactive Topology Vars
-        let mouseX = 0, mouseY = 0;
-        let currentBgX = 0, currentBgY = 0;
-
-        function init() {
-            loadState();
-            applySettingsDOM();
-            updateDateDisplay();
-            initBattery();
-            buildTimeline();
-            renderTable();
-            updateGlider();
-            renderBackground();
-            updateClock();
-            
-            if(clockInterval) clearInterval(clockInterval);
-            clockInterval = setInterval(updateClock, 1000);
-            
-            window.addEventListener('resize', () => { updateGlider(); renderBackground(); });
-            window.addEventListener('mousemove', (e) => {
-                mouseX = (e.clientX / window.innerWidth - 0.5) * 50; 
-                mouseY = (e.clientY / window.innerHeight - 0.5) * 50;
-            });
-        }
+        let currentActiveId = null;
+        let activeInterval = null;
+        let compiledSchedules = {};
 
         function loadState() {
-            const saved = localStorage.getItem('ecrDashboardStateV5');
-            if(saved) state = { ...state, ...JSON.parse(saved) };
-        }
-
-        function saveState() {
-            localStorage.setItem('ecrDashboardStateV5', JSON.stringify(state));
-        }
-
-        function initBattery() {
-            if ('getBattery' in navigator) {
-                navigator.getBattery().then(function(battery) {
-                    const batContainer = document.getElementById('battery-container');
-                    const batLevel = document.getElementById('battery-level');
-                    const batIcon = document.getElementById('battery-icon');
-
-                    function updateBattery() {
-                        // Desktop Heuristic: if charging indefinitely and fully charged
-                        if (battery.charging && battery.chargingTime === 0 && battery.dischargingTime === Infinity && battery.level === 1) {
-                            batContainer.classList.add('hidden');
-                            return;
-                        }
-                        
-                        batContainer.classList.remove('hidden');
-                        batLevel.innerText = Math.round(battery.level * 100);
-                        
-                        if (battery.charging) {
-                            // Charging Bolt Icon
-                            batIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />`;
-                        } else {
-                            // Battery Levels Outline
-                            if (battery.level > 0.8) {
-                                batIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M2 12h20M2 8h20M2 16h20" />`; 
-                            } else if (battery.level > 0.3) {
-                                batIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M2 12h12M2 8h20M2 16h20" />`;
-                            } else {
-                                batIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M2 12h4M2 8h20M2 16h20" />`;
-                            }
-                        }
-                    }
-
-                    updateBattery();
-                    battery.addEventListener('chargingchange', updateBattery);
-                    battery.addEventListener('levelchange', updateBattery);
-                });
+            const s = localStorage.getItem('ecr_state');
+            if (s) {
+                try { 
+                    const parsed = JSON.parse(s);
+                    state = { ...state, ...parsed };
+                    if (!state.tasks) state.tasks = [];
+                } catch(e) {}
             }
         }
+        function saveState() {
+            localStorage.setItem('ecr_state', JSON.stringify(state));
+        }
 
-        // --- Core Time Calculations ---
-        function parseTimeStrDate(timeStr, baseDate) {
+        // TIME UTILS
+        function timeToDate(timeStr, baseDate = new Date()) {
+            const d = new Date(baseDate);
             const [time, modifier] = timeStr.split(' ');
             let [hours, minutes] = time.split(':').map(Number);
-            if (hours === 12 && modifier === 'AM') hours = 0;
-            if (hours !== 12 && modifier === 'PM') hours += 12;
-            const d = new Date(baseDate);
+            if (hours === 12 && modifier.toUpperCase() === 'AM') hours = 0;
+            if (hours !== 12 && modifier.toUpperCase() === 'PM') hours += 12;
             d.setHours(hours, minutes, 0, 0);
             return d;
         }
 
-        function getScheduleForDate(d) {
-            const isWed = d.getDay() === 3;
-            const schedKey = (isWed && state.scheduleMode === 'auto') || state.scheduleMode === 'common' ? 'common' : 'regular';
-            let sched = rawSchedules[schedKey];
-            if (state.hidePeriod0) sched = sched.filter(p => p.id !== 'p0');
-            return sched;
+        function formatTimeRemaining(ms) {
+            const totalS = Math.floor(ms / 1000);
+            const h = Math.floor(totalS / 3600);
+            const m = Math.floor((totalS % 3600) / 60);
+            const s = totalS % 60;
+            if (h > 0) return `${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            return `${m}:${s.toString().padStart(2,'0')}`;
         }
 
-        function getNextSchoolStart(nowDate) {
-            let next = new Date(nowDate);
-            let added = 1;
-            if (next.getDay() === 5) added = 3; 
-            if (next.getDay() === 6) added = 2; 
-            next.setDate(next.getDate() + added);
-            return parseTimeStrDate(getScheduleForDate(next)[0].start, next);
+        function determineScheduleType(date) {
+            if (state.manualType !== 'auto') return state.manualType;
+            const day = date.getDay();
+            if (day === 0 || day === 6) return 'none'; // Weekend
+            if (day === 2) return 'common';
+            return 'regular';
         }
 
-        function getPrevSchoolEnd(nowDate) {
-            let prev = new Date(nowDate);
-            let sub = 1;
-            if (prev.getDay() === 1) sub = 3; 
-            if (prev.getDay() === 0) sub = 2; 
-            prev.setDate(prev.getDate() - sub);
-            const sched = getScheduleForDate(prev);
-            return parseTimeStrDate(sched[sched.length - 1].end, prev);
+        function compileSchedules() {
+            for (const key in rawSchedules) {
+                compiledSchedules[key] = rawSchedules[key]
+                    .filter(p => !(state.hideP0 && p.id === 'p0'))
+                    .map(p => ({
+                        ...p,
+                        name: state.customNames[p.id] || p.defaultName
+                    }));
+            }
         }
 
-        function formatDuration(ms) {
-            if (ms < 0) ms = 0;
-            const s = Math.floor(ms / 1000);
-            const hrs = Math.floor(s / 3600);
-            const mins = Math.floor((s % 3600) / 60);
-            const secs = s % 60;
-            const pad = num => num.toString().padStart(2, '0');
-            if (hrs > 0) return `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
-            return `${pad(mins)}:${pad(secs)}`;
-        }
+        // DOM UPDATES
+        function updateUIState() {
+            document.documentElement.setAttribute('data-theme', state.colorTheme);
+            document.getElementById('toggle-p0').checked = state.hideP0;
+            document.getElementById('toggle-compact').checked = state.compactMode;
+            document.getElementById('select-layout').value = state.layout;
+            document.getElementById('select-shape').value = state.shape;
+            document.getElementById('select-color').value = state.colorTheme;
+            document.getElementById('select-bg').value = state.bg;
 
-        function buildTimeline() {
-            const now = new Date();
-            const isWeekend = (now.getDay() === 0 || now.getDay() === 6) && state.scheduleMode === 'auto';
-            let baseSchedule = getScheduleForDate(now);
+            updateGlider();
+            updateDashboardLayout();
+            updateShapeView();
+            updateBackground();
+            updateCompactMode();
+            renderTasks();
             
-            let titleText = (state.scheduleMode === 'common' || (now.getDay()===3 && state.scheduleMode === 'auto')) ? 'Common Planning Schedule' : 'Regular Schedule';
-            if (state.scheduleMode === 'auto') titleText += ' (Auto)';
-            document.getElementById('schedule-title').innerText = isWeekend ? "No School Today" : titleText;
-
-            activeTimeline = [];
-            if (isWeekend) return; 
-
-            for (let i = 0; i < baseSchedule.length; i++) {
-                const current = baseSchedule[i];
-                const startObj = parseTimeStrDate(current.start, now);
-                const endObj = parseTimeStrDate(current.end, now);
-                
-                activeTimeline.push({ ...current, displayName: state.customNames[current.id] || current.defaultName, startObj, endObj, isPassing: false });
-
-                if (i < baseSchedule.length - 1) {
-                    const nextStartObj = parseTimeStrDate(baseSchedule[i + 1].start, now);
-                    if (endObj.getTime() < nextStartObj.getTime()) {
-                        activeTimeline.push({
-                            id: `pass_${i}`, displayName: `Passing Period`,
-                            start: current.end, end: baseSchedule[i + 1].start,
-                            startObj: endObj, endObj: nextStartObj, isPassing: true
-                        });
-                    }
-                }
-            }
+            compileSchedules();
+            buildScheduleTable();
+            tick();
         }
 
-        function renderTrackerStats(title, subtitle, remainMs, elapsedMs, durMs, startStr, endStr, isClass = false, activeId = null) {
-            document.getElementById('tracker-status').innerText = subtitle;
-            document.getElementById('tracker-period-name').innerText = title;
-            const progPercent = Math.min(100, Math.max(0, (elapsedMs / durMs) * 100)) || 0;
-            const cdText = formatDuration(remainMs);
-
-            if (state.progressShape === 'horizontal') {
-                document.getElementById('tracker-countdown-hz').innerText = cdText;
-                document.getElementById('tracker-progress-hz').style.width = `${progPercent}%`;
-                document.getElementById('tracker-start-hz').innerText = startStr;
-                document.getElementById('tracker-end-hz').innerText = endStr;
+        function toggleSettings() {
+            const w = document.getElementById('settings-wrapper');
+            if (w.style.gridTemplateRows === '1fr') {
+                w.style.gridTemplateRows = '0fr';
+                w.style.opacity = '0';
+                setTimeout(()=> w.style.visibility = 'hidden', 400);
             } else {
-                document.getElementById('tracker-countdown-circ').innerText = cdText;
-                document.getElementById('tracker-start-circ').innerText = startStr;
-                document.getElementById('tracker-end-circ').innerText = endStr;
-                document.getElementById('tracker-progress-circ').style.strokeDashoffset = 283 - (283 * (progPercent / 100));
-            }
-
-            document.querySelectorAll('.sched-row').forEach(row => {
-                row.classList.remove('bg-ctp-surface0/30', 'border-ctp-accent');
-                row.classList.add('border-transparent');
-            });
-            if (isClass && activeId) {
-                const row = document.getElementById(`row-${activeId}`);
-                if (row) {
-                    row.classList.remove('border-transparent');
-                    row.classList.add('bg-ctp-surface0/30', 'border-ctp-accent');
-                }
+                w.style.visibility = 'visible';
+                w.style.gridTemplateRows = '1fr';
+                w.style.opacity = '1';
             }
         }
 
-        function updateClock() {
-            const now = new Date(); 
-            if (activeTimeline.length === 0) {
-                const pEnd = getPrevSchoolEnd(now);
-                const nStart = getNextSchoolStart(now);
-                renderTrackerStats("Weekend", "School Starts In", nStart - now, now - pEnd, nStart - pEnd, "--:--", "--:--");
+        function togglePeriodZero() {
+            state.hideP0 = document.getElementById('toggle-p0').checked;
+            saveState(); updateUIState();
+        }
+
+        function toggleCompactMode() {
+            state.compactMode = document.getElementById('toggle-compact').checked;
+            saveState(); updateUIState();
+        }
+
+        function updateSettings() {
+            state.layout = document.getElementById('select-layout').value;
+            state.shape = document.getElementById('select-shape').value;
+            state.colorTheme = document.getElementById('select-color').value;
+            state.bg = document.getElementById('select-bg').value;
+            saveState(); updateUIState();
+        }
+
+        function setManualSchedule(type) {
+            state.manualType = type;
+            saveState(); updateUIState();
+        }
+
+        function updateGlider() {
+            const types = ['auto', 'regular', 'common'];
+            const idx = types.indexOf(state.manualType);
+            const glider = document.getElementById('glider');
+            glider.style.width = '33.333%';
+            glider.style.transform = `translateX(${idx * 100}%)`;
+            
+            types.forEach(t => {
+                const btn = document.getElementById(`btn-${t}`);
+                if (t === state.manualType) {
+                    btn.classList.add('text-ctp-base');
+                    btn.classList.remove('text-ctp-subtext');
+                } else {
+                    btn.classList.remove('text-ctp-base');
+                    btn.classList.add('text-ctp-subtext');
+                }
+            });
+        }
+
+        function updateCompactMode() {
+            if (state.compactMode) {
+                document.body.classList.add('compact-mode');
+            } else {
+                document.body.classList.remove('compact-mode');
+            }
+        }
+
+        function updateDashboardLayout() {
+            const mc = document.getElementById('main-content');
+            if (state.layout === 'horizontal') {
+                mc.className = "w-full grid grid-cols-1 lg:grid-cols-3 gap-6";
+            } else {
+                mc.className = "flex flex-col gap-6 w-full";
+            }
+        }
+
+        function updateShapeView() {
+            const hz = document.getElementById('view-horizontal');
+            const circ = document.getElementById('view-circular');
+            if (state.shape === 'circular') {
+                hz.classList.add('hidden');
+                circ.classList.remove('hidden');
+            } else {
+                circ.classList.add('hidden');
+                hz.classList.remove('hidden');
+            }
+        }
+
+        function updateBackground() {
+            const canvas = document.getElementById('bg-canvas');
+            const cssBg = document.getElementById('bg-css');
+            canvas.classList.add('hidden');
+            cssBg.classList.add('hidden');
+            cssBg.className = 'fixed inset-0 z-[-1] pointer-events-none hidden text-ctp-text';
+            
+            if (window.bgAnimId) cancelAnimationFrame(window.bgAnimId);
+
+            if (state.bg === 'matrix') {
+                canvas.classList.remove('hidden');
+                startMatrix(canvas);
+            } else if (state.bg === 'stars') {
+                canvas.classList.remove('hidden');
+                startStars(canvas);
+            } else if (state.bg === 'topology') {
+                cssBg.classList.remove('hidden');
+                cssBg.classList.add('bg-topology');
+            }
+        }
+
+        // TASK WIDGET LOGIC
+        function renderTasks() {
+            const list = document.getElementById('task-list');
+            list.innerHTML = '';
+            if (state.tasks.length === 0) {
+                list.innerHTML = `<li class="text-xs text-ctp-subtext text-center italic py-4">No tasks yet. You're all caught up!</li>`;
                 return;
             }
-
-            const firstStart = activeTimeline[0].startObj;
-            const lastEnd = activeTimeline[activeTimeline.length - 1].endObj;
-
-            if (now < firstStart) {
-                const pEnd = getPrevSchoolEnd(now);
-                renderTrackerStats("Before School", "School Starts In", firstStart - now, now - pEnd, firstStart - pEnd, "--:--", activeTimeline[0].start);
-            } else if (now >= lastEnd) {
-                const nStart = getNextSchoolStart(now);
-                renderTrackerStats("After School", "School Starts In", nStart - now, now - lastEnd, nStart - lastEnd, activeTimeline[activeTimeline.length-1].end, "--:--");
-            } else {
-                const currentBlock = activeTimeline.find(b => now >= b.startObj && now < b.endObj);
-                if (currentBlock) {
-                    renderTrackerStats(
-                        currentBlock.displayName, 
-                        currentBlock.isPassing ? "Passing Period" : "Current Class",
-                        currentBlock.endObj - now, now - currentBlock.startObj, currentBlock.endObj - currentBlock.startObj,
-                        currentBlock.start, currentBlock.end,
-                        !currentBlock.isPassing, currentBlock.id
-                    );
-                }
+            state.tasks.forEach(task => {
+                const li = document.createElement('li');
+                li.className = "flex items-center justify-between bg-ctp-surface0/30 p-2.5 rounded-lg border border-ctp-surface0/50 hover:border-ctp-surface1 transition-colors";
+                li.innerHTML = `
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        <input type="checkbox" ${task.done ? 'checked' : ''} onchange="toggleTask(${task.id})" class="w-4 h-4 accent-ctp-accent cursor-pointer rounded border-ctp-surface2 bg-ctp-surface0 flex-shrink-0">
+                        <span class="text-sm truncate ${task.done ? 'line-through text-ctp-subtext' : 'text-ctp-text'}">${escapeHTML(task.text)}</span>
+                    </div>
+                    <button onclick="deleteTask(${task.id})" class="text-ctp-subtext hover:text-red-400 transition-colors p-1 flex-shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                `;
+                list.appendChild(li);
+            });
+        }
+        function addTask() {
+            const input = document.getElementById('new-task-input');
+            const text = input.value.trim();
+            if(text) {
+                state.tasks.push({ id: Date.now(), text, done: false });
+                input.value = '';
+                saveState(); renderTasks();
             }
         }
+        function toggleTask(id) {
+            const task = state.tasks.find(t => t.id === id);
+            if(task) { task.done = !task.done; saveState(); renderTasks(); }
+        }
+        function deleteTask(id) {
+            state.tasks = state.tasks.filter(t => t.id !== id);
+            saveState(); renderTasks();
+        }
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[tag]));
+        }
 
-        function renderTable() {
+        // SCHEDULE TABLE
+        function buildScheduleTable() {
             const tbody = document.getElementById('schedule-body');
             tbody.innerHTML = '';
-            if(activeTimeline.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="2" class="px-6 py-4 text-center text-ctp-subtext">Enjoy your weekend!</td></tr>`;
+            
+            const now = new Date();
+            const type = determineScheduleType(now);
+            const periods = compiledSchedules[type] || [];
+            
+            document.getElementById('schedule-title').innerText = type === 'none' ? 'No School Today' : `Schedule (${type})`;
+
+            if (periods.length === 0) {
+                tbody.innerHTML = `<tr><td class="p-4 text-center text-ctp-subtext text-sm">Enjoy your day!</td></tr>`;
                 return;
             }
-            activeTimeline.filter(t => !t.isPassing).forEach(block => {
+
+            periods.forEach((p, i) => {
                 const tr = document.createElement('tr');
-                tr.id = `row-${block.id}`;
-                tr.className = "sched-row transition-colors border-l-4 border-transparent hover:bg-ctp-surface0/30";
-                const editBtn = block.editable ? `<button onclick="editPeriod('${block.id}')" class="ml-2 text-ctp-surface2 hover:text-ctp-accent transition-colors" title="Edit"><svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>` : '';
+                tr.id = `row-${p.id}`;
+                tr.className = "sched-row transition-colors duration-300";
+                
+                let nameCell = `<span class="font-medium">${p.name}</span>`;
+                if (p.editable) {
+                    nameCell = `
+                        <div class="flex items-center gap-2 group">
+                            <span class="font-medium truncate max-w-[120px] sm:max-w-xs" id="name-txt-${p.id}">${p.name}</span>
+                            <button onclick="editName('${p.id}')" class="text-ctp-subtext opacity-0 group-hover:opacity-100 hover:text-ctp-accent transition-all"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
+                        </div>
+                        <div id="name-edit-${p.id}" class="hidden flex items-center gap-2">
+                            <input type="text" id="name-inp-${p.id}" class="bg-ctp-surface0 border border-ctp-surface1 text-xs px-2 py-1 rounded w-24 sm:w-32 outline-none focus:border-ctp-accent" value="${p.name}" onkeypress="if(event.key==='Enter') saveName('${p.id}')">
+                            <button onclick="saveName('${p.id}')" class="text-green-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>
+                            <button onclick="cancelName('${p.id}')" class="text-red-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                        </div>
+                    `;
+                }
+
                 tr.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-ctp-text w-1/2">${block.displayName} ${editBtn}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-ctp-subtext text-right w-1/2 font-mono">${block.start} - ${block.end}</td>
+                    <td class="p-3 sm:p-4 text-sm w-1/2">${nameCell}</td>
+                    <td class="p-3 sm:p-4 text-sm text-right text-ctp-subtext tabular-nums font-medium">${p.start} - ${p.end}</td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        // --- Interaction & Visuals ---
-        function updateGlider() {
-            const btns = ['auto', 'regular', 'common'];
-            btns.forEach(b => {
-                const el = document.getElementById(`btn-${b}`);
-                if(b === state.scheduleMode) {
-                    el.classList.add('text-ctp-accent');
-                    el.classList.remove('text-ctp-subtext');
-                    const glider = document.getElementById('glider');
-                    glider.style.width = `${el.offsetWidth}px`;
-                    glider.style.transform = `translateX(${el.offsetLeft}px)`;
-                } else {
-                    el.classList.remove('text-ctp-accent');
-                    el.classList.add('text-ctp-subtext');
+        // INLINE EDITING
+        window.editName = function(id) {
+            document.getElementById(`name-txt-${id}`).parentElement.classList.add('hidden');
+            document.getElementById(`name-edit-${id}`).classList.remove('hidden');
+            document.getElementById(`name-inp-${id}`).focus();
+        };
+        window.saveName = function(id) {
+            const val = document.getElementById(`name-inp-${id}`).value.trim();
+            const defName = rawSchedules.regular.find(p=>p.id===id)?.defaultName || '';
+            if (val && val !== defName) {
+                state.customNames[id] = val;
+            } else {
+                delete state.customNames[id];
+            }
+            saveState(); updateUIState();
+        };
+        window.cancelName = function(id) {
+            document.getElementById(`name-edit-${id}`).classList.add('hidden');
+            document.getElementById(`name-txt-${id}`).parentElement.classList.remove('hidden');
+        };
+
+        // CORE TRACKER TICK
+        function tick() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+            document.getElementById('current-date-display').innerText = dateStr;
+
+            const type = determineScheduleType(now);
+            const periods = compiledSchedules[type] || [];
+            
+            let status = 'Outside School Hours';
+            let activePeriod = null;
+            let nextPeriod = null;
+            let pStart, pEnd;
+
+            if (periods.length > 0) {
+                for (let i = 0; i < periods.length; i++) {
+                    const p = periods[i];
+                    const start = timeToDate(p.start, now);
+                    const end = timeToDate(p.end, now);
+                    
+                    if (now >= start && now < end) {
+                        activePeriod = p;
+                        pStart = start; pEnd = end;
+                        status = 'In Progress';
+                        break;
+                    } else if (now < start) {
+                        if (!nextPeriod) {
+                            nextPeriod = p;
+                            pStart = now; pEnd = start;
+                            status = 'Starting In';
+                        }
+                    }
                 }
+            }
+
+            if (type === 'none') status = 'Weekend / Holiday';
+
+            if (activePeriod || nextPeriod) {
+                const target = activePeriod || nextPeriod;
+                
+                document.getElementById('tracker-period-name').innerText = target.name;
+                document.getElementById('tracker-status').innerText = status;
+                
+                const totalDur = pEnd - pStart;
+                const elapsed = now - pStart;
+                const rem = pEnd - now;
+                const pct = Math.min(100, Math.max(0, (elapsed / totalDur) * 100));
+
+                const hzCd = document.getElementById('tracker-countdown-hz');
+                const circCd = document.getElementById('tracker-countdown-circ');
+                hzCd.innerText = formatTimeRemaining(rem);
+                circCd.innerText = formatTimeRemaining(rem);
+
+                if (state.shape === 'horizontal') {
+                    document.getElementById('tracker-start-hz').innerText = target.start;
+                    document.getElementById('tracker-end-hz').innerText = target.end;
+                    document.getElementById('tracker-progress-hz').style.width = `${pct}%`;
+                } else {
+                    document.getElementById('tracker-start-circ').innerText = target.start;
+                    document.getElementById('tracker-end-circ').innerText = target.end;
+                    const c = document.getElementById('tracker-progress-circ');
+                    const offset = 283 - (283 * pct / 100);
+                    c.style.strokeDashoffset = offset;
+                }
+
+                // Update Row Highlighting
+                if (currentActiveId !== target.id) {
+                    if (currentActiveId) {
+                        const oldRow = document.getElementById(`row-${currentActiveId}`);
+                        if (oldRow) {
+                            oldRow.classList.remove('bg-ctp-surface0/50', 'border-l-4', 'border-ctp-accent');
+                            oldRow.classList.add('border-l-0');
+                        }
+                    }
+                    const newRow = document.getElementById(`row-${target.id}`);
+                    if (newRow) {
+                        newRow.classList.remove('border-l-0');
+                        newRow.classList.add('bg-ctp-surface0/50', 'border-l-4', 'border-ctp-accent');
+                    }
+                    currentActiveId = target.id;
+                }
+            } else {
+                document.getElementById('tracker-period-name').innerText = '--';
+                document.getElementById('tracker-status').innerText = status;
+                document.getElementById('tracker-countdown-hz').innerText = '00:00';
+                document.getElementById('tracker-countdown-circ').innerText = '00:00';
+                document.getElementById('tracker-progress-hz').style.width = '0%';
+                document.getElementById('tracker-start-hz').innerText = '--:--';
+                document.getElementById('tracker-end-hz').innerText = '--:--';
+                document.getElementById('tracker-start-circ').innerText = '--:--';
+                document.getElementById('tracker-end-circ').innerText = '--:--';
+                document.getElementById('tracker-progress-circ').style.strokeDashoffset = 283;
+                if (currentActiveId) {
+                    const r = document.getElementById(`row-${currentActiveId}`);
+                    if (r) r.classList.remove('bg-ctp-surface0/50', 'border-l-4', 'border-ctp-accent');
+                    currentActiveId = null;
+                }
+            }
+        }
+
+        // BATTERY API
+        if ('getBattery' in navigator) {
+            navigator.getBattery().then(bat => {
+                const bc = document.getElementById('battery-container');
+                const bl = document.getElementById('battery-level');
+                const bi = document.getElementById('battery-icon');
+                bc.classList.remove('hidden');
+                
+                function updateBat() {
+                    const lvl = Math.round(bat.level * 100);
+                    bl.innerText = lvl;
+                    if (bat.charging) {
+                        bi.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>';
+                        bi.classList.add('text-green-400');
+                    } else {
+                        bi.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>';
+                        bi.classList.remove('text-green-400');
+                        if (lvl <= 20) bi.classList.add('text-red-400');
+                        else bi.classList.remove('text-red-400');
+                    }
+                }
+                updateBat();
+                bat.addEventListener('levelchange', updateBat);
+                bat.addEventListener('chargingchange', updateBat);
             });
         }
 
-        function setManualSchedule(mode) {
-            state.scheduleMode = mode;
-            updateGlider(); saveState(); buildTimeline(); renderTable(); updateClock();
+        // BG ANIMATIONS
+        function getCSSVar(name) {
+            return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+        }
+        function getAccentColor() {
+            const v = getCSSVar('--ctp-accent');
+            return v ? `rgb(${v})` : '#fff';
         }
 
-        function applySettingsDOM() {
-            document.documentElement.setAttribute('data-theme', state.theme);
-            document.getElementById('toggle-p0').checked = state.hidePeriod0;
-            document.getElementById('select-shape').value = state.progressShape;
-            document.getElementById('select-color').value = state.theme;
-            document.getElementById('select-bg').value = state.bgMode;
-            document.getElementById('select-layout').value = state.layout;
-            
-            if (state.progressShape === 'circular') {
-                document.getElementById('view-horizontal').classList.add('hidden');
-                document.getElementById('view-circular').classList.remove('hidden');
-            } else {
-                document.getElementById('view-circular').classList.add('hidden');
-                document.getElementById('view-horizontal').classList.remove('hidden');
-            }
-
-            const mainContent = document.getElementById('main-content');
-            const masterContainer = document.getElementById('master-container');
-            if(state.layout === 'horizontal') {
-                mainContent.classList.add('lg:flex-row');
-                masterContainer.classList.remove('max-w-3xl');
-                masterContainer.classList.add('max-w-6xl');
-            } else {
-                mainContent.classList.remove('lg:flex-row');
-                masterContainer.classList.add('max-w-3xl');
-                masterContainer.classList.remove('max-w-6xl');
-            }
-        }
-
-        function updateSettings() {
-            state.progressShape = document.getElementById('select-shape').value;
-            state.theme = document.getElementById('select-color').value;
-            state.bgMode = document.getElementById('select-bg').value;
-            state.layout = document.getElementById('select-layout').value;
-            applySettingsDOM(); saveState(); renderBackground(); updateClock();
-        }
-
-        function toggleSettings() {
-            const wrapper = document.getElementById('settings-wrapper');
-            const isOpen = wrapper.style.gridTemplateRows === '1fr';
-            if (isOpen) {
-                wrapper.style.gridTemplateRows = '0fr';
-                wrapper.style.opacity = '0';
-                setTimeout(() => wrapper.style.visibility = 'hidden', 400);
-            } else {
-                wrapper.style.visibility = 'visible';
-                wrapper.style.gridTemplateRows = '1fr';
-                wrapper.style.opacity = '1';
-            }
-        }
-
-        function togglePeriodZero() {
-            state.hidePeriod0 = document.getElementById('toggle-p0').checked;
-            saveState(); buildTimeline(); renderTable(); updateClock();
-        }
-
-        function editPeriod(id) {
-            let defName = '';
-            for(let k in rawSchedules) {
-                const f = rawSchedules[k].find(p => p.id === id);
-                if(f) { defName = f.defaultName; break; }
-            }
-            const current = state.customNames[id] || defName;
-            const newName = prompt(`Enter custom name for ${defName}:`, current);
-            if (newName !== null) {
-                const t = newName.trim();
-                if (t === '' || t === defName) delete state.customNames[id];
-                else state.customNames[id] = t;
-                saveState(); buildTimeline(); renderTable(); updateClock();
-            }
-        }
-
-        function updateDateDisplay() {
-            const o = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('current-date-display').innerText = new Date().toLocaleDateString(undefined, o);
-        }
-
-        // --- Background Animations ---
-        function renderBackground() {
-            cancelAnimationFrame(bgAnimId);
-            const canvas = document.getElementById('bg-canvas');
-            const cssBg = document.getElementById('bg-css');
+        function startMatrix(canvas) {
             const ctx = canvas.getContext('2d');
+            let w = canvas.width = window.innerWidth;
+            let h = canvas.height = window.innerHeight;
+            const cols = Math.floor(w / 20) + 1;
+            const ypos = Array(cols).fill(0);
             
-            canvas.classList.add('hidden');
-            cssBg.className = 'fixed inset-0 z-[-1] pointer-events-none hidden text-ctp-text';
-
-            if (state.bgMode === 'none') return;
-
-            if (state.bgMode === 'topology') {
-                cssBg.classList.remove('hidden');
-                cssBg.classList.add('bg-topology');
+            function render() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillRect(0, 0, w, h);
+                ctx.fillStyle = getAccentColor();
+                ctx.font = '15pt monospace';
                 
-                function animateTopology() {
-                    if (state.bgMode !== 'topology') return;
-                    currentBgX += (mouseX - currentBgX) * 0.05;
-                    currentBgY += (mouseY - currentBgY) * 0.05;
-                    cssBg.style.backgroundPosition = `${currentBgX}px ${currentBgY}px`;
-                    bgAnimId = requestAnimationFrame(animateTopology);
-                }
-                animateTopology();
-                return;
+                ypos.forEach((y, ind) => {
+                    const text = String.fromCharCode(Math.random() * 128);
+                    const x = ind * 20;
+                    ctx.fillText(text, x, y);
+                    if (y > 100 + Math.random() * 10000) ypos[ind] = 0;
+                    else ypos[ind] = y + 20;
+                });
+                window.bgAnimId = requestAnimationFrame(render);
             }
-
-            canvas.classList.remove('hidden');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-
-            // Fetch dynamic theme colors
-            const styles = getComputedStyle(document.documentElement);
-            const rawAccent = styles.getPropertyValue('--ctp-accent').trim().split(' ').join(',');
-            const rawBase = styles.getPropertyValue('--ctp-base').trim().split(' ').join(',');
-            const primaryColor = `rgb(${rawAccent})`;
-            const wipeColor = `rgba(${rawBase}, 0.15)`;
-            const starColor = state.theme === 'latte' ? `rgb(${styles.getPropertyValue('--ctp-text').trim().split(' ').join(',')})` : primaryColor;
-
-            if (state.bgMode === 'matrix') {
-                const chars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-                const fontSize = 14;
-                const columns = canvas.width / fontSize;
-                
-                // Initialize as a flat line of drops starting at the top (1)
-                const drops = Array(Math.floor(columns)).fill(1);
-                
-                let lastDraw = 0;
-                let frameCount = 0;
-                // Add a small buffer to the max height so the line has time to hit the bottom and slightly break up before slowing down
-                const maxInitialFrames = (canvas.height / fontSize) + 15;
-                
-                function drawMatrix(time) {
-                    bgAnimId = requestAnimationFrame(drawMatrix);
-                    if (!time) time = performance.now();
-                    
-                    // Run with 0 delay (maximum frame rate) during the initial rollout, then throttle down to 65ms
-                    const delay = frameCount < maxInitialFrames ? 0 : 65;
-                    
-                    if (time - lastDraw < delay) return; 
-                    lastDraw = time;
-                    frameCount++;
-
-                    ctx.fillStyle = wipeColor;
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    ctx.fillStyle = primaryColor;
-                    ctx.font = fontSize + 'px monospace';
-                    for(let i = 0; i < drops.length; i++) {
-                        const text = chars[Math.floor(Math.random() * chars.length)];
-                        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                        
-                        // Once they hit the bottom, randomly reset them, creating the classic staggered rain
-                        if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                            drops[i] = 0;
-                        }
-                        drops[i]++;
-                    }
-                }
-                drawMatrix();
-            } else if (state.bgMode === 'stars') {
-                const numStars = 150;
-                const stars = Array.from({length: numStars}, () => ({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    z: Math.random() * 2
-                }));
-                function drawStars() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    ctx.fillStyle = starColor;
-                    stars.forEach(star => {
-                        ctx.beginPath();
-                        ctx.arc(star.x, star.y, star.z, 0, Math.PI * 2);
-                        ctx.fill();
-                        star.y -= star.z * 0.5;
-                        if (star.y < 0) { star.y = canvas.height; star.x = Math.random() * canvas.width; }
-                    });
-                    bgAnimId = requestAnimationFrame(drawStars);
-                }
-                drawStars();
-            }
+            window.addEventListener('resize', () => {
+                if(state.bg!=='matrix') return;
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            });
+            render();
         }
 
-        window.onload = init;
+        function startStars(canvas) {
+            const ctx = canvas.getContext('2d');
+            let w = canvas.width = window.innerWidth;
+            let h = canvas.height = window.innerHeight;
+            const stars = Array.from({length: 150}, () => ({
+                x: Math.random() * w, y: Math.random() * h,
+                r: Math.random() * 1.5, d: Math.random() * 1
+            }));
+            
+            function render() {
+                ctx.clearRect(0,0,w,h);
+                ctx.fillStyle = getAccentColor();
+                stars.forEach(s => {
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+                    ctx.fill();
+                    s.y -= s.d;
+                    if(s.y < 0) { s.y = h; s.x = Math.random()*w; }
+                });
+                window.bgAnimId = requestAnimationFrame(render);
+            }
+            window.addEventListener('resize', () => {
+                if(state.bg!=='stars') return;
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            });
+            render();
+        }
+
+        // INIT
+        loadState();
+        updateUIState();
+        activeInterval = setInterval(tick, 1000);
+
     </script>
 </body>
 </html>
