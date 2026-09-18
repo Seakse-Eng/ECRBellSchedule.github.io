@@ -60,18 +60,18 @@
             background-repeat: repeat;
         }
 
-        /* Compact Mode Overrides */
-        body.compact-mode #master-container { padding: 0.5rem; gap: 0.5rem; max-width: 100%; }
+        /* Compact Mode Overrides (Updated for strictly minimal screen usage) */
+        body.compact-mode #master-container { padding: 0.5rem; }
         body.compact-mode header { padding: 0.5rem 1rem; flex-direction: row; align-items: center; }
-        body.compact-mode header h1 { font-size: 1.25rem; }
-        body.compact-mode .p-6, body.compact-mode .sm\:p-10 { padding: 1rem; }
+        body.compact-mode header h1 { font-size: 1.125rem; }
+        body.compact-mode .p-6, body.compact-mode .sm\:p-10 { padding: 0.75rem; }
         body.compact-mode .mb-6 { margin-bottom: 0.5rem; }
-        body.compact-mode .text-5xl, body.compact-mode .sm\:text-6xl { font-size: 2.25rem; }
+        body.compact-mode .text-5xl, body.compact-mode .sm\:text-6xl { font-size: 1.75rem; }
+        body.compact-mode .text-4xl.sm\:text-5xl { font-size: 1.5rem; }
         body.compact-mode .w-64.h-64 { width: 120px; height: 120px; }
-        body.compact-mode #main-content { gap: 0.5rem; }
-        body.compact-mode .sched-row td { padding: 0.5rem 1rem; }
+        body.compact-mode .sched-row td { padding: 0.25rem 0.75rem; }
         body.compact-mode .min-h-[350px], body.compact-mode .min-h-[300px] { min-height: auto; }
-        body.compact-mode .text-3xl { font-size: 1.5rem; }
+        body.compact-mode .text-3xl { font-size: 1.25rem; }
     </style>
 </head>
 <body class="transition-colors duration-300 font-sans min-h-screen relative overflow-x-hidden">
@@ -80,7 +80,7 @@
     <canvas id="bg-canvas" class="fixed inset-0 z-[-1] pointer-events-none hidden opacity-50"></canvas>
     <div id="bg-css" class="fixed inset-0 z-[-1] pointer-events-none hidden text-ctp-text"></div>
 
-    <div id="master-container" class="max-w-3xl mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6 relative z-10 transition-all duration-500">
+    <div id="master-container" class="mx-auto p-4 sm:p-6 lg:p-8 flex flex-col relative z-10 transition-all duration-500">
         
         <!-- Header -->
         <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-ctp-mantle/80 backdrop-blur-md p-4 sm:p-6 rounded-xl shadow-sm border border-ctp-surface0 transition-colors w-full">
@@ -106,7 +106,7 @@
         <!-- Settings Panel -->
         <div id="settings-wrapper" class="grid transition-all duration-400 ease-in-out" style="grid-template-rows: 0fr; opacity: 0; visibility: hidden;">
             <div class="overflow-hidden">
-                <div class="bg-ctp-mantle/80 backdrop-blur-md p-5 rounded-xl shadow-sm border border-ctp-surface0 mb-2">
+                <div class="bg-ctp-mantle/80 backdrop-blur-md p-5 rounded-xl shadow-sm border border-ctp-surface0 mb-2 mt-4">
                     <h3 class="text-lg font-semibold mb-4 border-b border-ctp-surface0 pb-2">Settings</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
@@ -171,7 +171,7 @@
         </div>
 
         <!-- Schedule Selector (Glider) -->
-        <div class="relative flex p-1.5 bg-ctp-mantle/80 backdrop-blur-md rounded-xl shadow-inner w-full sm:w-[450px] self-center overflow-hidden border border-ctp-surface0">
+        <div class="relative flex p-1.5 bg-ctp-mantle/80 backdrop-blur-md rounded-xl shadow-inner w-full sm:w-[450px] self-center overflow-hidden border border-ctp-surface0 mt-4 mb-4">
             <div id="glider" class="absolute top-1.5 bottom-1.5 left-0 bg-ctp-surface1 rounded-lg shadow-sm z-0"></div>
             <button id="btn-auto" onclick="setManualSchedule('auto')" class="relative z-10 flex-1 py-2 text-sm font-semibold transition-colors text-ctp-subtext">Auto</button>
             <button id="btn-regular" onclick="setManualSchedule('regular')" class="relative z-10 flex-1 py-2 text-sm font-semibold transition-colors text-ctp-subtext">Regular</button>
@@ -179,7 +179,7 @@
         </div>
 
         <!-- Main Content Layout container -->
-        <div id="main-content" class="flex flex-col gap-6 w-full">
+        <div id="main-content" class="w-full">
             
             <!-- Live Tracker Card -->
             <div class="flex-1 bg-ctp-mantle/90 backdrop-blur-md p-6 sm:p-10 rounded-2xl shadow-lg border border-ctp-surface0 flex flex-col items-center justify-center text-center relative overflow-hidden transition-colors min-h-[350px]">
@@ -284,8 +284,6 @@
                 { id: 'p6', name: 'Period 6', defaultName: 'Period 6', start: '2:56 PM', end: '3:45 PM', editable: true }
             ]
         };
-
-        const ECR_COORDS = { lat: 34.1685, lng: -118.6343 }; // Keep simple calculations
         
         let state = {
             manualType: 'auto',
@@ -329,10 +327,13 @@
         }
 
         function formatTimeRemaining(ms) {
-            const totalS = Math.floor(ms / 1000);
-            const h = Math.floor(totalS / 3600);
+            const totalS = Math.floor(Math.max(0, ms) / 1000);
+            const d = Math.floor(totalS / 86400);
+            const h = Math.floor((totalS % 86400) / 3600);
             const m = Math.floor((totalS % 3600) / 60);
             const s = totalS % 60;
+            
+            if (d > 0) return `${d}d ${h}h ${m}m`; // Hide seconds if countdown spans days to avoid text cutoff
             if (h > 0) return `${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
             return `${m}:${s.toString().padStart(2,'0')}`;
         }
@@ -367,10 +368,9 @@
             document.getElementById('select-bg').value = state.bg;
 
             updateGlider();
-            updateDashboardLayout();
+            updateCompactMode();
             updateShapeView();
             updateBackground();
-            updateCompactMode();
             renderTasks();
             
             compileSchedules();
@@ -434,19 +434,24 @@
         }
 
         function updateCompactMode() {
-            if (state.compactMode) {
-                document.body.classList.add('compact-mode');
-            } else {
-                document.body.classList.remove('compact-mode');
-            }
+            if (state.compactMode) document.body.classList.add('compact-mode');
+            else document.body.classList.remove('compact-mode');
+            updateDashboardLayout();
         }
 
         function updateDashboardLayout() {
             const mc = document.getElementById('main-content');
+            const container = document.getElementById('master-container');
+            
+            container.classList.remove('max-w-3xl', 'max-w-6xl', 'max-w-2xl', 'max-w-xl', 'max-w-5xl');
+            
             if (state.layout === 'horizontal') {
-                mc.className = "w-full grid grid-cols-1 lg:grid-cols-3 gap-6";
+                mc.className = `w-full grid grid-cols-1 lg:grid-cols-3 ${state.compactMode ? 'gap-4' : 'gap-6'}`;
+                container.classList.add(state.compactMode ? 'max-w-5xl' : 'max-w-6xl');
             } else {
-                mc.className = "flex flex-col gap-6 w-full";
+                mc.className = `flex flex-col w-full ${state.compactMode ? 'gap-4' : 'gap-6'}`;
+                // Drops max width down to extra-small if compact mode is enabled on vertical layout!
+                container.classList.add(state.compactMode ? 'max-w-xl' : 'max-w-3xl');
             }
         }
 
@@ -573,7 +578,6 @@
             });
         }
 
-        // INLINE EDITING
         window.editName = function(id) {
             document.getElementById(`name-txt-${id}`).parentElement.classList.add('hidden');
             document.getElementById(`name-edit-${id}`).classList.remove('hidden');
@@ -582,11 +586,8 @@
         window.saveName = function(id) {
             const val = document.getElementById(`name-inp-${id}`).value.trim();
             const defName = rawSchedules.regular.find(p=>p.id===id)?.defaultName || '';
-            if (val && val !== defName) {
-                state.customNames[id] = val;
-            } else {
-                delete state.customNames[id];
-            }
+            if (val && val !== defName) state.customNames[id] = val;
+            else delete state.customNames[id];
             saveState(); updateUIState();
         };
         window.cancelName = function(id) {
@@ -608,6 +609,7 @@
             let nextPeriod = null;
             let pStart, pEnd;
 
+            // Step 1: Check Current Day's remaining periods
             if (periods.length > 0) {
                 for (let i = 0; i < periods.length; i++) {
                     const p = periods[i];
@@ -622,14 +624,42 @@
                     } else if (now < start) {
                         if (!nextPeriod) {
                             nextPeriod = p;
-                            pStart = now; pEnd = start;
+                            pStart = now; // Setup for countdown-only (0% progress)
+                            pEnd = start;
                             status = 'Starting In';
                         }
                     }
                 }
             }
 
-            if (type === 'none') status = 'Weekend / Holiday';
+            // Step 2: If we are entirely done for today, look ahead into future days to find the exact next period
+            if (!activePeriod && !nextPeriod) {
+                for (let offset = (periods.length === 0 ? 0 : 1); offset <= 7; offset++) {
+                    let checkDate = new Date(now);
+                    checkDate.setDate(now.getDate() + offset);
+                    
+                    const typeForDay = (state.manualType !== 'auto') ? state.manualType : 
+                        ((checkDate.getDay() === 0 || checkDate.getDay() === 6) ? 'none' : (checkDate.getDay() === 2 ? 'common' : 'regular'));
+                    
+                    if (typeForDay === 'none') continue;
+                    
+                    const dayPeriods = compiledSchedules[typeForDay] || [];
+                    if (dayPeriods.length > 0) {
+                        const firstStart = timeToDate(dayPeriods[0].start, checkDate);
+                        if (firstStart > now) {
+                            nextPeriod = dayPeriods[0];
+                            pStart = now; // Setup for countdown-only (0% progress)
+                            pEnd = firstStart;
+                            status = 'School Starts In';
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (type === 'none' && !activePeriod && !nextPeriod) {
+                status = 'Weekend / Holiday';
+            }
 
             if (activePeriod || nextPeriod) {
                 const target = activePeriod || nextPeriod;
@@ -640,10 +670,11 @@
                 const totalDur = pEnd - pStart;
                 const elapsed = now - pStart;
                 const rem = pEnd - now;
-                const pct = Math.min(100, Math.max(0, (elapsed / totalDur) * 100));
+                const pct = totalDur <= 0 ? 0 : Math.min(100, Math.max(0, (elapsed / totalDur) * 100));
 
                 const hzCd = document.getElementById('tracker-countdown-hz');
                 const circCd = document.getElementById('tracker-countdown-circ');
+                
                 hzCd.innerText = formatTimeRemaining(rem);
                 circCd.innerText = formatTimeRemaining(rem);
 
@@ -659,7 +690,7 @@
                     c.style.strokeDashoffset = offset;
                 }
 
-                // Update Row Highlighting
+                // Update Row Highlighting for Today's specific active periods
                 if (currentActiveId !== target.id) {
                     if (currentActiveId) {
                         const oldRow = document.getElementById(`row-${currentActiveId}`);
@@ -668,10 +699,13 @@
                             oldRow.classList.add('border-l-0');
                         }
                     }
-                    const newRow = document.getElementById(`row-${target.id}`);
-                    if (newRow) {
-                        newRow.classList.remove('border-l-0');
-                        newRow.classList.add('bg-ctp-surface0/50', 'border-l-4', 'border-ctp-accent');
+                    // Prevent highlighting a future day's period row unless it strictly applies to today.
+                    if (pEnd.getDate() === now.getDate()) {
+                        const newRow = document.getElementById(`row-${target.id}`);
+                        if (newRow) {
+                            newRow.classList.add('bg-ctp-surface0/50', 'border-l-4', 'border-ctp-accent');
+                            newRow.classList.remove('border-l-0');
+                        }
                     }
                     currentActiveId = target.id;
                 }
@@ -680,11 +714,7 @@
                 document.getElementById('tracker-status').innerText = status;
                 document.getElementById('tracker-countdown-hz').innerText = '00:00';
                 document.getElementById('tracker-countdown-circ').innerText = '00:00';
-                document.getElementById('tracker-progress-hz').style.width = '0%';
-                document.getElementById('tracker-start-hz').innerText = '--:--';
-                document.getElementById('tracker-end-hz').innerText = '--:--';
-                document.getElementById('tracker-start-circ').innerText = '--:--';
-                document.getElementById('tracker-end-circ').innerText = '--:--';
+                document.getElementById('tracker-progress-hz').style.width = `0%`;
                 document.getElementById('tracker-progress-circ').style.strokeDashoffset = 283;
                 if (currentActiveId) {
                     const r = document.getElementById(`row-${currentActiveId}`);
@@ -694,106 +724,99 @@
             }
         }
 
-        // BATTERY API
-        if ('getBattery' in navigator) {
-            navigator.getBattery().then(bat => {
-                const bc = document.getElementById('battery-container');
-                const bl = document.getElementById('battery-level');
-                const bi = document.getElementById('battery-icon');
-                bc.classList.remove('hidden');
-                
-                function updateBat() {
-                    const lvl = Math.round(bat.level * 100);
-                    bl.innerText = lvl;
-                    if (bat.charging) {
-                        bi.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>';
-                        bi.classList.add('text-green-400');
-                    } else {
-                        bi.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>';
-                        bi.classList.remove('text-green-400');
-                        if (lvl <= 20) bi.classList.add('text-red-400');
-                        else bi.classList.remove('text-red-400');
-                    }
-                }
-                updateBat();
-                bat.addEventListener('levelchange', updateBat);
-                bat.addEventListener('chargingchange', updateBat);
-            });
-        }
-
-        // BG ANIMATIONS
-        function getCSSVar(name) {
-            return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-        }
-        function getAccentColor() {
-            const v = getCSSVar('--ctp-accent');
-            return v ? `rgb(${v})` : '#fff';
-        }
-
-        function startMatrix(canvas) {
-            const ctx = canvas.getContext('2d');
-            let w = canvas.width = window.innerWidth;
-            let h = canvas.height = window.innerHeight;
-            const cols = Math.floor(w / 20) + 1;
-            const ypos = Array(cols).fill(0);
-            
-            function render() {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-                ctx.fillRect(0, 0, w, h);
-                ctx.fillStyle = getAccentColor();
-                ctx.font = '15pt monospace';
-                
-                ypos.forEach((y, ind) => {
-                    const text = String.fromCharCode(Math.random() * 128);
-                    const x = ind * 20;
-                    ctx.fillText(text, x, y);
-                    if (y > 100 + Math.random() * 10000) ypos[ind] = 0;
-                    else ypos[ind] = y + 20;
-                });
-                window.bgAnimId = requestAnimationFrame(render);
-            }
-            window.addEventListener('resize', () => {
-                if(state.bg!=='matrix') return;
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
-            });
-            render();
-        }
-
-        function startStars(canvas) {
-            const ctx = canvas.getContext('2d');
-            let w = canvas.width = window.innerWidth;
-            let h = canvas.height = window.innerHeight;
-            const stars = Array.from({length: 150}, () => ({
-                x: Math.random() * w, y: Math.random() * h,
-                r: Math.random() * 1.5, d: Math.random() * 1
-            }));
-            
-            function render() {
-                ctx.clearRect(0,0,w,h);
-                ctx.fillStyle = getAccentColor();
-                stars.forEach(s => {
-                    ctx.beginPath();
-                    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-                    ctx.fill();
-                    s.y -= s.d;
-                    if(s.y < 0) { s.y = h; s.x = Math.random()*w; }
-                });
-                window.bgAnimId = requestAnimationFrame(render);
-            }
-            window.addEventListener('resize', () => {
-                if(state.bg!=='stars') return;
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
-            });
-            render();
-        }
-
         // INIT
         loadState();
         updateUIState();
         activeInterval = setInterval(tick, 1000);
 
+        // BATTERY
+        if ('getBattery' in navigator) {
+            navigator.getBattery().then(bat => {
+                const bCont = document.getElementById('battery-container');
+                const bLev = document.getElementById('battery-level');
+                const bIcon = document.getElementById('battery-icon');
+                bCont.classList.remove('hidden');
+                
+                function upBat() {
+                    const pct = Math.round(bat.level * 100);
+                    bLev.innerText = pct;
+                    if(bat.charging) {
+                        bIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>`;
+                        bIcon.classList.add('text-green-500');
+                    } else {
+                        bIcon.classList.remove('text-green-500');
+                        if (pct > 20) bIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16M4 12h16"></path>`;
+                        else {
+                            bIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>`;
+                            bIcon.classList.add('text-red-500');
+                        }
+                    }
+                }
+                upBat();
+                bat.addEventListener('levelchange', upBat);
+                bat.addEventListener('chargingchange', upBat);
+            });
+        }
+
+        // BACKGROUND ANIMATIONS
+        function startMatrix(canvas) {
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            function rs() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            rs(); window.addEventListener('resize', rs);
+            
+            const cols = Math.floor(w / 20) + 1;
+            const yPos = Array(cols).fill(0);
+            
+            function draw() {
+                ctx.fillStyle = '#00000010';
+                ctx.fillRect(0,0,w,h);
+                ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--ctp-accent');
+                ctx.font = '15pt monospace';
+                
+                yPos.forEach((y, ind) => {
+                    const text = String.fromCharCode(Math.random() * 128);
+                    const x = ind * 20;
+                    ctx.fillText(text, x, y);
+                    if (y > 100 + Math.random() * 10000) yPos[ind] = 0;
+                    else yPos[ind] = y + 20;
+                });
+                window.bgAnimId = requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        function startStars(canvas) {
+            const ctx = canvas.getContext('2d');
+            let w, h, stars = [];
+            function rs() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+                stars = Array(200).fill().map(()=>({
+                    x: Math.random()*w, y: Math.random()*h,
+                    r: Math.random()*1.5, d: Math.random()*0.5
+                }));
+            }
+            rs(); window.addEventListener('resize', rs);
+            
+            function draw() {
+                ctx.clearRect(0,0,w,h);
+                const color = getComputedStyle(document.documentElement).getPropertyValue('--ctp-text');
+                ctx.fillStyle = `rgb(${color})`;
+                stars.forEach(s => {
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+                    ctx.fill();
+                    s.y += s.d;
+                    if(s.y > h) { s.y = 0; s.x = Math.random()*w; }
+                });
+                window.bgAnimId = requestAnimationFrame(draw);
+            }
+            draw();
+        }
     </script>
 </body>
 </html>
