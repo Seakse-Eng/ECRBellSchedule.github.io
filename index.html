@@ -665,13 +665,13 @@
                 const fontSize = 14;
                 const columns = canvas.width / fontSize;
                 
-                // Scatter the starting drops randomly above the screen so they don't fall in a flat uniform line
-                const drops = Array.from({length: Math.floor(columns)}, () => Math.floor(Math.random() * -30));
+                // Initialize as a flat line of drops starting at the top (1)
+                const drops = Array(Math.floor(columns)).fill(1);
                 
                 let lastDraw = 0;
                 let frameCount = 0;
-                // Calculate roughly how many frames it takes to entirely fill the screen height
-                const maxInitialFrames = (canvas.height / fontSize) + 35;
+                // Add a small buffer to the max height so the line has time to hit the bottom and slightly break up before slowing down
+                const maxInitialFrames = (canvas.height / fontSize) + 15;
                 
                 function drawMatrix(time) {
                     bgAnimId = requestAnimationFrame(drawMatrix);
@@ -691,7 +691,11 @@
                     for(let i = 0; i < drops.length; i++) {
                         const text = chars[Math.floor(Math.random() * chars.length)];
                         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                        if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                        
+                        // Once they hit the bottom, randomly reset them, creating the classic staggered rain
+                        if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                            drops[i] = 0;
+                        }
                         drops[i]++;
                     }
                 }
