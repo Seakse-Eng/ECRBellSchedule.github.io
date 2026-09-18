@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>El Camino Real Bell Schedule</title>
+    <meta name="description" content="Live bell schedule, countdown and period alerts for El Camino Real.">
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" id="meta-theme-color" content="#1e1e2e">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Bell Schedule">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -226,6 +234,31 @@
         }
         .toast-timer { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--toast-tone, rgb(var(--ctp-accent))); opacity: 0.55; transform-origin: left center; }
 
+        /* Class links */
+        .class-link { color: rgb(var(--ctp-accent)); text-decoration: underline; text-decoration-color: rgb(var(--ctp-accent) / 0.4); text-underline-offset: 3px; }
+        .class-link:hover { text-decoration-color: rgb(var(--ctp-accent)); }
+
+        .field-label { font-size: 0.7rem; letter-spacing: .03em; color: rgb(var(--ctp-subtext)); margin-bottom: 0.25rem; display: block; }
+        .field-input {
+            width: 100%; background-color: rgb(var(--ctp-surface0) / 0.6);
+            border: 1px solid rgb(var(--ctp-surface1)); border-radius: 0.5rem;
+            padding: 0.5rem 0.65rem; font-size: 0.875rem; color: rgb(var(--ctp-text));
+            outline: none; transition: border-color .15s ease;
+        }
+        .field-input:focus { border-color: rgb(var(--ctp-accent)); }
+        .field-input::placeholder { color: rgb(var(--ctp-subtext) / 0.6); }
+
+        /* Bubble pop VFX */
+        .pop-ring {
+            position: fixed; border: 2px solid rgb(var(--ctp-surface2));
+            border-radius: 50%; pointer-events: none; z-index: 5;
+        }
+        .pop-drop {
+            position: fixed; border-radius: 50%; pointer-events: none; z-index: 5;
+            background: rgb(var(--ctp-text) / 0.45);
+            box-shadow: 0 0 6px rgb(var(--ctp-surface2) / 0.6);
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
         }
@@ -266,6 +299,10 @@
                 </p>
             </div>
             <div class="flex items-center gap-2">
+                <button id="install-btn" onclick="installApp()" class="hidden items-center gap-1.5 text-sm font-semibold px-3 py-2 rounded-full bg-ctp-accent/15 text-ctp-accent hover:bg-ctp-accent/25 transition-colors" title="Install this as an app">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14"></path></svg>
+                    Install
+                </button>
                 <button id="mute-btn" onclick="toggleSound()" class="p-2.5 rounded-full bg-ctp-surface0 hover:bg-ctp-surface1 transition-colors" title="Alert sound">
                     <span class="sr-only">Toggle alert sound</span>
                     <svg id="mute-icon" class="w-5 h-5 text-ctp-text" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"></svg>
@@ -410,6 +447,17 @@
                                 <div class="w-11 h-6 bg-ctp-surface1 peer-focus-visible:ring-2 peer-focus-visible:ring-ctp-accent rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-ctp-accent"></div>
                             </label>
                         </div>
+                        <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg md:col-span-2">
+                            <div>
+                                <p class="font-medium">Your Setup</p>
+                                <p class="text-xs text-ctp-subtext">Save settings, classes and tasks to a file, or load them on another device.</p>
+                            </div>
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                                <button onclick="exportSettings()" class="text-xs font-semibold px-3 py-2 rounded-lg bg-ctp-surface1 hover:bg-ctp-surface2 transition-colors">Export</button>
+                                <button onclick="document.getElementById('import-file').click()" class="text-xs font-semibold px-3 py-2 rounded-lg bg-ctp-surface1 hover:bg-ctp-surface2 transition-colors">Import</button>
+                                <input type="file" id="import-file" accept="application/json,.json" class="hidden" onchange="importSettings(event)">
+                            </div>
+                        </div>
                         <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
                             <div>
                                 <p class="font-medium">Keep Screen Awake</p>
@@ -442,7 +490,8 @@
                 <div class="absolute top-0 left-0 w-full h-1 bg-ctp-accent"></div>
 
                 <p id="tracker-status" class="text-sm uppercase tracking-widest font-semibold text-ctp-accent mb-2">Loading…</p>
-                <h2 id="tracker-period-name" class="text-3xl sm:text-4xl font-extrabold text-ctp-text mb-6">--</h2>
+                <h2 id="tracker-period-name" class="text-3xl sm:text-4xl font-extrabold text-ctp-text mb-1">--</h2>
+                <p id="tracker-period-meta" class="text-sm text-ctp-subtext mb-5 empty:mb-3 flex flex-wrap items-center justify-center gap-x-2 gap-y-1"></p>
                 <p id="tracker-live" class="sr-only" aria-live="polite"></p>
 
                 <!-- Horizontal View -->
@@ -532,6 +581,50 @@
         </div>
     </div>
 
+    <!-- Class details editor -->
+    <div id="period-modal" class="hidden fixed inset-0 z-[95] items-center justify-center bg-black/50 backdrop-blur-sm p-4" onclick="if(event.target === this) closePeriodEditor()">
+        <div role="dialog" aria-modal="true" aria-labelledby="period-modal-title" class="bg-ctp-mantle border border-ctp-surface0 rounded-2xl shadow-2xl p-6 w-full max-w-md">
+            <div class="flex items-center justify-between mb-1">
+                <h3 id="period-modal-title" class="text-lg font-semibold">Edit class</h3>
+                <button onclick="closePeriodEditor()" class="text-ctp-subtext hover:text-ctp-accent transition-colors" title="Close">
+                    <span class="sr-only">Close</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <p id="period-modal-slot" class="text-xs text-ctp-subtext mb-4"></p>
+
+            <div class="flex flex-col gap-3">
+                <div>
+                    <label class="field-label" for="pm-name">Class name</label>
+                    <input type="text" id="pm-name" class="field-input" maxlength="40" placeholder="AP Computer Science A">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="field-label" for="pm-teacher">Teacher</label>
+                        <input type="text" id="pm-teacher" class="field-input" maxlength="40" placeholder="Ms. Alvarez">
+                    </div>
+                    <div>
+                        <label class="field-label" for="pm-room">Room</label>
+                        <input type="text" id="pm-room" class="field-input" maxlength="12" placeholder="A205">
+                    </div>
+                </div>
+                <div>
+                    <label class="field-label" for="pm-url">Link <span class="opacity-70">— wraps the class name</span></label>
+                    <input type="url" id="pm-url" class="field-input" maxlength="500" placeholder="https://classroom.google.com/…" inputmode="url">
+                    <p id="pm-url-error" class="hidden text-xs mt-1" style="color:#ed8796">Use a link that starts with http:// or https://</p>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-3 mt-6">
+                <button onclick="clearPeriodDetails()" class="text-xs font-semibold text-ctp-subtext hover:text-ctp-accent transition-colors">Reset to default</button>
+                <div class="flex items-center gap-2">
+                    <button onclick="closePeriodEditor()" class="text-sm font-semibold px-3 py-2 rounded-lg bg-ctp-surface0 hover:bg-ctp-surface1 transition-colors">Cancel</button>
+                    <button onclick="savePeriodDetails()" class="text-sm font-semibold px-4 py-2 rounded-lg bg-ctp-accent text-ctp-base hover:opacity-90 transition-opacity">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Keyboard shortcuts -->
     <div id="help-modal" class="hidden fixed inset-0 z-[90] items-center justify-center bg-black/50 backdrop-blur-sm p-4" onclick="if(event.target === this) toggleHelp(false)">
         <div role="dialog" aria-modal="true" aria-label="Keyboard shortcuts" class="bg-ctp-mantle border border-ctp-surface0 rounded-2xl shadow-2xl p-6 w-full max-w-md">
@@ -589,7 +682,8 @@
             sound: true,
             favClock: true,
             wakeLock: false,
-            customNames: {},
+            // periodInfo[id] = { name, teacher, room, url }
+            periodInfo: {},
             tasks: []
         };
 
@@ -610,12 +704,49 @@
         function loadState() {
             const s = localStorage.getItem('ecr_state');
             if (s) {
-                try {
-                    const parsed = JSON.parse(s);
-                    state = { ...state, ...parsed };
-                    if (!Array.isArray(state.tasks)) state.tasks = [];
-                } catch (e) {}
+                try { applyLoadedState(JSON.parse(s)); } catch (e) {}
             }
+        }
+
+        // Shared by localStorage load and file import, so both get the same repair pass.
+        function applyLoadedState(parsed) {
+            if (!parsed || typeof parsed !== 'object') return false;
+            state = { ...defaultState, ...state, ...parsed };
+            if (!Array.isArray(state.tasks)) state.tasks = [];
+            state.tasks = state.tasks
+                .filter(t => t && typeof t.text === 'string')
+                .map(t => ({ id: Number(t.id) || Date.now() + Math.random(), text: t.text.slice(0, 200), done: !!t.done }));
+            if (!state.periodInfo || typeof state.periodInfo !== 'object') state.periodInfo = {};
+
+            // v1 stored only renamed periods under customNames — carry those over.
+            if (parsed.customNames && typeof parsed.customNames === 'object') {
+                for (const id in parsed.customNames) {
+                    const existing = state.periodInfo[id] || {};
+                    if (!existing.name) state.periodInfo[id] = { ...existing, name: String(parsed.customNames[id]).slice(0, 40) };
+                }
+            }
+            delete state.customNames;
+            return true;
+        }
+
+        function periodDetails(id) {
+            const d = state.periodInfo[id] || {};
+            return {
+                name: (d.name || '').trim(),
+                teacher: (d.teacher || '').trim(),
+                room: (d.room || '').trim(),
+                url: safeUrl(d.url)
+            };
+        }
+
+        // Only http(s) links get through — no javascript:, no data:.
+        function safeUrl(raw) {
+            const v = (raw || '').trim();
+            if (!v) return '';
+            try {
+                const u = new URL(v);
+                return (u.protocol === 'http:' || u.protocol === 'https:') ? u.href : '';
+            } catch (e) { return ''; }
         }
         function saveState() {
             try { localStorage.setItem('ecr_state', JSON.stringify(state)); } catch (e) {}
@@ -660,7 +791,10 @@
             for (const key in rawSchedules) {
                 compiledSchedules[key] = rawSchedules[key]
                     .filter(p => !(state.hideP0 && p.id === 'p0'))
-                    .map(p => ({ ...p, name: state.customNames[p.id] || p.defaultName }));
+                    .map(p => {
+                        const d = periodDetails(p.id);
+                        return { ...p, name: d.name || p.defaultName, teacher: d.teacher, room: d.room, url: d.url };
+                    });
             }
         }
 
@@ -682,7 +816,7 @@
             document.getElementById('select-alerts').value = state.alerts;
             document.getElementById('bg-hint').textContent =
                 state.bg === 'topology' ? 'Bulges toward your cursor.'
-                : state.bg === 'bubbles' ? 'Click a bubble to pop it.'
+                : state.bg === 'bubbles' ? 'Click or drag to pop them.'
                 : '\u00A0';
             document.getElementById('cursor-hint').textContent =
                 !finePointer ? 'Touch screen — uses system default.'
@@ -691,6 +825,7 @@
             document.getElementById('sound-hint').textContent =
                 audioCtx ? '\u00A0' : 'Click the page once to enable audio.';
 
+            updateThemeColorMeta();
             updateMuteIcon();
             updateGlider();
             updateCompactMode();
@@ -749,10 +884,10 @@
         }
 
         function resetSettings() {
-            const tasks = state.tasks;
-            state = { ...defaultState, tasks };
+            const { tasks, periodInfo } = state;
+            state = { ...defaultState, tasks, periodInfo };
             saveState(); updateUIState();
-            toast({ title: 'Settings reset', msg: 'Back to defaults. Your tasks were kept.', tone: 'success' });
+            toast({ title: 'Settings reset', msg: 'Back to defaults. Your classes and tasks were kept.', tone: 'success' });
         }
 
         function setManualSchedule(type) {
@@ -1356,44 +1491,128 @@
             rs();
             window.addEventListener('resize', rs, { signal });
 
-            function draw() {
-                ctx.fillStyle = `rgb(${cssVar('--ctp-base')} / 0.12)`;
+            // One glyph step every STEP_MS instead of every frame — the original
+            // ran at 60 steps a second, which was hard to look at.
+            const STEP_MS = 110;
+            let lastStep = 0;
+
+            function draw(now) {
+                globalAnimId = requestAnimationFrame(draw);
+                if (now - lastStep < STEP_MS) return;
+                lastStep = now;
+
+                ctx.fillStyle = `rgb(${cssVar('--ctp-base')} / 0.10)`;
                 ctx.fillRect(0, 0, w, h);
-                ctx.fillStyle = `rgb(${cssVar('--ctp-accent')})`;
+                ctx.fillStyle = `rgb(${cssVar('--ctp-accent')} / 0.75)`;
                 ctx.font = '15pt monospace';
                 yPos.forEach((y, ind) => {
+                    // Only about a third of the columns advance on any given step,
+                    // so the rain drifts instead of marching in lockstep.
+                    if (Math.random() > 0.38) return;
                     const text = String.fromCharCode(0x30A0 + Math.random() * 96);
                     ctx.fillText(text, ind * 20, y);
                     if (y > 100 + Math.random() * 10000) yPos[ind] = 0;
                     else yPos[ind] = y + 20;
                 });
-                globalAnimId = requestAnimationFrame(draw);
             }
-            draw();
+            globalAnimId = requestAnimationFrame(draw);
+        }
+
+        function popSound(size) {
+            if (!state.sound) return;
+            ensureAudio();
+            if (!audioCtx) return;
+            const t = audioCtx.currentTime + 0.01;
+            // Big bubbles pop low, small ones pop high.
+            const f0 = 1150 - Math.min(1, (size - 20) / 40) * 620;
+
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.type = 'sine';
+            o.frequency.setValueAtTime(f0, t);
+            o.frequency.exponentialRampToValueAtTime(f0 * 0.42, t + 0.09);
+            g.gain.setValueAtTime(0.0001, t);
+            g.gain.exponentialRampToValueAtTime(0.14, t + 0.008);
+            g.gain.exponentialRampToValueAtTime(0.0001, t + 0.13);
+            o.connect(g); g.connect(audioCtx.destination);
+            o.start(t); o.stop(t + 0.16);
+
+            // a tick of noise for the wet part of the pop
+            const len = Math.floor(audioCtx.sampleRate * 0.05);
+            const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+            const data = buf.getChannelData(0);
+            for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / len);
+            const src = audioCtx.createBufferSource();
+            const ng = audioCtx.createGain();
+            const hp = audioCtx.createBiquadFilter();
+            hp.type = 'highpass'; hp.frequency.value = 1200;
+            ng.gain.value = 0.05;
+            src.buffer = buf;
+            src.connect(hp); hp.connect(ng); ng.connect(audioCtx.destination);
+            src.start(t);
         }
 
         function startBubbles(container) {
             const MAX_BUBBLES = 26;
+            const signal = bgAbort.signal;
+            let dragging = false;
+            window.addEventListener('pointerdown', () => { dragging = true; }, { signal });
+            window.addEventListener('pointerup', () => { dragging = false; }, { signal });
+            window.addEventListener('pointercancel', () => { dragging = false; }, { signal });
 
-            function createBurst(x, y) {
-                for (let i = 0; i < 12; i++) {
+            function createBurst(x, y, size = 36) {
+                // expanding film ring
+                const ring = document.createElement('div');
+                ring.className = 'pop-ring';
+                ring.style.width = `${size}px`;
+                ring.style.height = `${size}px`;
+                ring.style.left = `${x - size / 2}px`;
+                ring.style.top = `${y - size / 2}px`;
+                document.body.appendChild(ring);
+                const ra = ring.animate([
+                    { transform: 'scale(0.75)', opacity: 0.9 },
+                    { transform: 'scale(1.9)', opacity: 0 }
+                ], { duration: 420, easing: 'cubic-bezier(.16,.8,.3,1)' });
+                ra.onfinish = () => ring.remove();
+
+                // droplets of film flicking outward, with a few accent sparks
+                const count = Math.round(size / 4) + 6;
+                for (let i = 0; i < count; i++) {
                     const p = document.createElement('div');
-                    p.className = 'burst-particle';
-                    const size = Math.random() * 6 + 4;
-                    p.style.width = `${size}px`;
-                    p.style.height = `${size}px`;
-                    p.style.left = `${x - size / 2}px`;
-                    p.style.top = `${y - size / 2}px`;
+                    const spark = i % 3 === 0;
+                    p.className = spark ? 'burst-particle' : 'pop-drop';
+                    const s = (spark ? 4 : 3) + Math.random() * 4;
+                    p.style.width = `${s}px`;
+                    p.style.height = `${s}px`;
+                    p.style.left = `${x - s / 2}px`;
+                    p.style.top = `${y - s / 2}px`;
                     document.body.appendChild(p);
 
-                    const angle = Math.random() * Math.PI * 2;
-                    const dist = Math.random() * 60 + 40;
+                    const angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
+                    const dist = size * 0.5 + Math.random() * size * 0.9;
                     const anim = p.animate([
                         { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-                        { transform: `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px) scale(0)`, opacity: 0 }
-                    ], { duration: Math.random() * 300 + 400, easing: 'cubic-bezier(0.25, 1, 0.5, 1)' });
+                        { transform: `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist + 14}px) scale(0.2)`, opacity: 0 }
+                    ], { duration: 380 + Math.random() * 320, easing: 'cubic-bezier(0.2, 0.8, 0.3, 1)' });
                     anim.onfinish = () => p.remove();
                 }
+            }
+
+            function popBubble(b) {
+                if (b.dataset.popped) return;
+                b.dataset.popped = '1';
+                const r = b.getBoundingClientRect();
+
+                // the skin stretches for a beat before it goes
+                const burst = b.animate(
+                    [{ scale: 1, opacity: 0.95 }, { scale: 1.45, opacity: 0 }],
+                    { duration: reduceMotion ? 1 : 150, easing: 'ease-out' }
+                );
+                burst.onfinish = () => b.remove();
+                setTimeout(() => b.remove(), 400);   // belt and braces
+
+                createBurst(r.left + r.width / 2, r.top + r.height / 2, r.width);
+                popSound(r.width);
             }
 
             function spawnBubble() {
@@ -1410,10 +1629,9 @@
                 b.style.setProperty('--sway', `${(Math.random() - 0.5) * 140}px`);
                 b.style.animationDuration = `${Math.random() * 6 + 7}s`;
 
-                b.addEventListener('pointerdown', e => {
-                    createBurst(e.clientX, e.clientY);
-                    b.remove();
-                });
+                b.addEventListener('pointerdown', e => { e.preventDefault(); popBubble(b); });
+                // drag across a cluster to pop the whole lot
+                b.addEventListener('pointerenter', () => { if (dragging) popBubble(b); });
                 b.addEventListener('animationend', () => b.remove());
                 container.appendChild(b);
             }
@@ -1576,18 +1794,23 @@
                 tr.id = `row-${p.id}`;
                 tr.className = "sched-row transition-colors duration-300";
                 const safeName = escapeHTML(p.name);
+                const nameEl = p.url
+                    ? `<a href="${escapeHTML(p.url)}" target="_blank" rel="noopener noreferrer" class="class-link font-medium truncate max-w-[130px] sm:max-w-xs" title="${escapeHTML(p.url)}">${safeName}</a>`
+                    : `<span class="font-medium truncate max-w-[130px] sm:max-w-xs">${safeName}</span>`;
 
-                let nameCell = `<span class="font-medium">${safeName}</span>`;
+                const subBits = [p.room, p.teacher].filter(Boolean).map(escapeHTML);
+                const subLine = subBits.length
+                    ? `<p class="text-[11px] text-ctp-subtext mt-0.5 truncate max-w-[160px] sm:max-w-xs">${subBits.join(' · ')}</p>` : '';
+
+                let nameCell = `<span class="font-medium">${safeName}</span>${subLine}`;
                 if (p.editable) {
                     nameCell = `
-                        <div class="flex items-center gap-2 group">
-                            <span class="font-medium truncate max-w-[120px] sm:max-w-xs" id="name-txt-${p.id}">${safeName}</span>
-                            <button onclick="editName('${p.id}')" title="Rename ${safeName}" class="text-ctp-subtext opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:text-ctp-accent transition-all"><span class="sr-only">Rename</span><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
-                        </div>
-                        <div id="name-edit-${p.id}" class="hidden items-center gap-2">
-                            <input type="text" id="name-inp-${p.id}" maxlength="28" aria-label="Period name" class="bg-ctp-surface0 border border-ctp-surface1 text-xs px-2 py-1 rounded w-24 sm:w-32 outline-none focus:border-ctp-accent" value="${safeName}" onkeydown="if(event.key==='Enter') saveName('${p.id}'); if(event.key==='Escape') cancelName('${p.id}')">
-                            <button onclick="saveName('${p.id}')" class="text-green-500" title="Save name"><span class="sr-only">Save name</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></button>
-                            <button onclick="cancelName('${p.id}')" class="text-red-500" title="Cancel"><span class="sr-only">Cancel</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                        <div class="group">
+                            <div class="flex items-center gap-2">
+                                ${nameEl}
+                                <button onclick="openPeriodEditor('${p.id}')" title="Edit ${safeName}" class="text-ctp-subtext opacity-50 group-hover:opacity-100 focus-visible:opacity-100 hover:text-ctp-accent transition-all flex-shrink-0"><span class="sr-only">Edit class details</span><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
+                            </div>
+                            ${subLine}
                         </div>
                     `;
                 }
@@ -1613,6 +1836,12 @@
                     }
                 }
             });
+
+            if (!Object.keys(state.periodInfo).length) {
+                const hint = document.createElement('tr');
+                hint.innerHTML = `<td colspan="2" class="px-4 py-3 text-xs text-ctp-subtext text-center">Use the pencil on a period to set your class name, teacher, room and a link.</td>`;
+                tbody.appendChild(hint);
+            }
         }
 
         function refreshRowStates(activeId) {
@@ -1632,26 +1861,90 @@
             }
         }
 
-        window.editName = function (id) {
-            document.getElementById(`name-txt-${id}`).parentElement.classList.add('hidden');
-            const box = document.getElementById(`name-edit-${id}`);
-            box.classList.remove('hidden');
-            box.classList.add('flex');
-            document.getElementById(`name-inp-${id}`).focus();
-        };
-        window.saveName = function (id) {
-            const val = document.getElementById(`name-inp-${id}`).value.trim();
-            const defName = (rawSchedules.regular.find(p => p.id === id) || rawSchedules.common.find(p => p.id === id) || {}).defaultName || '';
-            if (val && val !== defName) state.customNames[id] = val;
-            else delete state.customNames[id];
-            saveState(); updateUIState();
-        };
-        window.cancelName = function (id) {
-            const box = document.getElementById(`name-edit-${id}`);
-            box.classList.add('hidden');
-            box.classList.remove('flex');
-            document.getElementById(`name-txt-${id}`).parentElement.classList.remove('hidden');
-        };
+        // ---------------------------------------------------------------
+        // Class details editor
+        // ---------------------------------------------------------------
+        let editingPeriodId = null;
+
+        function rawPeriod(id) {
+            return rawSchedules.regular.find(p => p.id === id) || rawSchedules.common.find(p => p.id === id) || null;
+        }
+
+        function periodModalOpen() { return !document.getElementById('period-modal').classList.contains('hidden'); }
+
+        function openPeriodEditor(id) {
+            const raw = rawPeriod(id);
+            if (!raw) return;
+            editingPeriodId = id;
+            const d = periodDetails(id);
+
+            document.getElementById('pm-name').value = d.name;
+            document.getElementById('pm-teacher').value = d.teacher;
+            document.getElementById('pm-room').value = d.room;
+            document.getElementById('pm-url').value = (state.periodInfo[id] || {}).url || '';
+            document.getElementById('pm-url-error').classList.add('hidden');
+            document.getElementById('period-modal-title').innerText = d.name || raw.defaultName;
+            document.getElementById('period-modal-slot').innerText = `${raw.defaultName} · ${raw.start} – ${raw.end}`;
+
+            const m = document.getElementById('period-modal');
+            m.classList.remove('hidden');
+            m.classList.add('flex');
+            setTimeout(() => document.getElementById('pm-name').focus(), 30);
+        }
+
+        function closePeriodEditor() {
+            const m = document.getElementById('period-modal');
+            m.classList.add('hidden');
+            m.classList.remove('flex');
+            editingPeriodId = null;
+        }
+
+        function savePeriodDetails() {
+            if (!editingPeriodId) return;
+            const id = editingPeriodId;
+            const raw = rawPeriod(id);
+            const name = document.getElementById('pm-name').value.trim().slice(0, 40);
+            const teacher = document.getElementById('pm-teacher').value.trim().slice(0, 40);
+            const room = document.getElementById('pm-room').value.trim().slice(0, 12);
+            const urlRaw = document.getElementById('pm-url').value.trim();
+
+            let url = safeUrl(urlRaw);
+            if (urlRaw && !url) {
+                // Let people type "classroom.google.com/x" without the scheme.
+                url = safeUrl('https://' + urlRaw.replace(/^\/+/, ''));
+            }
+            const err = document.getElementById('pm-url-error');
+            if (urlRaw && !url) {
+                err.classList.remove('hidden');
+                document.getElementById('pm-url').focus();
+                return;
+            }
+            err.classList.add('hidden');
+
+            const info = {};
+            if (name && name !== raw.defaultName) info.name = name;
+            if (teacher) info.teacher = teacher;
+            if (room) info.room = room;
+            if (url) info.url = url;
+
+            if (Object.keys(info).length) state.periodInfo[id] = info;
+            else delete state.periodInfo[id];
+
+            saveState();
+            closePeriodEditor();
+            updateUIState();
+            toast({ title: `${name || raw.defaultName} saved`, tone: 'success', duration: 3000 });
+        }
+
+        function clearPeriodDetails() {
+            if (!editingPeriodId) return;
+            const raw = rawPeriod(editingPeriodId);
+            delete state.periodInfo[editingPeriodId];
+            saveState();
+            closePeriodEditor();
+            updateUIState();
+            toast({ title: `${raw.defaultName} reset`, tone: 'info', duration: 3000 });
+        }
 
         // ---------------------------------------------------------------
         // Live tracker
@@ -1673,6 +1966,20 @@
                 now < dayStart ? `First bell at ${periods[0].start}`
                 : now >= dayEnd ? 'School day finished'
                 : `Out at ${periods[periods.length - 1].end}`;
+        }
+
+        let lastMetaKey = '';
+        function renderTrackerMeta(p) {
+            const key = `${p.id}|${p.room}|${p.teacher}|${p.url}`;
+            if (key === lastMetaKey) return;      // only touch the DOM when it actually changes
+            lastMetaKey = key;
+
+            const el = document.getElementById('tracker-period-meta');
+            const bits = [];
+            if (p.room) bits.push(`<span class="inline-flex items-center gap-1"><svg class="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 20V6l8-3 8 3v14M9 20v-5h6v5"></path></svg>${escapeHTML(p.room)}</span>`);
+            if (p.teacher) bits.push(`<span>${escapeHTML(p.teacher)}</span>`);
+            if (p.url) bits.push(`<a href="${escapeHTML(p.url)}" target="_blank" rel="noopener noreferrer" class="class-link inline-flex items-center gap-1">Open class<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5M19 5l-7 7M18 14v5H5V6h5"></path></svg></a>`);
+            el.innerHTML = bits.join('<span class="opacity-40">·</span>');
         }
 
         function tick() {
@@ -1744,6 +2051,7 @@
                 const target = active || next;
                 document.getElementById('tracker-period-name').innerText = target.name;
                 document.getElementById('tracker-status').innerText = status;
+                renderTrackerMeta(target);
 
                 const totalDur = pEnd - pStart;
                 const rem = pEnd - now;
@@ -1782,6 +2090,8 @@
             } else {
                 document.getElementById('tracker-period-name').innerText = '--';
                 document.getElementById('tracker-status').innerText = status;
+                document.getElementById('tracker-period-meta').innerHTML = '';
+                lastMetaKey = '';
                 document.getElementById('tracker-countdown-hz').innerText = '00:00';
                 document.getElementById('tracker-countdown-circ').innerText = '00:00';
                 document.getElementById('tracker-progress-hz').style.width = '0%';
@@ -1813,6 +2123,136 @@
             } catch (e) { /* denied or unsupported — nothing to do */ }
         }
         document.addEventListener('visibilitychange', () => { if (state.wakeLock) applyWakeLock(); });
+
+        // ---------------------------------------------------------------
+        // Export / import
+        // ---------------------------------------------------------------
+        const BACKUP_VERSION = 2;
+
+        function exportSettings() {
+            const payload = { app: 'ecr-bell-schedule', version: BACKUP_VERSION, exportedAt: new Date().toISOString(), state };
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const d = new Date();
+            const stamp = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+            a.href = url;
+            a.download = `bell-schedule-settings-${stamp}.json`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 2000);
+            toast({ title: 'Settings exported', msg: a.download, tone: 'success', duration: 4000 });
+        }
+
+        function importSettings(event) {
+            const input = event.target;
+            const file = input.files && input.files[0];
+            if (!file) return;
+            const snapshot = JSON.parse(JSON.stringify(state));
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                let incoming;
+                try {
+                    const parsed = JSON.parse(reader.result);
+                    incoming = parsed && parsed.state ? parsed.state : parsed;
+                } catch (e) {
+                    toast({ title: "That file isn't valid JSON", msg: 'Pick a file exported from this app.', tone: 'alert', duration: 6000 });
+                    input.value = '';
+                    return;
+                }
+                if (!incoming || typeof incoming !== 'object' || Array.isArray(incoming)) {
+                    toast({ title: "That file doesn't look like a settings backup", msg: 'Pick a file exported from this app.', tone: 'alert', duration: 6000 });
+                    input.value = '';
+                    return;
+                }
+
+                applyLoadedState(incoming);
+                saveState();
+                updateUIState();
+                input.value = '';
+                toast({
+                    title: 'Settings imported', msg: file.name, tone: 'success', duration: 8000,
+                    action: {
+                        label: 'Undo', fn: () => {
+                            state = snapshot;
+                            saveState(); updateUIState();
+                            toast({ title: 'Import undone', tone: 'info', duration: 3000 });
+                        }
+                    }
+                });
+            };
+            reader.onerror = () => {
+                toast({ title: "Couldn't read that file", tone: 'alert', duration: 5000 });
+                input.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+        // ---------------------------------------------------------------
+        // PWA: install prompt, service worker, theme color
+        // ---------------------------------------------------------------
+        let deferredInstall = null;
+
+        function updateThemeColorMeta() {
+            const meta = document.getElementById('meta-theme-color');
+            if (!meta) return;
+            const base = cssVar('--ctp-base').split(/\s+/).map(Number);
+            if (base.length === 3 && base.every(n => !isNaN(n))) {
+                meta.setAttribute('content', '#' + base.map(n => n.toString(16).padStart(2, '0')).join(''));
+            }
+        }
+
+        window.addEventListener('beforeinstallprompt', e => {
+            e.preventDefault();
+            deferredInstall = e;
+            const btn = document.getElementById('install-btn');
+            btn.classList.remove('hidden');
+            btn.classList.add('inline-flex');
+        });
+
+        window.addEventListener('appinstalled', () => {
+            deferredInstall = null;
+            const btn = document.getElementById('install-btn');
+            btn.classList.add('hidden');
+            btn.classList.remove('inline-flex');
+            toast({ title: 'Installed', msg: 'It opens like any other app now, online or off.', tone: 'success', duration: 5000 });
+        });
+
+        async function installApp() {
+            if (!deferredInstall) {
+                toast({
+                    title: 'Install from your browser menu',
+                    msg: 'iPhone: Share → Add to Home Screen. Desktop Chrome: the install icon in the address bar.',
+                    tone: 'info', duration: 8000
+                });
+                return;
+            }
+            deferredInstall.prompt();
+            try { await deferredInstall.userChoice; } catch (e) {}
+            deferredInstall = null;
+        }
+
+        function registerServiceWorker() {
+            if (!('serviceWorker' in navigator)) return;
+            if (!location.protocol.startsWith('http')) return;   // opened straight off disk — nothing to cache
+            navigator.serviceWorker.register('sw.js').then(reg => {
+                reg.addEventListener('updatefound', () => {
+                    const sw = reg.installing;
+                    if (!sw) return;
+                    sw.addEventListener('statechange', () => {
+                        if (sw.state === 'installed' && navigator.serviceWorker.controller) {
+                            toast({
+                                title: 'Update ready', msg: 'Reload to pick up the new version.',
+                                tone: 'info', duration: 15000,
+                                action: { label: 'Reload', fn: () => { sw.postMessage('skipWaiting'); location.reload(); } }
+                            });
+                        }
+                    });
+                });
+            }).catch(() => { /* no sw.js alongside the page — the app still works */ });
+        }
 
         function toggleFullscreen() {
             if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
@@ -1853,8 +2293,13 @@
 
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape') {
+                if (periodModalOpen()) { closePeriodEditor(); return; }
                 if (helpOpen()) { toggleHelp(false); return; }
                 if (settingsOpen()) { toggleSettings(false); return; }
+            }
+            if (periodModalOpen()) {
+                if (e.key === 'Enter') { e.preventDefault(); savePeriodDetails(); }
+                return;
             }
             const tag = (e.target.tagName || '').toLowerCase();
             if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.metaKey || e.ctrlKey || e.altKey) return;
@@ -1886,6 +2331,7 @@
         loadState();
         buildShortcutList();
         updateUIState();
+        registerServiceWorker();
         setInterval(tick, 1000);
         setTimeout(() => { alertsPrimed = true; }, 1500);
 
