@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,16 +7,18 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            50: 'var(--brand-50)',
-                            100: 'var(--brand-100)',
-                            400: 'var(--brand-400)',
-                            500: 'var(--brand-500)',
-                            600: 'var(--brand-600)',
+                        ctp: {
+                            base: 'rgb(var(--ctp-base) / <alpha-value>)',
+                            mantle: 'rgb(var(--ctp-mantle) / <alpha-value>)',
+                            surface0: 'rgb(var(--ctp-surface0) / <alpha-value>)',
+                            surface1: 'rgb(var(--ctp-surface1) / <alpha-value>)',
+                            surface2: 'rgb(var(--ctp-surface2) / <alpha-value>)',
+                            text: 'rgb(var(--ctp-text) / <alpha-value>)',
+                            subtext: 'rgb(var(--ctp-subtext) / <alpha-value>)',
+                            accent: 'rgb(var(--ctp-accent) / <alpha-value>)',
                         }
                     }
                 }
@@ -24,124 +26,146 @@
         }
     </script>
     <style>
-        /* Base Themes */
-        :root {
-            --brand-50: #f0fdfa; --brand-100: #ccfbf1; --brand-400: #2dd4bf; --brand-500: #14b8a6; --brand-600: #0d9488;
+        /* Catppuccin Palettes */
+        :root[data-theme="latte"] {
+            --ctp-base: 239 241 245; 
+            --ctp-mantle: 230 233 239; 
+            --ctp-surface0: 204 208 218; 
+            --ctp-surface1: 188 192 204; 
+            --ctp-surface2: 172 176 190; 
+            --ctp-text: 76 79 105; 
+            --ctp-subtext: 92 95 119; 
+            --ctp-accent: 136 57 239; /* Mauve */
+            color-scheme: light;
         }
-        :root[data-color="blue"] {
-            --brand-50: #eff6ff; --brand-100: #dbeafe; --brand-400: #60a5fa; --brand-500: #3b82f6; --brand-600: #2563eb;
+        :root[data-theme="frappe"] {
+            --ctp-base: 48 52 70;
+            --ctp-mantle: 41 44 60;
+            --ctp-surface0: 65 69 89;
+            --ctp-surface1: 81 87 109;
+            --ctp-surface2: 98 104 128;
+            --ctp-text: 198 208 245;
+            --ctp-subtext: 181 191 226;
+            --ctp-accent: 202 158 230; /* Mauve */
+            color-scheme: dark;
         }
-        :root[data-color="rose"] {
-            --brand-50: #fff1f2; --brand-100: #ffe4e6; --brand-400: #fb7185; --brand-500: #f43f5e; --brand-600: #e11d48;
+        :root[data-theme="macchiato"] {
+            --ctp-base: 36 39 58;
+            --ctp-mantle: 30 32 48;
+            --ctp-surface0: 54 58 79;
+            --ctp-surface1: 73 77 100;
+            --ctp-surface2: 91 96 120;
+            --ctp-text: 202 211 245;
+            --ctp-subtext: 184 192 224;
+            --ctp-accent: 198 160 246; /* Mauve */
+            color-scheme: dark;
         }
-        :root[data-color="violet"] {
-            --brand-50: #f5f3ff; --brand-100: #ede9fe; --brand-400: #a78bfa; --brand-500: #8b5cf6; --brand-600: #7c3aed;
+        :root[data-theme="mocha"] {
+            --ctp-base: 30 30 46;
+            --ctp-mantle: 24 24 37;
+            --ctp-surface0: 49 50 68;
+            --ctp-surface1: 69 71 90;
+            --ctp-surface2: 88 91 112;
+            --ctp-text: 205 214 244;
+            --ctp-subtext: 186 194 222;
+            --ctp-accent: 203 166 247; /* Mauve */
+            color-scheme: dark;
         }
+
+        body { background-color: rgb(var(--ctp-base)); color: rgb(var(--ctp-text)); }
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
-        .dark ::-webkit-scrollbar-thumb { background-color: #475569; }
+        ::-webkit-scrollbar-thumb { background-color: rgb(var(--ctp-surface2)); border-radius: 10px; }
         
-        /* Circular Progress Animation */
         .circle-bg { fill: none; stroke: currentColor; stroke-width: 8; }
         .circle-progress { 
-            fill: none; stroke: var(--brand-500); stroke-width: 8; stroke-linecap: round; 
+            fill: none; stroke: rgb(var(--ctp-accent)); stroke-width: 8; stroke-linecap: round; 
             transition: stroke-dashoffset 1s linear; transform: rotate(-90deg); transform-origin: 50% 50%;
         }
 
-        /* Glider for segmented control */
         #glider {
             transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
             will-change: transform, width;
         }
 
-        /* Topography Background */
         .bg-topology {
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z' fill='%239C92AC' fill-opacity='0.25' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z' fill='currentColor' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
             background-repeat: repeat;
         }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300 font-sans min-h-screen relative overflow-x-hidden">
+<body class="transition-colors duration-300 font-sans min-h-screen relative overflow-x-hidden">
 
     <!-- Background Layers -->
-    <canvas id="bg-canvas" class="fixed inset-0 z-[-1] pointer-events-none hidden opacity-30 dark:opacity-50"></canvas>
-    <div id="bg-css" class="fixed inset-0 z-[-1] pointer-events-none hidden"></div>
+    <canvas id="bg-canvas" class="fixed inset-0 z-[-1] pointer-events-none hidden opacity-50"></canvas>
+    <div id="bg-css" class="fixed inset-0 z-[-1] pointer-events-none hidden text-ctp-text"></div>
 
     <div id="master-container" class="max-w-3xl mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6 relative z-10 transition-all duration-500">
         
         <!-- Header -->
-        <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors w-full">
+        <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-ctp-mantle/80 backdrop-blur-md p-4 sm:p-6 rounded-xl shadow-sm border border-ctp-surface0 transition-colors w-full">
             <div>
-                <h1 class="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-brand-400">
+                <h1 class="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-ctp-accent to-ctp-accent/70">
                     El Camino Real Bell Schedule
                 </h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    <span id="current-date-display"></span> • Pacific Time
+                <p class="text-sm text-ctp-subtext mt-1 flex flex-wrap items-center gap-2">
+                    <span id="current-date-display"></span> <span class="opacity-50">•</span> Pacific Time 
+                    <span id="battery-container" class="hidden flex items-center gap-1 bg-ctp-surface0/50 px-2 py-0.5 rounded-full text-xs ml-1">
+                        <svg id="battery-icon" class="w-4 h-4 text-ctp-text" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
+                        <span id="battery-level" class="font-mono font-bold"></span>%
+                    </span>
                 </p>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="toggleSettings()" class="p-2.5 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors" title="Settings">
-                    <svg class="w-5 h-5 text-gray-700 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                </button>
-                <button onclick="toggleTheme()" class="p-2.5 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors" title="Toggle Theme">
-                    <svg id="theme-icon-light" class="w-5 h-5 hidden text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                    <svg id="theme-icon-dark" class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                <button onclick="toggleSettings()" class="p-2.5 rounded-full bg-ctp-surface0 hover:bg-ctp-surface1 transition-colors" title="Settings">
+                    <svg class="w-5 h-5 text-ctp-text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 </button>
             </div>
         </header>
 
-        <!-- Settings Panel (Smooth Dropdown) -->
+        <!-- Settings Panel -->
         <div id="settings-wrapper" class="grid transition-all duration-400 ease-in-out" style="grid-template-rows: 0fr; opacity: 0; visibility: hidden;">
             <div class="overflow-hidden">
-                <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 mb-2">
-                    <h3 class="text-lg font-semibold mb-4 border-b border-gray-100 dark:border-gray-700 pb-2">Settings</h3>
+                <div class="bg-ctp-mantle/80 backdrop-blur-md p-5 rounded-xl shadow-sm border border-ctp-surface0 mb-2">
+                    <h3 class="text-lg font-semibold mb-4 border-b border-ctp-surface0 pb-2">Settings</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                        <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
                             <div>
                                 <p class="font-medium">Hide Period 0</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Remove from tracker.</p>
+                                <p class="text-xs text-ctp-subtext">Remove from tracker.</p>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" id="toggle-p0" class="sr-only peer" onchange="togglePeriodZero()">
-                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-brand-500"></div>
+                                <div class="w-11 h-6 bg-ctp-surface1 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-ctp-accent"></div>
                             </label>
                         </div>
-                        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                            <div>
-                                <p class="font-medium">Dashboard Layout</p>
-                            </div>
-                            <select id="select-layout" onchange="updateSettings()" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 text-sm rounded-lg focus:ring-brand-500 focus:border-brand-500 block p-2">
+                        <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
+                            <div><p class="font-medium">Dashboard Layout</p></div>
+                            <select id="select-layout" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg focus:ring-ctp-accent focus:border-ctp-accent block p-2 outline-none">
                                 <option value="vertical">Vertical</option>
                                 <option value="horizontal">Horizontal</option>
                             </select>
                         </div>
-                        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                            <div>
-                                <p class="font-medium">Progress Visual</p>
-                            </div>
-                            <select id="select-shape" onchange="updateSettings()" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 text-sm rounded-lg focus:ring-brand-500 focus:border-brand-500 block p-2">
+                        <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
+                            <div><p class="font-medium">Progress Visual</p></div>
+                            <select id="select-shape" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg focus:ring-ctp-accent focus:border-ctp-accent block p-2 outline-none">
                                 <option value="horizontal">Bar Layout</option>
                                 <option value="circular">Ring Layout</option>
                             </select>
                         </div>
-                        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                            <div>
-                                <p class="font-medium">Theme Color</p>
-                            </div>
-                            <select id="select-color" onchange="updateSettings()" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 text-sm rounded-lg focus:ring-brand-500 focus:border-brand-500 block p-2">
-                                <option value="teal">Teal</option>
-                                <option value="blue">Blue</option>
-                                <option value="rose">Rose</option>
-                                <option value="violet">Violet</option>
+                        <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
+                            <div><p class="font-medium">Catppuccin Theme</p></div>
+                            <select id="select-color" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg focus:ring-ctp-accent focus:border-ctp-accent block p-2 outline-none">
+                                <option value="latte">Latte (Light)</option>
+                                <option value="frappe">Frappé (Dark)</option>
+                                <option value="macchiato">Macchiato (Dark)</option>
+                                <option value="mocha">Mocha (Dark)</option>
                             </select>
                         </div>
-                        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg md:col-span-2">
-                            <div>
-                                <p class="font-medium">Background</p>
-                            </div>
-                            <select id="select-bg" onchange="updateSettings()" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 text-sm rounded-lg focus:ring-brand-500 focus:border-brand-500 block p-2 min-w-[150px]">
+                        <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg md:col-span-2">
+                            <div><p class="font-medium">Background</p></div>
+                            <select id="select-bg" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg focus:ring-ctp-accent focus:border-ctp-accent block p-2 outline-none min-w-[150px]">
                                 <option value="none">None (Default)</option>
                                 <option value="matrix">Matrix Rain</option>
                                 <option value="stars">Starfield</option>
@@ -154,36 +178,36 @@
         </div>
 
         <!-- Schedule Selector (Glider) -->
-        <div class="relative flex p-1.5 bg-gray-200 dark:bg-gray-800/80 backdrop-blur-md rounded-xl shadow-inner w-full sm:w-[450px] self-center overflow-hidden">
-            <div id="glider" class="absolute top-1.5 bottom-1.5 left-0 bg-white dark:bg-gray-700 rounded-lg shadow-sm z-0"></div>
-            <button id="btn-auto" onclick="setManualSchedule('auto')" class="relative z-10 flex-1 py-2 text-sm font-semibold transition-colors text-gray-500 dark:text-gray-400">Auto</button>
-            <button id="btn-regular" onclick="setManualSchedule('regular')" class="relative z-10 flex-1 py-2 text-sm font-semibold transition-colors text-gray-500 dark:text-gray-400">Regular</button>
-            <button id="btn-common" onclick="setManualSchedule('common')" class="relative z-10 flex-1 py-2 text-sm font-semibold transition-colors text-gray-500 dark:text-gray-400">Common</button>
+        <div class="relative flex p-1.5 bg-ctp-mantle/80 backdrop-blur-md rounded-xl shadow-inner w-full sm:w-[450px] self-center overflow-hidden border border-ctp-surface0">
+            <div id="glider" class="absolute top-1.5 bottom-1.5 left-0 bg-ctp-surface1 rounded-lg shadow-sm z-0"></div>
+            <button id="btn-auto" onclick="setManualSchedule('auto')" class="relative z-10 flex-1 py-2 text-sm font-semibold transition-colors text-ctp-subtext">Auto</button>
+            <button id="btn-regular" onclick="setManualSchedule('regular')" class="relative z-10 flex-1 py-2 text-sm font-semibold transition-colors text-ctp-subtext">Regular</button>
+            <button id="btn-common" onclick="setManualSchedule('common')" class="relative z-10 flex-1 py-2 text-sm font-semibold transition-colors text-ctp-subtext">Common</button>
         </div>
 
         <!-- Main Content Layout container -->
         <div id="main-content" class="flex flex-col gap-6 w-full">
             
             <!-- Live Tracker Card -->
-            <div class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md p-6 sm:p-10 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center text-center relative overflow-hidden transition-colors min-h-[350px]">
-                <div class="absolute top-0 left-0 w-full h-1 bg-brand-500"></div>
+            <div class="flex-1 bg-ctp-mantle/90 backdrop-blur-md p-6 sm:p-10 rounded-2xl shadow-lg border border-ctp-surface0 flex flex-col items-center justify-center text-center relative overflow-hidden transition-colors min-h-[350px]">
+                <div class="absolute top-0 left-0 w-full h-1 bg-ctp-accent"></div>
                 
-                <p id="tracker-status" class="text-sm uppercase tracking-widest font-semibold text-brand-600 dark:text-brand-400 mb-2">Loading...</p>
-                <h2 id="tracker-period-name" class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-6">--</h2>
+                <p id="tracker-status" class="text-sm uppercase tracking-widest font-semibold text-ctp-accent mb-2">Loading...</p>
+                <h2 id="tracker-period-name" class="text-3xl sm:text-4xl font-extrabold text-ctp-text mb-6">--</h2>
                 
                 <!-- Horizontal View -->
                 <div id="view-horizontal" class="w-full flex flex-col items-center">
-                    <div class="bg-gray-50 dark:bg-gray-900 px-6 py-4 rounded-xl border border-gray-100 dark:border-gray-700 mb-6 w-full max-w-sm shadow-inner text-center">
-                        <p id="tracker-countdown-hz" class="text-5xl sm:text-6xl font-black font-mono text-gray-800 dark:text-gray-100 tabular-nums tracking-tighter">00:00</p>
-                        <p class="text-xs font-medium text-gray-500 uppercase mt-2">Time Remaining</p>
+                    <div class="bg-ctp-surface0/30 px-6 py-4 rounded-xl border border-ctp-surface1 mb-6 w-full max-w-sm shadow-inner text-center">
+                        <p id="tracker-countdown-hz" class="text-5xl sm:text-6xl font-black font-mono text-ctp-text tabular-nums tracking-tighter">00:00</p>
+                        <p class="text-xs font-medium text-ctp-subtext uppercase mt-2">Time Remaining</p>
                     </div>
                     <div class="w-full max-w-md">
-                        <div class="flex justify-between text-xs font-medium text-gray-500 mb-1">
+                        <div class="flex justify-between text-xs font-medium text-ctp-subtext mb-1">
                             <span id="tracker-start-hz">--:--</span>
                             <span id="tracker-end-hz">--:--</span>
                         </div>
-                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 sm:h-4 overflow-hidden shadow-inner">
-                            <div id="tracker-progress-hz" class="bg-brand-500 h-full rounded-full transition-all duration-1000 ease-linear" style="width: 0%"></div>
+                        <div class="w-full bg-ctp-surface0 rounded-full h-3 sm:h-4 overflow-hidden shadow-inner">
+                            <div id="tracker-progress-hz" class="bg-ctp-accent h-full rounded-full transition-all duration-1000 ease-linear" style="width: 0%"></div>
                         </div>
                     </div>
                 </div>
@@ -192,15 +216,15 @@
                 <div id="view-circular" class="hidden w-full flex flex-col items-center relative">
                     <div class="relative w-64 h-64 flex items-center justify-center">
                         <svg class="absolute top-0 left-0 w-full h-full" viewBox="0 0 100 100">
-                            <circle class="circle-bg text-gray-200 dark:text-gray-700" cx="50" cy="50" r="45"></circle>
+                            <circle class="circle-bg text-ctp-surface1" cx="50" cy="50" r="45"></circle>
                             <circle id="tracker-progress-circ" class="circle-progress" cx="50" cy="50" r="45" stroke-dasharray="283" stroke-dashoffset="283"></circle>
                         </svg>
                         <div class="z-10 flex flex-col items-center">
-                            <p id="tracker-countdown-circ" class="text-4xl sm:text-5xl font-black font-mono text-gray-800 dark:text-gray-100 tabular-nums tracking-tighter">00:00</p>
-                            <p class="text-[10px] font-medium text-gray-500 uppercase mt-1">Remaining</p>
+                            <p id="tracker-countdown-circ" class="text-4xl sm:text-5xl font-black font-mono text-ctp-text tabular-nums tracking-tighter">00:00</p>
+                            <p class="text-[10px] font-medium text-ctp-subtext uppercase mt-1">Remaining</p>
                         </div>
                     </div>
-                    <div class="flex justify-between text-xs font-medium text-gray-500 mt-4 w-64 px-2">
+                    <div class="flex justify-between text-xs font-medium text-ctp-subtext mt-4 w-64 px-2">
                         <span id="tracker-start-circ">--:--</span>
                         <span id="tracker-end-circ">--:--</span>
                     </div>
@@ -208,13 +232,13 @@
             </div>
 
             <!-- Schedule Table -->
-            <div class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors self-stretch flex flex-col">
-                <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 flex justify-between items-center">
-                    <h3 class="font-semibold text-gray-800 dark:text-gray-200" id="schedule-title">Today's Schedule</h3>
+            <div class="flex-1 bg-ctp-mantle/90 backdrop-blur-md rounded-2xl shadow-sm border border-ctp-surface0 overflow-hidden transition-colors self-stretch flex flex-col">
+                <div class="px-6 py-4 border-b border-ctp-surface0 bg-ctp-surface0/20 flex justify-between items-center">
+                    <h3 class="font-semibold text-ctp-text" id="schedule-title">Today's Schedule</h3>
                 </div>
                 <div class="overflow-x-auto flex-1 max-h-[500px] overflow-y-auto">
                     <table class="w-full text-left border-collapse">
-                        <tbody id="schedule-body" class="divide-y divide-gray-100 dark:divide-gray-700/50">
+                        <tbody id="schedule-body" class="divide-y divide-ctp-surface0/50">
                             <!-- Rows injected via JS -->
                         </tbody>
                     </table>
@@ -252,11 +276,9 @@
             ]
         };
 
-        // State Management
         let state = {
-            hidePeriod0: false, customNames: {}, theme: 'light',
-            scheduleMode: 'auto', colorScheme: 'teal', progressShape: 'horizontal', bgMode: 'none',
-            layout: 'vertical'
+            hidePeriod0: false, customNames: {},
+            scheduleMode: 'auto', theme: 'mocha', progressShape: 'horizontal', bgMode: 'none', layout: 'vertical'
         };
         let activeTimeline = [];
         let clockInterval;
@@ -268,9 +290,9 @@
 
         function init() {
             loadState();
-            applyTheme();
             applySettingsDOM();
             updateDateDisplay();
+            initBattery();
             buildTimeline();
             renderTable();
             updateGlider();
@@ -288,13 +310,51 @@
         }
 
         function loadState() {
-            const saved = localStorage.getItem('ecrDashboardStateV4');
+            const saved = localStorage.getItem('ecrDashboardStateV5');
             if(saved) state = { ...state, ...JSON.parse(saved) };
-            else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) state.theme = 'dark';
         }
 
         function saveState() {
-            localStorage.setItem('ecrDashboardStateV4', JSON.stringify(state));
+            localStorage.setItem('ecrDashboardStateV5', JSON.stringify(state));
+        }
+
+        function initBattery() {
+            if ('getBattery' in navigator) {
+                navigator.getBattery().then(function(battery) {
+                    const batContainer = document.getElementById('battery-container');
+                    const batLevel = document.getElementById('battery-level');
+                    const batIcon = document.getElementById('battery-icon');
+
+                    function updateBattery() {
+                        // Desktop Heuristic: if charging indefinitely and fully charged
+                        if (battery.charging && battery.chargingTime === 0 && battery.dischargingTime === Infinity && battery.level === 1) {
+                            batContainer.classList.add('hidden');
+                            return;
+                        }
+                        
+                        batContainer.classList.remove('hidden');
+                        batLevel.innerText = Math.round(battery.level * 100);
+                        
+                        if (battery.charging) {
+                            // Charging Bolt Icon
+                            batIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />`;
+                        } else {
+                            // Battery Levels Outline
+                            if (battery.level > 0.8) {
+                                batIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M2 12h20M2 8h20M2 16h20" />`; 
+                            } else if (battery.level > 0.3) {
+                                batIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M2 12h12M2 8h20M2 16h20" />`;
+                            } else {
+                                batIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M2 12h4M2 8h20M2 16h20" />`;
+                            }
+                        }
+                    }
+
+                    updateBattery();
+                    battery.addEventListener('chargingchange', updateBattery);
+                    battery.addEventListener('levelchange', updateBattery);
+                });
+            }
         }
 
         // --- Core Time Calculations ---
@@ -319,8 +379,8 @@
         function getNextSchoolStart(nowDate) {
             let next = new Date(nowDate);
             let added = 1;
-            if (next.getDay() === 5) added = 3; // Fri -> Mon
-            if (next.getDay() === 6) added = 2; // Sat -> Mon
+            if (next.getDay() === 5) added = 3; 
+            if (next.getDay() === 6) added = 2; 
             next.setDate(next.getDate() + added);
             return parseTimeStrDate(getScheduleForDate(next)[0].start, next);
         }
@@ -328,8 +388,8 @@
         function getPrevSchoolEnd(nowDate) {
             let prev = new Date(nowDate);
             let sub = 1;
-            if (prev.getDay() === 1) sub = 3; // Mon -> Fri
-            if (prev.getDay() === 0) sub = 2; // Sun -> Fri
+            if (prev.getDay() === 1) sub = 3; 
+            if (prev.getDay() === 0) sub = 2; 
             prev.setDate(prev.getDate() - sub);
             const sched = getScheduleForDate(prev);
             return parseTimeStrDate(sched[sched.length - 1].end, prev);
@@ -397,20 +457,20 @@
             }
 
             document.querySelectorAll('.sched-row').forEach(row => {
-                row.classList.remove('bg-brand-50', 'dark:bg-brand-900/20', 'border-brand-500');
+                row.classList.remove('bg-ctp-surface0/30', 'border-ctp-accent');
                 row.classList.add('border-transparent');
             });
             if (isClass && activeId) {
                 const row = document.getElementById(`row-${activeId}`);
                 if (row) {
                     row.classList.remove('border-transparent');
-                    row.classList.add('bg-brand-50', 'dark:bg-brand-900/20', 'border-brand-500');
+                    row.classList.add('bg-ctp-surface0/30', 'border-ctp-accent');
                 }
             }
         }
 
         function updateClock() {
-            const now = new Date(); // Implicitly Local Time (PST/PDT assumed based on user context)
+            const now = new Date(); 
             if (activeTimeline.length === 0) {
                 const pEnd = getPrevSchoolEnd(now);
                 const nStart = getNextSchoolStart(now);
@@ -445,17 +505,17 @@
             const tbody = document.getElementById('schedule-body');
             tbody.innerHTML = '';
             if(activeTimeline.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="2" class="px-6 py-4 text-center text-gray-500">Enjoy your weekend!</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="2" class="px-6 py-4 text-center text-ctp-subtext">Enjoy your weekend!</td></tr>`;
                 return;
             }
             activeTimeline.filter(t => !t.isPassing).forEach(block => {
                 const tr = document.createElement('tr');
                 tr.id = `row-${block.id}`;
-                tr.className = "sched-row transition-colors border-l-4 border-transparent hover:bg-gray-50 dark:hover:bg-gray-700/30";
-                const editBtn = block.editable ? `<button onclick="editPeriod('${block.id}')" class="ml-2 text-gray-400 hover:text-brand-500 transition-colors" title="Edit"><svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>` : '';
+                tr.className = "sched-row transition-colors border-l-4 border-transparent hover:bg-ctp-surface0/30";
+                const editBtn = block.editable ? `<button onclick="editPeriod('${block.id}')" class="ml-2 text-ctp-surface2 hover:text-ctp-accent transition-colors" title="Edit"><svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>` : '';
                 tr.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white w-1/2">${block.displayName} ${editBtn}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 text-right w-1/2 font-mono">${block.start} - ${block.end}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-ctp-text w-1/2">${block.displayName} ${editBtn}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-ctp-subtext text-right w-1/2 font-mono">${block.start} - ${block.end}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -467,14 +527,14 @@
             btns.forEach(b => {
                 const el = document.getElementById(`btn-${b}`);
                 if(b === state.scheduleMode) {
-                    el.classList.add('text-brand-600', 'dark:text-brand-400');
-                    el.classList.remove('text-gray-500', 'dark:text-gray-400');
+                    el.classList.add('text-ctp-accent');
+                    el.classList.remove('text-ctp-subtext');
                     const glider = document.getElementById('glider');
                     glider.style.width = `${el.offsetWidth}px`;
                     glider.style.transform = `translateX(${el.offsetLeft}px)`;
                 } else {
-                    el.classList.remove('text-brand-600', 'dark:text-brand-400');
-                    el.classList.add('text-gray-500', 'dark:text-gray-400');
+                    el.classList.remove('text-ctp-accent');
+                    el.classList.add('text-ctp-subtext');
                 }
             });
         }
@@ -485,10 +545,10 @@
         }
 
         function applySettingsDOM() {
-            document.documentElement.setAttribute('data-color', state.colorScheme);
+            document.documentElement.setAttribute('data-theme', state.theme);
             document.getElementById('toggle-p0').checked = state.hidePeriod0;
             document.getElementById('select-shape').value = state.progressShape;
-            document.getElementById('select-color').value = state.colorScheme;
+            document.getElementById('select-color').value = state.theme;
             document.getElementById('select-bg').value = state.bgMode;
             document.getElementById('select-layout').value = state.layout;
             
@@ -515,29 +575,10 @@
 
         function updateSettings() {
             state.progressShape = document.getElementById('select-shape').value;
-            state.colorScheme = document.getElementById('select-color').value;
+            state.theme = document.getElementById('select-color').value;
             state.bgMode = document.getElementById('select-bg').value;
             state.layout = document.getElementById('select-layout').value;
             applySettingsDOM(); saveState(); renderBackground(); updateClock();
-        }
-
-        function toggleTheme() {
-            state.theme = state.theme === 'light' ? 'dark' : 'light';
-            applyTheme(); saveState();
-        }
-
-        function applyTheme() {
-            const html = document.documentElement;
-            if (state.theme === 'dark') {
-                html.classList.add('dark');
-                document.getElementById('theme-icon-dark').classList.add('hidden');
-                document.getElementById('theme-icon-light').classList.remove('hidden');
-            } else {
-                html.classList.remove('dark');
-                document.getElementById('theme-icon-light').classList.add('hidden');
-                document.getElementById('theme-icon-dark').classList.remove('hidden');
-            }
-            renderBackground(); 
         }
 
         function toggleSettings() {
@@ -588,7 +629,7 @@
             const ctx = canvas.getContext('2d');
             
             canvas.classList.add('hidden');
-            cssBg.className = 'fixed inset-0 z-[-1] pointer-events-none hidden';
+            cssBg.className = 'fixed inset-0 z-[-1] pointer-events-none hidden text-ctp-text';
 
             if (state.bgMode === 'none') return;
 
@@ -596,7 +637,6 @@
                 cssBg.classList.remove('hidden');
                 cssBg.classList.add('bg-topology');
                 
-                // Interactive Topology tracking
                 function animateTopology() {
                     if (state.bgMode !== 'topology') return;
                     currentBgX += (mouseX - currentBgX) * 0.05;
@@ -612,8 +652,13 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
 
-            const isDark = state.theme === 'dark';
-            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--brand-500').trim();
+            // Fetch dynamic theme colors
+            const styles = getComputedStyle(document.documentElement);
+            const rawAccent = styles.getPropertyValue('--ctp-accent').trim().split(' ').join(',');
+            const rawBase = styles.getPropertyValue('--ctp-base').trim().split(' ').join(',');
+            const primaryColor = `rgb(${rawAccent})`;
+            const wipeColor = `rgba(${rawBase}, 0.15)`;
+            const starColor = state.theme === 'latte' ? `rgb(${styles.getPropertyValue('--ctp-text').trim().split(' ').join(',')})` : primaryColor;
 
             if (state.bgMode === 'matrix') {
                 const chars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -625,13 +670,12 @@
                 function drawMatrix(time) {
                     bgAnimId = requestAnimationFrame(drawMatrix);
                     if (!time) time = performance.now();
-                    // Throttle matrix drawing to slow it down (approx 15 FPS)
                     if (time - lastDraw < 65) return; 
                     lastDraw = time;
 
-                    ctx.fillStyle = isDark ? 'rgba(17, 24, 39, 0.15)' : 'rgba(249, 250, 251, 0.15)';
+                    ctx.fillStyle = wipeColor;
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    ctx.fillStyle = primaryColor || '#14b8a6';
+                    ctx.fillStyle = primaryColor;
                     ctx.font = fontSize + 'px monospace';
                     for(let i = 0; i < drops.length; i++) {
                         const text = chars[Math.floor(Math.random() * chars.length)];
@@ -650,7 +694,7 @@
                 }));
                 function drawStars() {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    ctx.fillStyle = isDark ? '#ffffff' : primaryColor || '#14b8a6';
+                    ctx.fillStyle = starColor;
                     stars.forEach(star => {
                         ctx.beginPath();
                         ctx.arc(star.x, star.y, star.z, 0, Math.PI * 2);
