@@ -86,8 +86,6 @@
             transition: opacity 0.5s ease;
         }
         .bg-layer.active { opacity: 1; visibility: visible; }
-        /* Allow interaction with the bubbles layer only (so clicks/taps can pop them) */
-        .bg-layer.bubble-container.active { pointer-events: auto; }
 
         .mesh-gradient {
             background-color: rgb(var(--ctp-base));
@@ -248,24 +246,6 @@
             will-change: height;
         }
 
-        /* Schedule rows — more comfortable spacing for readability */
-        .sched-row td { padding: 0.65rem 0.9rem; }
-
-        /* Tracker (upcoming/timer) UX improvements */
-        #tracker-status { display: inline-block; padding: 0.18rem 0.5rem; border-radius: 8px; background: rgb(var(--ctp-accent) / 0.12); color: rgb(var(--ctp-accent)); }
-        #tracker-period-name { line-height: 1.05; margin-bottom: 0.35rem; }
-        #tracker-period-meta { gap: .5rem; }
-
-        /* Hourglass view */
-        .hourglass-wrap { display:flex; align-items:center; justify-content:center; }
-        .hourglass { width:120px; height:180px; position:relative; }
-        .hg-glass { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
-        .hg-shape { width:100%; height:100%; fill: none; stroke: rgb(var(--ctp-surface2)); stroke-width:2; }
-        .hg-sand-top, .hg-sand-bottom { position:absolute; left:18%; right:18%; background: rgb(var(--ctp-accent)); border-radius:4px; transform-origin:center top; }
-        .hg-sand-top { top:18%; height:42%; clip-path: polygon(0 0, 100% 0, 60% 100%, 40% 100%); }
-        .hg-sand-bottom { bottom:18%; height:0%; clip-path: polygon(40% 0, 60% 0, 100% 100%, 0 100%); }
-        .hg-neck { position:absolute; left:48%; right:48%; top:48%; bottom:48%; background: rgba(255,255,255,0.03); border-radius:2px; }
-
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
         }
@@ -305,19 +285,6 @@
                     </span>
                 </p>
             </div>
-
-                <!-- Hourglass View -->
-                <div id="view-hourglass" class="hidden w-full flex-col items-center hourglass-wrap">
-                    <div class="hourglass" role="img" aria-label="Hourglass progress">
-                        <svg class="hg-glass" viewBox="0 0 120 180" preserveAspectRatio="xMidYMid meet">
-                            <path class="hg-shape" d="M20 10h80v20L60 90v0L20 30z M20 170h80v-20L60 90v0L100 150z"/>
-                            <!-- outline lines for glass -->
-                        </svg>
-                        <div id="hg-sand-top" class="hg-sand-top" style="background: rgb(var(--ctp-accent));"></div>
-                        <div id="hg-neck" class="hg-neck"></div>
-                        <div id="hg-sand-bottom" class="hg-sand-bottom" style="background: rgb(var(--ctp-accent));"></div>
-                    </div>
-                </div>
             <div class="flex items-center gap-2">
                 <button id="install-btn" onclick="installApp()" class="hidden items-center gap-1.5 text-sm font-semibold px-3 py-2 rounded-full bg-ctp-accent/15 text-ctp-accent hover:bg-ctp-accent/25 transition-colors" title="Install this as an app">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14"></path></svg>
@@ -382,10 +349,9 @@
                         </div>
                         <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
                             <div><p class="font-medium">Progress Visual</p></div>
-                                <select id="select-shape" aria-label="Progress visual" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg block p-2 outline-none">
+                            <select id="select-shape" aria-label="Progress visual" onchange="updateSettings()" class="bg-ctp-surface1 border border-ctp-surface2 text-ctp-text text-sm rounded-lg block p-2 outline-none">
                                 <option value="horizontal">Bar Layout</option>
                                 <option value="circular">Ring Layout</option>
-                                <option value="hourglass">Hourglass</option>
                             </select>
                         </div>
                         <div class="flex items-center justify-between p-3 bg-ctp-surface0/40 rounded-lg">
@@ -991,72 +957,11 @@
         function updateShapeView() {
             const hz = document.getElementById('view-horizontal');
             const circ = document.getElementById('view-circular');
-            const hg = document.getElementById('view-hourglass');
             const circular = state.shape === 'circular';
-            const hourglass = state.shape === 'hourglass';
-            hz.classList.toggle('hidden', circular || hourglass);
-            hz.classList.toggle('flex', !circular && !hourglass);
-            circ.classList.toggle('hidden', !circular || hourglass);
-            circ.classList.toggle('flex', circular && !hourglass);
-            if (hg) {
-                hg.classList.toggle('hidden', !hourglass);
-                hg.classList.toggle('flex', hourglass);
-            }
-            if (hourglass) initHourglass();
-        }
-
-        // Hourglass control
-        let hgTopAnim = null, hgBottomAnim = null, hgFlipAnim = null;
-        function initHourglass() {
-            const top = document.getElementById('hg-sand-top');
-            const bot = document.getElementById('hg-sand-bottom');
-            if (!top || !bot) return;
-            // Sync colors to theme
-            const accent = cssVar('--ctp-accent');
-            top.style.background = `rgb(${accent})`;
-            bot.style.background = `rgb(${accent})`;
-        }
-
-        function triggerHourglassFlip(remainingMs) {
-            const wrap = document.querySelector('#view-hourglass .hourglass');
-            const top = document.getElementById('hg-sand-top');
-            const bot = document.getElementById('hg-sand-bottom');
-            if (!wrap || !top || !bot) return;
-
-            const FLIP_MS = 520;
-            const sandDuration = Math.max(0, remainingMs - FLIP_MS);
-
-            // quick flip animation
-            if (hgFlipAnim) hgFlipAnim.cancel();
-            hgFlipAnim = wrap.animate([
-                { transform: 'rotate(0deg)' },
-                { transform: 'rotate(180deg)' }
-            ], { duration: FLIP_MS, easing: 'cubic-bezier(.2,.8,.3,1)' });
-
-            // After flip, start sand animations timed to remaining period
-            hgFlipAnim.onfinish = () => {
-                // reset any running sand animations
-                if (hgTopAnim) hgTopAnim.cancel();
-                if (hgBottomAnim) hgBottomAnim.cancel();
-
-                // animate top sand height from current portion to 0
-                hgTopAnim = top.animate([
-                    { height: top.offsetHeight + 'px', opacity: 1 },
-                    { height: '0px', opacity: 0.2 }
-                ], { duration: sandDuration, easing: 'linear', fill: 'forwards' });
-
-                // animate bottom sand height from current to full
-                hgBottomAnim = bot.animate([
-                    { height: '0px', opacity: 0.2 },
-                    { height: (wrap.clientHeight * 0.42) + 'px', opacity: 1 }
-                ], { duration: sandDuration, easing: 'linear', fill: 'forwards' });
-            };
-        }
-
-        function stopHourglass() {
-            if (hgTopAnim) { try { hgTopAnim.cancel(); } catch(e){} hgTopAnim = null; }
-            if (hgBottomAnim) { try { hgBottomAnim.cancel(); } catch(e){} hgBottomAnim = null; }
-            if (hgFlipAnim) { try { hgFlipAnim.cancel(); } catch(e){} hgFlipAnim = null; }
+            hz.classList.toggle('hidden', circular);
+            hz.classList.toggle('flex', !circular);
+            circ.classList.toggle('hidden', !circular);
+            circ.classList.toggle('flex', circular);
         }
 
         // ---------------------------------------------------------------
@@ -1315,15 +1220,6 @@
                 }
                 lastActiveKey = active.id;
                 prevRemain = rem;
-                // Trigger hourglass flip (if hourglass view enabled) and time sand to remaining period
-                try {
-                    if (state.shape === 'hourglass') {
-                        const remainingMs = (pEnd || 0) - now;
-                        triggerHourglassFlip(Math.max(0, remainingMs));
-                    } else {
-                        stopHourglass();
-                    }
-                } catch (e) { /* ignore */ }
                 return;
             }
 
@@ -2400,11 +2296,6 @@
             const dayPctSpan = document.getElementById('day-progress-pct');
             const dayBar = document.getElementById('day-progress-bar');
 
-            // Ensure the day progress wrapper is visible (fixes cases when it's hidden outside school hours)
-            if (dayWrap) {
-                dayWrap.style.display = '';
-                dayWrap.style.visibility = 'visible';
-            }
             if (periodsWithDates.length === 0) {
                 dayLabel.textContent = 'No school today';
                 dayPctSpan.textContent = '0%';
